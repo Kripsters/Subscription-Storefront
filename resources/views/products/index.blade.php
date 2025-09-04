@@ -28,6 +28,7 @@
                     <a href="{{ route('products.show', $item->id) }}">{{ $item->title }}</a>
                 </h5>
                 <p class="font-normal text-zinc-700 dark:text-zinc-300">{{ Str::limit($item->description, 100) }}</p>
+                <p class="font-normal text-lime-500 dark:text-lime-500">${{ $item->price }}</p>
                 @if (Auth::user()->role == 'admin')
                     <div class="flex justify-end mt-4 space-x-2">
                         <a href="{{ route('products.edit', $item->id) }}" class="inline-flex items-center px-3 py-2 bg-indigo-600 text-zinc text-xs font-medium rounded-lg hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-400 dark:bg-indigo-500 dark:hover:bg-indigo-400 focus:outline-none">
@@ -41,6 +42,10 @@
                             </button>
                         </form>
                     </div>
+                @else
+                        <a href="{{ route('cart.add', $item->id) }}" class="inline-flex items-center px-3 py-2 bg-lime-400 text-zinc text-xs font-medium rounded-lg hover:bg-lime-500 focus:ring-2 focus:ring-lime-400 dark:bg-lime-500 dark:hover:bg-lime-400 focus:outline-none">
+                            Add to cart
+                        </a>
                 @endif
             </div>
         @endforeach

@@ -43,6 +43,26 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
+    public function addToCart($id)
+    {
+        $productId = $id;
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return redirect()->route('products.index')->with('error', 'Product not found!');
+        }
+
+        // Add product to cart
+        $cart = session()->get('cart', []);
+        $cart[$productId] = [
+            'name' => $product->title,
+            'price' => $product->price,
+        ];
+        session()->put('cart', $cart);
+        dd(session()->all());
+        return redirect()->route('products.index')->with('success', 'Product added to cart successfully!');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

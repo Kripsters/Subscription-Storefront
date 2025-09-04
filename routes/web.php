@@ -25,6 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/search' , [ProductController::class, 'search'])->name('products.search');
     Route::get('/products/show/{id}' , [ProductController::class, 'show'])->name('products.show');
+
+    Route::get('/cart/add/{id}', [ProductController::class, 'addToCart'])->name('cart.add');
     
 });
 
