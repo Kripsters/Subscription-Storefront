@@ -24,19 +24,23 @@
                         <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
                             {{ __('Orders') }}
                         </h2>
-                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all orders') }}</p>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all your orders') }}</p>
                     </div>
                     <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border border-zinc-700 dark:border-zinc-700 rounded-lg m-8">
-                        <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
-                            {{ __('Products') }}
-                        </h2>
-                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all available products') }}</p>
+                        <a href="{{ route('products.index') }}">
+                            <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
+                                {{ __('Products') }}
+                            </h2>
+                            <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all available products') }}</p>
+                        </a>
                     </div>
                     <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border border-zinc-700 dark:border-zinc-700 rounded-lg m-8">
-                        <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
-                            {{ __('About us') }}
-                        </h2>
-                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Learn more about us') }}</p>
+                        <a href="{{ route('about') }}">
+                            <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
+                                {{ __('About us') }}
+                            </h2>
+                            <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Learn more about us') }}</p>
+                        </a>
                     </div>
                 </div>
             </div>
