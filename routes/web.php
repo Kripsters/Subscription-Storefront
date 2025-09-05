@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,7 +27,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/products/search' , [ProductController::class, 'search'])->name('products.search');
     Route::get('/products/show/{id}' , [ProductController::class, 'show'])->name('products.show');
 
-    Route::get('/cart/add/{id}', [ProductController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart',                [CartController::class,'index'])->name('cart.index');
+    Route::post('/cart/items',         [CartController::class,'store'])->name('cart.add');
+    Route::patch('/cart/items/{id}',   [CartController::class,'update'])->name('cart.update');
+    Route::delete('/cart/items/{id}',  [CartController::class,'destroy'])->name('cart.remove');
+    Route::delete('/cart',             [CartController::class,'clear'])->name('cart.clear');
     
 });
 

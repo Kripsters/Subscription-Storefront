@@ -23,11 +23,12 @@
     @if ($products->count())
     <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-4 pt-5 px-5">
         @foreach ($products as $item)
-            <div class="block p-6 bg-zinc rounded-lg border border-zinc-200 shadow hover:bg-zinc-50 dark:bg-zinc-800 dark:border-zinc-700 dark:hover:bg-zinc-700">
+            <div class="block p-6 bg-zinc-100 rounded-lg border border-zinc-200 shadow hover:bg-zinc-50 dark:bg-zinc-800 dark:border-zinc-700 dark:hover:bg-zinc-700">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
                     <a href="{{ route('products.show', $item->id) }}">{{ $item->title }}</a>
                 </h5>
                 <p class="font-normal text-zinc-700 dark:text-zinc-300">{{ Str::limit($item->description, 100) }}</p>
+                <img class="rounded-lg shadow-lg mx-auto size-64" src="{{ asset($item->image) }}" alt="{{ 'an image of ' . $item->title }}"/>
                 <p class="font-normal text-lime-500 dark:text-lime-500">${{ $item->price }}</p>
                 @if (Auth::user()->role == 'admin')
                     <div class="flex justify-end mt-4 space-x-2">
@@ -43,9 +44,17 @@
                         </form>
                     </div>
                 @else
-                        <a href="{{ route('cart.add', $item->id) }}" class="inline-flex items-center px-3 py-2 bg-lime-400 text-zinc text-xs font-medium rounded-lg hover:bg-lime-500 focus:ring-2 focus:ring-lime-400 dark:bg-lime-500 dark:hover:bg-lime-400 focus:outline-none">
+                    <form method="POST" action="{{ route('cart.add') }}">
+                    @csrf
+                        <input type="hidden" name="product_id" value="{{ $item->id }}">
+                        <input type="number" name="quantity" value="1" min="1">
+                        <button type="submit" class="inline-flex items-center px-3 py-3 bg-lime-400 text-zinc text-xs font-medium rounded-lg hover:bg-lime-500 focus:ring-2 focus:ring-lime-400 dark:bg-lime-500 dark:hover:bg-lime-400 focus:outline-none">
                             Add to cart
-                        </a>
+                        </button>
+                    </form>
+                        <!-- <a href="{{ route('cart.add', $item->id) }}" class="inline-flex items-center px-3 py-2 bg-lime-400 text-zinc text-xs font-medium rounded-lg hover:bg-lime-500 focus:ring-2 focus:ring-lime-400 dark:bg-lime-500 dark:hover:bg-lime-400 focus:outline-none">
+                            Add to cart
+                        </a> -->
                 @endif
             </div>
         @endforeach

@@ -26,6 +26,8 @@
                 </h2>
                 <p class="mt-2 text-zinc-600 dark:text-zinc-400">
                     {{ __('If you have any questions or concerns, please do not hesitate to contact us. Our team is available 24/7 to assist you with any issues you may have.') }}
+                </p>
+                <!-- <img class="rounded-lg shadow-lg mx-auto size-fit" src="{{ asset('storage/images/JavaScript-Candle.jpg') }}" alt="A candle made of JavaScript"/> -->
             </div>
         </div>
     </div>
