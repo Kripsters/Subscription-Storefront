@@ -45,7 +45,7 @@ class CartController extends Controller
 
     public function update(Request $request, int $productId)
     {
-        $data = $request->validate(['quantity'=>'required|integer|min:0']);
+        $data = $request->validate(['quantity'=>'required|integer|min:1']);
 
         $cart = $this->activeCart();
         $item = $cart->items()->where('product_id',$productId)->firstOrFail();

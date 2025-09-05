@@ -24,12 +24,12 @@
         </th>
       </tr>
     </thead>
-    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+    <tbody class="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
       @foreach($cart->items as $item)
         <tr>
           <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-700">
             <span class="text-sm leading-5 font-medium text-gray-900 dark:text-gray-100">
-              {{ $item->product->name }}
+              {{ $item->title }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-700">
@@ -63,7 +63,7 @@
       @endforeach
     </tbody>
   </table>
-  <p class="mt-4 text-sm leading-5 font-medium text-gray-500 dark:text-gray-400">
+  <p class="mt-4 text-sm leading-5 font-medium text-lime-500 dark:text-lime-400">
     Total: {{ $cart->subtotal }}
   </p>
 </div>
