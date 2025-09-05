@@ -1,6 +1,19 @@
 <x-app-layout>
     @section('title', 'Products')
     <div class="pt-5 px-5">
+        @if (session('success'))
+            <div id="success-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Success!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+            <script>
+                setTimeout(() => {
+                    let message = document.getElementById('success-message');
+                    message.classList.add('opacity-0');
+                    message.addEventListener('transitionend', () => message.remove());
+                }, 1500);
+            </script>
+        @endif
         <form method="GET" action="{{ route('products.search') }}">
             <div class="flex items-center">
                 <input type="text" name="search" value="{{ request()->input('search') }}"
@@ -11,7 +24,7 @@
                         <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>A-Z</option>
                         <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Z-A</option>
                     </select>
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-zinc-200 dark:bg-zinc-200 border border-transparent rounded-md font-semibold text-xs text-zinc dark:text-zinc-800 uppercase tracking-widest hover:bg-zinc-400 dark:hover:bg-zinc-50 focus:bg-zinc-700 dark:focus:bg-zinc active:bg-zinc-900 dark:active:bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-800 transition ease-in-out duration-150 ml-2">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-zinc-200 dark:bg-zinc-200 border border-transparent rounded-md font-semibold text-xs text-zinc dark:text-zinc-800 uppercase tracking-widest hover:bg-zinc-400 dark:hover:bg-zinc-50 focus:bg-zinc-700 dark:focus:bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-800 transition ease-in-out duration-150 ml-2">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
                         <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
                     </svg>
@@ -52,9 +65,6 @@
                             Add to cart
                         </button>
                     </form>
-                        <!-- <a href="{{ route('cart.add', $item->id) }}" class="inline-flex items-center px-3 py-2 bg-lime-400 text-zinc text-xs font-medium rounded-lg hover:bg-lime-500 focus:ring-2 focus:ring-lime-400 dark:bg-lime-500 dark:hover:bg-lime-400 focus:outline-none">
-                            Add to cart
-                        </a> -->
                 @endif
             </div>
         @endforeach
@@ -65,3 +75,4 @@
     </div>
 @endif
 </x-app-layout>
+
