@@ -18,6 +18,9 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->activeCart();
+        foreach ($cart->items as $item) {
+            $item->name = Product::find($item->product_id)->title;
+        }    
         return view('cart.index', compact('cart'));
     }
 
@@ -45,13 +48,15 @@ class CartController extends Controller
 
     public function update(Request $request, int $productId)
     {
-        $data = $request->validate(['quantity'=>'required|integer|min:1']);
+        $data = $request->validate(['quantity'=>'required|integer|min:0']);
+        // dd($data['quantity']);
 
         $cart = $this->activeCart();
         $item = $cart->items()->where('product_id',$productId)->firstOrFail();
 
-        if ($data['quantity'] === 0) {
+        if ($data['quantity'] == 0) {
             $item->delete();
+
         } else {
             $item->update(['quantity'=>$data['quantity']]);
         }

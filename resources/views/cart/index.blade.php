@@ -29,13 +29,13 @@
         <tr>
           <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-700">
             <span class="text-sm leading-5 font-medium text-gray-900 dark:text-gray-100">
-              {{ $item->title }}
+              {{ $item->name }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 dark:border-gray-700">
             <form method="POST" action="{{ route('cart.update',$item->product_id) }}">
               @csrf @method('PATCH')
-              <input type="number" name="quantity" min="0" value="{{ $item->quantity }}" class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
+              <input type="number" name="quantity" min="0" value="{{ $item->quantity }}" class="px-1 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-300">
               <button type="submit" class="inline-flex items-center px-2 py-1 bg-gray-800 dark:bg-gray-100 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
                 Update
               </button>

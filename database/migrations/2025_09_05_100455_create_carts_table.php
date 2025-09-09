@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->enum('status', ['active','converted','abandoned'])->default('active')->index();
             $table->timestamps();
-            
             $table->unique(['user_id','status']);     // at most one active user cart
         });
     }
