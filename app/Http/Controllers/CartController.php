@@ -20,7 +20,7 @@ class CartController extends Controller
         $cart = $this->activeCart();
         foreach ($cart->items as $item) {
             $item->name = Product::find($item->product_id)->title;
-        }    
+        }
         return view('cart.index', compact('cart'));
     }
 

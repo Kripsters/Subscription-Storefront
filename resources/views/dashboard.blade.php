@@ -47,7 +47,9 @@
         </div>
     </div>
 
-    <div class="py-12">
+    <!-- <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+    <stripe-pricing-table pricing-table-id="{{config('services.stripe.pricing_table.id')}}" publishable-key="{{config('services.stripe.key')}}" client-reference-id="{{auth()->user()->id}}" mode="subscription" ></stripe-pricing-table> -->
+    <!-- <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-zinc-200 dark:bg-zinc-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border-b border-zinc-700 dark:border-zinc-700">
@@ -83,5 +85,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </x-app-layout>

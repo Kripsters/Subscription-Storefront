@@ -16,6 +16,27 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
 
+        DB::table('prices')->insert([
+            [
+                'plan' => 'Basic',
+                'price' => '40',
+                'currency' => 'euro',
+                'lookup_key' => 'basic-monthly',
+            ],
+            [
+                'plan' => 'Medium',
+                'price' => '80',
+                'currency' => 'euro',
+                'lookup_key' => 'medium-monthly',
+            ],
+            [
+                'plan' => 'Advanced',
+                'price' => '120',
+                'currency' => 'euro',
+                'lookup_key' => 'advanced-monthly',
+            ],
+        ]);
+
         DB::table('products')->insert([
             [
                 'title' => 'Debugging Duck',
