@@ -19,6 +19,14 @@ class PaymentController extends Controller
 
         $session = Session::create([
             'payment_method_types' => ['card'],
+                // request billing address
+            'billing_address_collection' => 'required',
+
+                // request shipping address
+            'shipping_address_collection' => [
+                'allowed_countries' => ['LV'], // pick the countries you support
+            ],
+
             'line_items' => [[
                 'price' => env('STRIPE_SUBSCRIPTION_PRICE'),
                 'quantity' => 1,
@@ -26,6 +34,11 @@ class PaymentController extends Controller
             'mode' => 'subscription',
             'success_url' => route('success'),
             'cancel_url' => route('cancel'),
+
+            'metadata' => [
+                'user_id' => auth()->id(),
+                'price_id' => env('STRIPE_SUBSCRIPTION_PRICE'),
+            ],        
         ]);
 
         return response()->json(['id' => $session->id]);

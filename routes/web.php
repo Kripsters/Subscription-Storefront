@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/create-subscription-session', [PaymentController::class, 'session'])->name('subscription.session');
     Route::get('/success', [PaymentController::class, 'success'])->name('success');
     Route::get('/cancel', [PaymentController::class, 'cancel'])->name('cancel');
+
+    Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+
 });
 
 require __DIR__.'/auth.php';

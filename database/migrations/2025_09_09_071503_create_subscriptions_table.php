@@ -13,11 +13,18 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('plan');
-            $table->string('status');
-            $table->date('current_period_start');
-            $table->date('current_period_end');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->string('stripe_customer_id');
+            $table->string('stripe_subscription_id')->nullable();
+            $table->string('stripe_price_id')->nullable();
+            $table->string('status')->default('active'); // active, canceled, past_due, etc.
+    
+            $table->string('billing_name')->nullable();
+            $table->string('billing_email')->nullable();
+            $table->json('billing_address')->nullable();
+            $table->json('shipping_address')->nullable();
+            
             $table->timestamps();
         });
     }
