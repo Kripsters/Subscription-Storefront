@@ -15,6 +15,9 @@ class PaymentController extends Controller
 
     public function session(Request $request)
     {
+        try{
+        $cartItems = $request->input('cart', []);
+        $cartJson = json_encode($cartItems);
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $session = Session::create([
@@ -28,7 +31,7 @@ class PaymentController extends Controller
             ],
 
             'line_items' => [[
-                'price' => env('STRIPE_SUBSCRIPTION_PRICE'),
+                'price' => env('STRIPE_SUBSCRIPTION_PRICE_BASIC'),
                 'quantity' => 1,
             ]],
             'mode' => 'subscription',
@@ -37,11 +40,15 @@ class PaymentController extends Controller
 
             'metadata' => [
                 'user_id' => auth()->id(),
-                'price_id' => env('STRIPE_SUBSCRIPTION_PRICE'),
+                'price_id' => env('STRIPE_SUBSCRIPTION_BASIC'),
+                'cart' => $cartJson,
             ],        
         ]);
 
         return response()->json(['id' => $session->id]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function success()

@@ -1,4 +1,7 @@
+<?php unset($cart->items[0]->product); ?>
+<?=($cart->items[0]); ?>
 <x-app-layout>
+<script src="https://js.stripe.com/v3/"></script>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <h1 class="text-3xl font-bold leading-tight text-gray-900 dark:text-gray-100">
@@ -68,11 +71,35 @@
     Total: {{ $cart->subtotal }}
   </p>
 </div>
-  <form action="/create-checkout-session" method="POST">
-    <!-- Add a hidden field with the lookup_key of your Price -->
-    <input type="hidden" name="lookup_key" value="basic-monthly" />
-    <button id="checkout-and-portal-button" type="submit">Checkout</button>
-  </form>
+        <div class="bg-white shadow-xl rounded-2xl p-8 w-96 text-center mx-auto">
+            <h1 class="text-2xl font-bold mb-4">Basic Plan</h1>
+            <p class="mb-6 text-gray-600">€40.00 / month</p>
+            <button id="subscribe-button" 
+                class="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700">
+                Subscribe Now
+            </button>
+        </div>
+
+        <script>
+            const stripe = Stripe("{{ env('STRIPE_KEY') }}");
+            const subscribeButton = document.getElementById("subscribe-button");
+            const cartItems = <?php echo json_encode($cart->items); ?>;
+
+            subscribeButton.addEventListener("click", () => {
+                fetch("{{ route('subscription.session') }}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ cart: cartItems })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    stripe.redirectToCheckout({ sessionId: data.id });
+                });
+            });
+        </script>
 
 @else
   <p class="mt-4 text-sm leading-5 font-medium text-gray-500 dark:text-gray-400">

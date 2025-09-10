@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Subscription;
+use App\Models\SubscriptionOrder;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
@@ -23,9 +24,17 @@ class StripeWebhookController extends Controller
             return response()->json(['error' => 'Invalid payload'], 400);
         }
 
+        // 👇 Log everything Stripe sends
+        Log::info('✅ Stripe Event Received', [
+            'type' => $event->type,
+            'payload' => $event->data->object
+        ]);
+
         switch ($event->type) {
             case 'checkout.session.completed':
                 $session = $event->data->object;
+                $cartJson = $session->metadata->cart ?? null;
+                $cartItems = $cartJson ? json_decode($cartJson, true) : [];
 
                 // Example: get billing & shipping details
                 $billingDetails = $session->customer_details ?? null;
@@ -34,20 +43,37 @@ class StripeWebhookController extends Controller
                 // Save to database (assuming you have a logged-in user before checkout)
                 $userId = $session->metadata->user_id ?? null;
 
-                if ($userId) {
-                    Subscription::updateOrCreate(
-                        ['user_id' => $userId],
-                        [
-                            'stripe_customer_id' => $session->customer,
-                            'stripe_subscription_id' => $session->subscription,
-                            'stripe_price_id' => $session->metadata->price_id ?? null,
-                            'status' => 'active',
-                            'billing_name' => $billingDetails->name ?? null,
-                            'billing_email' => $billingDetails->email ?? null,
-                            'billing_address' => json_encode($billingDetails->address ?? []),
-                            'shipping_address' => json_encode($shippingDetails->address ?? []),
-                        ]
-                    );
+                if ($userId && $cartItems) {
+                    try {
+                        Subscription::updateOrCreate(
+                            ['user_id' => $userId],
+                            [
+                                'stripe_customer_id' => $session->customer,
+                                'stripe_subscription_id' => $session->subscription,
+                                'stripe_price_id' => $session->metadata->price_id ?? null,
+                                'status' => 'active',
+                                'billing_name' => $billingDetails->name ?? null,
+                                'billing_email' => $billingDetails->email ?? null,
+                                'billing_address' => json_encode($billingDetails->address ?? []),
+                                'shipping_address' => json_encode($shippingDetails->address ?? []),
+                            ]
+                        );
+                    } catch (\Exception $e) {
+                        Log::error("DB Save Failed: " . $e->getMessage());
+                    }
+                    try {
+                        foreach ($cartItems as $item) {
+                            \App\Models\SubscriptionOrder::create([
+                                'subscription_id' => $session->subscription,
+                                'product_id' => $item['product_id'],
+                                'product_name' => $item['name'],
+                                'quantity' => $item['quantity'],
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Order Save Failed: " . $e->getMessage());
+
+                    }
                 }
                 break;
 
