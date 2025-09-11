@@ -56,6 +56,5 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 \Filament\Http\Middleware\Authenticate::class,
             ]);
-                
     }
 }
