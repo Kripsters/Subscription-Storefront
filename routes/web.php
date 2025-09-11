@@ -19,6 +19,19 @@ Route::get('/about', function () {
     return view('about');
 })->middleware(['auth', 'verified'])->name('about');
 
+//admin routes
+Route::prefix('admin')->group(function () {
+    Route::get('/login', function () {
+        return view('admin.login');
+    });
+
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    });
+
+    // Add more admin routes here
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

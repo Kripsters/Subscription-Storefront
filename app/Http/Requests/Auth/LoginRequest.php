@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Filament\Facades\Filament;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginRequest extends FormRequest
 {

@@ -16,6 +16,15 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
 
+        DB::table('users')->insert([
+            'name' => 'Admin User',
+            'email' => 'admin@admin.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('Admin123!'), // password
+            'is_admin' => 1,
+            'remember_token' => \Illuminate\Support\Str::random(10),
+        ]);
+
         DB::table('prices')->insert([
             [
                 'plan' => 'Basic',

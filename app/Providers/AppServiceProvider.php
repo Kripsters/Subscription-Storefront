@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Auth;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +20,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Filament::serving(function () {
+        //     Filament::auth(function () {
+        //         return auth()->user();
+        //     });
+    
+        //     Filament::authorize(function ($user) {
+        //         return $user->is_admin; // or a role check
+        //     });
+        // });
     }
 }
