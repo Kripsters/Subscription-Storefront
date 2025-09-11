@@ -1,5 +1,8 @@
-<?php unset($cart->items[0]->product); ?>
-<?=($cart->items[0]); ?>
+<?php 
+foreach($cart->items as $item) {
+    unset($item->product); 
+}
+?>
 <x-app-layout>
 <script src="https://js.stripe.com/v3/"></script>
 

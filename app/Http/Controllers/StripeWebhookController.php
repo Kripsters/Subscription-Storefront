@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Subscription;
 use App\Models\SubscriptionOrder;
+use App\Models\Cart;
+use App\Models\Product;
+use App\Models\CartItem;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
@@ -63,13 +66,21 @@ class StripeWebhookController extends Controller
                     }
                     try {
                         foreach ($cartItems as $item) {
-                            \App\Models\SubscriptionOrder::create([
-                                'subscription_id' => $session->subscription,
+                                SubscriptionOrder::updateOrCreate([
+                                'subscription_id' => Subscription::where('user_id', $userId)->first()->id,
+                                'product_id' => $item['product_id'],
+                            ], [
+                                'subscription_id' => Subscription::where('user_id', $userId)->first()->id,
                                 'product_id' => $item['product_id'],
                                 'product_name' => $item['name'],
                                 'quantity' => $item['quantity'],
                             ]);
                         }
+                        $cart = Cart::firstOrCreate(
+                            ['user_id' => $userId, 'status' => 'active']
+                        )->load('items.product');
+                        $cart->items()->delete();
+
                     } catch (\Exception $e) {
                         Log::error("Order Save Failed: " . $e->getMessage());
 
@@ -95,4 +106,5 @@ class StripeWebhookController extends Controller
 
         return response()->json(['status' => 'success']);
     }
+
 }
