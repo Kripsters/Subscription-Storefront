@@ -27,7 +27,7 @@ class StripeWebhookController extends Controller
             return response()->json(['error' => 'Invalid payload'], 400);
         }
 
-        // 👇 Log everything Stripe sends
+        // Log everything Stripe sends
         Log::info('✅ Stripe Event Received', [
             'type' => $event->type,
             'payload' => $event->data->object
@@ -36,44 +36,42 @@ class StripeWebhookController extends Controller
         switch ($event->type) {
             case 'checkout.session.completed':
                 $session = $event->data->object;
-                $cartJson = $session->metadata->cart ?? null;
-                $cartItems = $cartJson ? json_decode($cartJson, true) : [];
-
-                // Example: get billing & shipping details
-                $billingDetails = $session->customer_details ?? null;
-                $shippingDetails = $session->shipping ?? null;
 
                 // Save to database (assuming you have a logged-in user before checkout)
                 $userId = $session->metadata->user_id ?? null;
+                $cartId = $session->metadata->cart ?? null;
 
-                if ($userId && $cartItems) {
+                if ($userId) {
                     try {
-                        Subscription::updateOrCreate(
+                        $subscription = Subscription::updateOrCreate(
                             ['user_id' => $userId],
                             [
                                 'stripe_customer_id' => $session->customer,
                                 'stripe_subscription_id' => $session->subscription,
                                 'stripe_price_id' => $session->metadata->price_id ?? null,
                                 'status' => 'active',
-                                'billing_name' => $billingDetails->name ?? null,
-                                'billing_email' => $billingDetails->email ?? null,
-                                'billing_address' => json_encode($billingDetails->address ?? []),
-                                'shipping_address' => json_encode($shippingDetails->address ?? []),
+                                'billing_name'      => data_get($session, 'customer_details.name'),
+                                'billing_email'     => data_get($session, 'customer_details.email'),
+                                'billing_address'   => json_encode(data_get($session, 'customer_details.address', [])),
+                                'shipping_address'  => json_encode(data_get($session, 'shipping.address', [])),
+                                
                             ]
                         );
                     } catch (\Exception $e) {
                         Log::error("DB Save Failed: " . $e->getMessage());
                     }
                     try {
+                        $cartItems = CartItem::where('cart_id', $cartId)->get();
+                        Log::info('Cart Items for Order: ' . $cartItems->toJson());
                         foreach ($cartItems as $item) {
                                 SubscriptionOrder::updateOrCreate([
-                                'subscription_id' => Subscription::where('user_id', $userId)->first()->id,
-                                'product_id' => $item['product_id'],
+                                'subscription_id' => $subscription->id,
+                                'product_id' => $item->product_id,
                             ], [
                                 'subscription_id' => Subscription::where('user_id', $userId)->first()->id,
-                                'product_id' => $item['product_id'],
-                                'product_name' => $item['name'],
-                                'quantity' => $item['quantity'],
+                                'product_id' => $item->product_id,
+                                'product_name' => Product::find($item->product_id)->title,
+                                'quantity' => $item->quantity,
                             ]);
                         }
                         $cart = Cart::firstOrCreate(

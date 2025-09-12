@@ -82,11 +82,11 @@ foreach($cart->items as $item) {
                 Subscribe Now
             </button>
         </div>
-
         <script>
             const stripe = Stripe("{{ env('STRIPE_KEY') }}");
             const subscribeButton = document.getElementById("subscribe-button");
-            const cartItems = <?php echo json_encode($cart->items); ?>;
+            const cartId = <?php echo json_encode($cart->id); ?>;
+            console.log(JSON.stringify({ cart: cartId }));
 
             subscribeButton.addEventListener("click", () => {
                 fetch("{{ route('subscription.session') }}", {
@@ -95,7 +95,7 @@ foreach($cart->items as $item) {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ cart: cartItems })
+                    body: JSON.stringify({ cart: cartId })
                 })
                 .then(res => res.json())
                 .then(data => {

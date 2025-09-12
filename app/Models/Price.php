@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Price extends Model
 {
-    //
+    protected $fillable = ['plan', 'price', 'currency', 'lookup_key']; 
 }

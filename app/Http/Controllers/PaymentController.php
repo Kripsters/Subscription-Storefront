@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Charge;
 use Stripe\Checkout\Session;
+use Illuminate\Support\Facades\Log;
 class PaymentController extends Controller
 {
     public function subscribe()
@@ -15,9 +16,9 @@ class PaymentController extends Controller
 
     public function session(Request $request)
     {
+        
         try{
-        $cartItems = $request->input('cart', []);
-        $cartJson = json_encode($cartItems);
+        $cart = $request->input('cart');
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $session = Session::create([
@@ -37,11 +38,10 @@ class PaymentController extends Controller
             'mode' => 'subscription',
             'success_url' => route('success'),
             'cancel_url' => route('cancel'),
-
             'metadata' => [
                 'user_id' => auth()->id(),
                 'price_id' => env('STRIPE_SUBSCRIPTION_BASIC'),
-                'cart' => $cartJson,
+                'cart' => $cart,
             ],        
         ]);
 

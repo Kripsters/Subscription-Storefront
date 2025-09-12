@@ -59,7 +59,7 @@ class AuthenticatedSessionController extends Controller
     
         // Non-admins: go to app home (and *not* to the panel)
         // dd('non admin');
-        return redirect()->to($intended ?: RouteServiceProvider::HOME);
+        return redirect()->intended(route('dashboard', absolute: false));
     
     }
 

@@ -21,6 +21,8 @@ class CartController extends Controller
         foreach ($cart->items as $item) {
             $item->name = Product::find($item->product_id)->title;
         }
+        $cartId = $cart->id;
+        $cartItems = CartItem::where('cart_id', $cartId)->get();
         return view('cart.index', compact('cart'));
     }
 
