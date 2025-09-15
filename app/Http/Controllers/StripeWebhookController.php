@@ -35,6 +35,7 @@ class StripeWebhookController extends Controller
 
         switch ($event->type) {
             case 'checkout.session.completed':
+                Log::info('session: ' . json_encode($event->data->object));
                 $session = $event->data->object;
 
                 // Save to database (assuming you have a logged-in user before checkout)
@@ -45,27 +46,31 @@ class StripeWebhookController extends Controller
                     try {
                         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
                         $subscription_info = \Stripe\Subscription::retrieve($session->subscription);
+                        $subscription_data = [
+                            'user_id' => $userId,
+                            'stripe_customer_id' => $session->customer,
+                            'stripe_subscription_id' => $session->subscription,
+                            'stripe_price_id' => $session->metadata->price_id ?? null,
+                            'status' => 'active',
+                            'plan_name' => $subscription_info->items->data[0]->plan->nickname,
+                            'amount' => $subscription_info->items->data[0]->plan->amount / 100,
+                            'currency' => strtoupper($subscription_info->items->data[0]->plan->currency),
+                            'interval' => $subscription_info->items->data[0]->plan->interval,
+                            'current_period_start' => $subscription_info->current_period_start ? \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_start) : null,
+                            'current_period_end' => $subscription_info->current_period_end ? \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_end) : null,
+                            'billing_name'      => data_get($session, 'customer_details.name'),
+                            'billing_email'     => data_get($session, 'customer_details.email'),
+                            'billing_address'   => json_encode(data_get($session, 'customer_details.address', [])),
+                            'shipping_address'  => json_encode(data_get($session, 'shipping.address', [])),
+                        ];
+                        Log::info('Subscription Data: ' . json_encode($subscription_data));
                         $subscription = Subscription::updateOrCreate(
                             ['user_id' => $userId],
-                            [
-                                'stripe_customer_id' => $session->customer,
-                                'stripe_subscription_id' => $session->subscription,
-                                'stripe_price_id' => $session->metadata->price_id ?? null,
-                                'status' => 'active',
-                                'plan_name' => $subscription_info->items->data[0]->plan->nickname,
-                                'amount' => $subscription_info->items->data[0]->plan->amount / 100,
-                                'currency' => strtoupper($subscription_info->items->data[0]->plan->currency),
-                                'interval' => $subscription_info->items->data[0]->plan->interval,
-                                'current_period_start' => \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_start),
-                                'current_period_end' => \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_end),
-                                'billing_name'      => data_get($session, 'customer_details.name'),
-                                'billing_email'     => data_get($session, 'customer_details.email'),
-                                'billing_address'   => json_encode(data_get($session, 'customer_details.address', [])),
-                                'shipping_address'  => json_encode(data_get($session, 'shipping.address', [])),
-                            ]
+                            $subscription_data
                         );
                     } catch (\Exception $e) {
                         Log::error("DB Save Failed: " . $e->getMessage());
+                        Log::error("Error Trace: " . $e->getTraceAsString());
                     }
                     try {
                         $cartItems = CartItem::where('cart_id', $cartId)->get();

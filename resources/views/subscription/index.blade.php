@@ -39,6 +39,18 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                 Shipping address is same as billing address
                 @endif
             </p>
+            <p class="font-normal text-zinc-700 dark:text-zinc-300">
+                Payment method: {{ $subscription->payment_method }}
+            </p>
+            <p class="font-normal text-zinc-700 dark:text-zinc-300">
+                Subscription plan: {{ $subscription->plan }}
+            </p>
+            <p class="font-normal text-zinc-700 dark:text-zinc-300">
+                Subscription start date: {{ $subscription->start_date }}
+            </p>
+            <p class="font-normal text-zinc-700 dark:text-zinc-300">
+                Subscription end date: {{ $subscription->end_date }}
+            </p>
         </div>
         @endif
     </div>
