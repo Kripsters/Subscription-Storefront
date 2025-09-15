@@ -19,7 +19,21 @@ class PaymentController extends Controller
         
         try{
         $cart = $request->input('cart');
+        $plan = $request->input('plan');
         Stripe::setApiKey(env('STRIPE_SECRET'));
+        switch ($plan) {
+            case 'basic':
+                $priceId = env('STRIPE_SUBSCRIPTION_PRICE_BASIC');
+                break;
+            case 'medium':
+                $priceId = env('STRIPE_SUBSCRIPTION_PRICE_MEDIUM');
+                break;
+            case 'advanced':
+                $priceId = env('STRIPE_SUBSCRIPTION_PRICE_ADVANCED');
+                break;
+            default:
+                return response()->json(['error' => 'Invalid plan selected'], 400);
+        }
 
         $session = Session::create([
             'payment_method_types' => ['card'],
@@ -32,7 +46,7 @@ class PaymentController extends Controller
             ],
 
             'line_items' => [[
-                'price' => env('STRIPE_SUBSCRIPTION_PRICE_BASIC'),
+                'price' => $priceId,
                 'quantity' => 1,
             ]],
             'mode' => 'subscription',
@@ -40,7 +54,7 @@ class PaymentController extends Controller
             'cancel_url' => route('cancel'),
             'metadata' => [
                 'user_id' => auth()->id(),
-                'price_id' => env('STRIPE_SUBSCRIPTION_BASIC'),
+                'price_id' => $priceId,
                 'cart' => $cart,
             ],        
         ]);

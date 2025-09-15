@@ -18,7 +18,10 @@ class ProductForm
                 TextInput::make('price')
                     ->required()
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix('$')
+                    ->minvalue(0.01)
+                    ->step(0.01)
+                    ->columnSpanFull(),
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),

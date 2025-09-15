@@ -14,6 +14,11 @@ class PriceForm
                 TextInput::make('plan')
                     ->required(),
                 TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('$')
+                    ->minvalue(0.01)
+                    ->step(0.01)
                     ->required(),
                 TextInput::make('currency')
                     ->required(),

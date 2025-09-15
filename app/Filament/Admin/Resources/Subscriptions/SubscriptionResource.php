@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Resources\Subscriptions;
 use App\Filament\Admin\Resources\Subscriptions\Pages\CreateSubscription;
 use App\Filament\Admin\Resources\Subscriptions\Pages\EditSubscription;
 use App\Filament\Admin\Resources\Subscriptions\Pages\ListSubscriptions;
+use App\Filament\Admin\Resources\Subscriptions\Pages\ViewSubscription;
 use App\Filament\Admin\Resources\Subscriptions\Schemas\SubscriptionForm;
+use App\Filament\Admin\Resources\Subscriptions\Schemas\SubscriptionInfolist;
 use App\Filament\Admin\Resources\Subscriptions\Tables\SubscriptionsTable;
 use App\Models\Subscription;
 use BackedEnum;
@@ -27,6 +29,11 @@ class SubscriptionResource extends Resource
         return SubscriptionForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return SubscriptionInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return SubscriptionsTable::configure($table);
@@ -44,6 +51,7 @@ class SubscriptionResource extends Resource
         return [
             'index' => ListSubscriptions::route('/'),
             'create' => CreateSubscription::route('/create'),
+            'view' => ViewSubscription::route('/{record}'),
             'edit' => EditSubscription::route('/{record}/edit'),
         ];
     }

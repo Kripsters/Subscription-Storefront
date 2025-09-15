@@ -5,11 +5,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -47,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/cart/items/{id}',   [CartController::class,'update'])->name('cart.update');
     Route::delete('/cart/items/{id}',  [CartController::class,'destroy'])->name('cart.remove');
     Route::delete('/cart',             [CartController::class,'clear'])->name('cart.clear');
+
+    Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
     
 
     Route::get('/subscribe', [PaymentController::class, 'subscribe'])->name('subscribe');

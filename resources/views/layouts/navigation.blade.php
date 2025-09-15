@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
                         {{ __('Cart') }}
                     </x-nav-link>   
+                    <x-nav-link :href="route('subscription.index')" :active="request()->routeIs('subscription.index')">
+                        {{ __('Subscription') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -85,6 +88,12 @@
             <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
                 {{ __('Products') }}
             </x-responsive-nav-link> 
+            <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
+                {{ __('Cart') }}
+            </x-responsive-nav-link>   
+            <x-responsive-nav-link :href="route('subscription.index')" :active="request()->routeIs('subscription.index')">
+                {{ __('Subscription') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

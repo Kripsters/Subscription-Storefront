@@ -10,38 +10,62 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $products = Product::all();
-        return view('products.index', compact('products'));
-    }
 
-    public function search(Request $request)
-    {
-        $query = $request->query('search');
+     public function index(Request $request)
+     {
+         $perPage = $request->integer('per_page', 12); // default page size
+ 
+         $products = Product::query()
+             ->orderBy('title', 'asc') // or created_at desc
+             ->paginate($perPage)
+             ->withQueryString();      // keep ?per_page etc. in pagination links
+ 
+         return view('products.index', compact('products'));
+     }
+ 
 
 
-
-        if ($order = $request->input('order')) {
-            if ($order === 'asc') {
-                $products = Product::where('title', 'LIKE', "%{$query}%")
-                ->orWhere('description', 'LIKE', "%{$query}%")
-                ->orderBy('title', 'asc')
-                ->get();
-            } elseif ($order === 'desc') {
-                $products = Product::where('title', 'LIKE', "%{$query}%")
-                ->orWhere('description', 'LIKE', "%{$query}%")
-                ->orderBy('title', 'desc')
-                ->get();
-            }
-        } else {
-            $products = Product::where('title', 'LIKE', "%{$query}%")
-            ->orWhere('description', 'LIKE', "%{$query}%")
-            ->get();
-        }
-
-        return view('products.index', compact('products'));
-    }
+     public function search(Request $request)
+     {
+         $validated = $request->validate([
+             'search'   => 'nullable|string|max:100',
+             'order'    => 'nullable|in:asc,desc,price_asc,price_desc',
+             'per_page' => 'nullable|integer|min:1|max:100',
+         ]);
+ 
+         $term    = $validated['search'] ?? null;
+         $order   = $validated['order'] ?? null;
+         $perPage = $validated['per_page'] ?? 12;
+ 
+         $builder = Product::query();
+ 
+         if ($term) {
+             $builder->where(function ($q) use ($term) {
+                 $q->where('title', 'LIKE', "%{$term}%")
+                   ->orWhere('description', 'LIKE', "%{$term}%");
+             });
+         }
+ 
+         if ($order) {
+             switch ($order) {
+                 case 'price_asc':
+                     $builder->orderBy('price', 'asc');
+                     break;
+                 case 'price_desc':
+                     $builder->orderBy('price', 'desc');
+                     break;
+                 default:
+                     $builder->orderBy('title', $order);
+             }
+         }
+ 
+         $products = $builder
+             ->paginate($perPage)
+             ->withQueryString();
+ 
+         return view('products.index', compact('products'));
+     }
+ 
 
     public function addToCart($id)
     {

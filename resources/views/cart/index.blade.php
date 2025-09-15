@@ -74,34 +74,110 @@ foreach($cart->items as $item) {
     Total: {{ $cart->subtotal }}
   </p>
 </div>
-        <div class="bg-white shadow-xl rounded-2xl p-8 w-96 text-center mx-auto">
-            <h1 class="text-2xl font-bold mb-4">Basic Plan</h1>
-            <p class="mb-6 text-gray-600">€40.00 / month</p>
-            <button id="subscribe-button" 
-                class="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700">
-                Subscribe Now
-            </button>
+      @if ($cart->subtotal <= $prices[0]->price-10)
+        <div class="flex justify-center">
+            <div class="w-1/4 bg-white shadow-xl rounded-2xl p-8 mx-4">
+                <h1 class="text-2xl font-bold mb-4">Basic Plan</h1>
+                <p class="mb-6 text-gray-600">€{{$prices[0]->price}} / month</p>
+                <p class="mb-6 text-gray-600">€10 is allocated for shipping</p>
+                <button id="subscribe-button-basic" 
+                    class="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700">
+                    Subscribe Now
+                </button>
+            </div>
         </div>
+        @elseif ($cart->subtotal > $prices[0]->price-10 && $cart->subtotal <= $prices[1]->price-10)
+        <div class="flex justify-center">
+            <div class="w-1/4 bg-white shadow-xl rounded-2xl p-8 mx-4">
+                <h1 class="text-2xl font-bold mb-4">Medium Plan</h1>
+                <p class="mb-6 text-gray-600">€{{$prices[1]->price}} / month</p>
+                <p class="mb-6 text-gray-600">€10 is allocated for shipping</p>
+                <button id="subscribe-button-medium" 
+                    class="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700">
+                    Subscribe Now
+                </button>
+            </div>
+        </div>
+        @elseif ($cart->subtotal > $prices[1]->price-10 && $cart->subtotal <= $prices[2]->price-10)
+        <div class="flex justify-center">
+            <div class="w-1/4 bg-white shadow-xl rounded-2xl p-8 mx-4">
+                <h1 class="text-2xl font-bold mb-4">Advanced Plan</h1>
+                <p class="mb-6 text-gray-600">€{{$prices[2]->price}} / month</p>
+                <p class="mb-6 text-gray-600">€10 is allocated for shipping</p>
+                <button id="subscribe-button-advanced" 
+                    class="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700">
+                    Subscribe Now
+                </button>
+            </div>
+        </div>
+        @elseif ($cart->subtotal > $prices[2]->price-10)
+        <div class="flex justify-center">
+          <div class="w-1/4 bg-white shadow-xl rounded-2xl p-8 mx-4">
+            <h1 class="text-2xl font-bold mb-4">Too much!</h1>
+            <p class="mb-6 text-gray-600">Your cart total exceeds 110€, please remove some items.</p>
+          </div>
+        </div>
+        @endif
         <script>
             const stripe = Stripe("{{ env('STRIPE_KEY') }}");
-            const subscribeButton = document.getElementById("subscribe-button");
+            const subscribeButtonBasic = document.getElementById("subscribe-button-basic");
+            const subscribeButtonMedium = document.getElementById("subscribe-button-medium");
+            const subscribeButtonAdvanced = document.getElementById("subscribe-button-advanced");
             const cartId = <?php echo json_encode($cart->id); ?>;
             console.log(JSON.stringify({ cart: cartId }));
 
-            subscribeButton.addEventListener("click", () => {
+            if (!subscribeButtonBasic) {
+                console.log("Basic button not found");
+            } else {
+            subscribeButtonBasic.addEventListener("click", () => {
                 fetch("{{ route('subscription.session') }}", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ cart: cartId })
+                    body: JSON.stringify({ cart: cartId, plan: 'basic' })
                 })
                 .then(res => res.json())
                 .then(data => {
                     stripe.redirectToCheckout({ sessionId: data.id });
                 });
             });
+          }  if (!subscribeButtonMedium) {
+                console.log("Medium button not found");
+            } else {
+            subscribeButtonMedium.addEventListener("click", () => {
+                fetch("{{ route('subscription.session') }}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ cart: cartId, plan: 'medium' })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    stripe.redirectToCheckout({ sessionId: data.id });
+                });
+            });
+          }  if (!subscribeButtonAdvanced) {
+                console.log("Advanced button not found");
+            } else {
+            subscribeButtonAdvanced.addEventListener("click", () => {
+                fetch("{{ route('subscription.session') }}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ cart: cartId, plan: 'advanced' })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    stripe.redirectToCheckout({ sessionId: data.id });
+                });
+            });
+          }
         </script>
 
 @else

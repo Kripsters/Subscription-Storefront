@@ -43,6 +43,8 @@ class StripeWebhookController extends Controller
 
                 if ($userId) {
                     try {
+                        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                        $subscription_info = \Stripe\Subscription::retrieve($session->subscription);
                         $subscription = Subscription::updateOrCreate(
                             ['user_id' => $userId],
                             [
@@ -50,11 +52,16 @@ class StripeWebhookController extends Controller
                                 'stripe_subscription_id' => $session->subscription,
                                 'stripe_price_id' => $session->metadata->price_id ?? null,
                                 'status' => 'active',
+                                'plan_name' => $subscription_info->items->data[0]->plan->nickname,
+                                'amount' => $subscription_info->items->data[0]->plan->amount / 100,
+                                'currency' => strtoupper($subscription_info->items->data[0]->plan->currency),
+                                'interval' => $subscription_info->items->data[0]->plan->interval,
+                                'current_period_start' => \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_start),
+                                'current_period_end' => \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_end),
                                 'billing_name'      => data_get($session, 'customer_details.name'),
                                 'billing_email'     => data_get($session, 'customer_details.email'),
                                 'billing_address'   => json_encode(data_get($session, 'customer_details.address', [])),
                                 'shipping_address'  => json_encode(data_get($session, 'shipping.address', [])),
-                                
                             ]
                         );
                     } catch (\Exception $e) {

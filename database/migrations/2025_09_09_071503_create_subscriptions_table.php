@@ -18,7 +18,14 @@ return new class extends Migration
             $table->string('stripe_customer_id');
             $table->string('stripe_subscription_id')->nullable();
             $table->string('stripe_price_id')->nullable();
-            $table->string('status')->default('active'); // active, canceled, past_due, etc.
+            $table->string('status')->default('active');
+            
+            $table->string('plan_name')->nullable();
+            $table->integer('amount')->nullable(); // store in cents for accuracy
+            $table->string('currency', 3)->nullable();
+            $table->string('interval')->nullable();
+            $table->timestamp('current_period_start')->nullable();
+            $table->timestamp('current_period_end')->nullable();
     
             $table->string('billing_name')->nullable();
             $table->string('billing_email')->nullable();

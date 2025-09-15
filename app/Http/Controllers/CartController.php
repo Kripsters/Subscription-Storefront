@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Price;
+
 class CartController extends Controller
 {
     protected function activeCart()
@@ -23,7 +25,8 @@ class CartController extends Controller
         }
         $cartId = $cart->id;
         $cartItems = CartItem::where('cart_id', $cartId)->get();
-        return view('cart.index', compact('cart'));
+        $prices = Price::all();
+        return view('cart.index', compact('cart','prices'));
     }
 
     public function store(Request $request)
