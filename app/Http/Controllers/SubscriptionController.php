@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Subscription;
+use App\Models\PaymentHistory;
+use Faker\Provider\ar_EG\Payment;
 
 class SubscriptionController extends Controller
 {
@@ -14,8 +16,17 @@ class SubscriptionController extends Controller
 
      public function index()
      {
-         $subscription = Subscription::where('user_id', auth()->id())->first();
-         return view('subscription.index', compact('subscription'));
+        $subscription = Subscription::where('user_id', auth()->id())->first();
+         
+        if (PaymentHistory::where('user_id', auth()->id())->exists()) {
+            $payments = PaymentHistory::where('user_id', auth()->id())
+            ->orderBy('paid_at', 'desc')
+            ->get();
+        } else {
+            $payments = [];
+        }
+
+         return view('subscription.index', compact('subscription', 'payments'));
      }
 
     /**

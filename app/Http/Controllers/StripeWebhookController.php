@@ -11,6 +11,9 @@ use App\Models\Product;
 use App\Models\CartItem;
 use Stripe\Stripe;
 use Stripe\Webhook;
+use App\Models\PaymentHistory;
+use App\Models\User;
+use App\Notifications\PaymentSuccessNotification;
 
 class StripeWebhookController extends Controller
 {
@@ -68,6 +71,22 @@ class StripeWebhookController extends Controller
                             ['user_id' => $userId],
                             $subscription_data
                         );
+                        
+                        PaymentHistory::create([
+                            'user_id' => $userId,
+                            'stripe_payment_intent_id' => $session->payment_intent,
+                            'stripe_invoice_id' => $session->invoice ?? null,
+                            'amount' => $subscription_info->items->data[0]->plan->amount / 100,
+                            'currency' => strtoupper($subscription_info->items->data[0]->plan->currency),
+                            'status' => 'paid',
+                            'paid_at' => \Carbon\Carbon::now(),
+                            'raw_data' => json_encode($session),
+                        ]);
+                        
+                        $user = User::find($userId);
+                        $user->notify(new PaymentSuccessNotification($subscription_data['amount'], $subscription_data['plan_name']));
+
+
                     } catch (\Exception $e) {
                         Log::error("DB Save Failed: " . $e->getMessage());
                         Log::error("Error Trace: " . $e->getTraceAsString());
@@ -101,9 +120,21 @@ class StripeWebhookController extends Controller
             case 'invoice.payment_failed':
                 $invoice = $event->data->object;
                 $subscriptionId = $invoice->subscription;
+                $userId = $event->data->object->customer;
 
                 Subscription::where('stripe_subscription_id', $subscriptionId)
                     ->update(['status' => 'past_due']);
+                
+                PaymentHistory::create([
+                    'user_id' => $userId, // You may need to retrieve this from the subscription
+                    'stripe_invoice_id' => $invoice->id,
+                    'amount' => $invoice->amount_due / 100,
+                    'currency' => strtoupper($invoice->currency),
+                    'status' => 'failed',
+                    'paid_at' => null,
+                    'raw_data' => json_encode($invoice),
+                ]);
+
                 break;
 
             case 'customer.subscription.deleted':
