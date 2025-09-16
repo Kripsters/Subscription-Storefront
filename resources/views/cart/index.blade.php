@@ -119,7 +119,7 @@ foreach($cart->items as $item) {
         </div>
         @endif
         <script>
-            const stripe = Stripe("{{ env('STRIPE_KEY') }}");
+            const stripe = Stripe("{{ config('services.stripe.key') }}"); 
             const subscribeButtonBasic = document.getElementById("subscribe-button-basic");
             const subscribeButtonMedium = document.getElementById("subscribe-button-medium");
             const subscribeButtonAdvanced = document.getElementById("subscribe-button-advanced");
@@ -186,3 +186,4 @@ foreach($cart->items as $item) {
   </p>
   @endif
 </x-app-layout>
+

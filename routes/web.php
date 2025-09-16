@@ -7,6 +7,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -54,6 +55,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/create-subscription-session', [PaymentController::class, 'session'])->name('subscription.session');
     Route::get('/success', [PaymentController::class, 'success'])->name('success');
     Route::get('/cancel', [PaymentController::class, 'cancel'])->name('cancel');
+
+    
+    Route::get('/test-email', function () {
+        Mail::raw('This is a test email from Laravel', function ($message) {
+            $message->to('penguingaming113@gmail.com')
+                    ->subject('Test Email');
+        });
+
+        return 'Email sent!';
+    });
+
 });
 
 require __DIR__.'/auth.php';
