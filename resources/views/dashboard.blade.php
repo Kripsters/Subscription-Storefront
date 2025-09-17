@@ -1,49 +1,57 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-zinc-800 dark:text-zinc-200 leading-tight">
+        <h2 class="font-bold text-2xl text-zinc-800 dark:text-zinc-100 tracking-tight">
             {{ __('StockedUp') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-zinc-200 dark:bg-zinc-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border-b border-zinc-500 dark:border-zinc-700">
-                    <div class="flex items-center">
-                        <div class="text-lg leading-7 font-semibold mr-8">
-                            <x-application-logo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" />
-                        </div>
-                        <div class="text-lg leading-7 font-semibold">
-                            <p class="text-zinc-900 dark:text-zinc-100">{{ __('Welcome to your grocery delivery service!') }}</p>
-                            <p class="text-zinc-600 dark:text-zinc-400">{{ __('Here you can manage your orders, products, and more.') }}</p>
-                        </div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 overflow-hidden shadow-xl sm:rounded-2xl">
+                
+                <!-- Header Welcome -->
+                <div class="p-8 border-b border-zinc-300 dark:border-zinc-700 flex items-center space-x-6">
+                    <x-application-logo class="h-12 w-12 fill-current text-zinc-800 dark:text-zinc-200" />
+                    <div>
+                        <p class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                            {{ __('Welcome to your grocery delivery service!') }}
+                        </p>
+                        <p class="text-zinc-600 dark:text-zinc-400">
+                            {{ __('Here you can manage your orders, products, and more.') }}
+                        </p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
-                    <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border border-zinc-700 dark:border-zinc-700 rounded-lg m-8">
-                        <a href="{{ route('subscription.index') }}">
-                            <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
-                                {{ __('Orders') }}
-                            </h2>
-                            <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all your orders') }}</p>
-                        </a>
-                    </div>
-                    <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border border-zinc-700 dark:border-zinc-700 rounded-lg m-8">
-                        <a href="{{ route('products.index') }}">
-                            <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
-                                {{ __('Products') }}
-                            </h2>
-                            <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all available products') }}</p>
-                        </a>
-                    </div>
-                    <div class="p-6 bg-zinc-300 dark:bg-zinc-800 border border-zinc-700 dark:border-zinc-700 rounded-lg m-8">
-                        <a href="{{ route('about') }}">
-                            <h2 class="text-lg leading-7 font-semibold text-zinc-900 dark:text-zinc-100">
-                                {{ __('About us') }}
-                            </h2>
-                            <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Learn more about us') }}</p>
-                        </a>
-                    </div>
+
+                <!-- Cards Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
+                    
+                    <!-- Orders -->
+                    <a href="{{ route('subscription.index') }}" 
+                       class="group p-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow hover:shadow-lg transition-all">
+                        <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-500">
+                            {{ __('Orders') }}
+                        </h2>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all your orders') }}</p>
+                    </a>
+
+                    <!-- Products -->
+                    <a href="{{ route('products.index') }}" 
+                       class="group p-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow hover:shadow-lg transition-all">
+                        <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-green-500">
+                            {{ __('Products') }}
+                        </h2>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all available products') }}</p>
+                    </a>
+
+                    <!-- About Us -->
+                    <a href="{{ route('about') }}" 
+                       class="group p-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow hover:shadow-lg transition-all">
+                        <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-pink-500">
+                            {{ __('About us') }}
+                        </h2>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Learn more about us') }}</p>
+                    </a>
+
                 </div>
             </div>
         </div>

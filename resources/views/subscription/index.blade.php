@@ -15,7 +15,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
             You have no subscription yet.
         </p>
         @else
-        <div class="mt-4 p-6 bg-zinc-100 rounded-lg border border-zinc-200 shadow hover:bg-zinc-50 dark:bg-zinc-800 dark:border-zinc-700 dark:hover:bg-zinc-700">
+        <div class="mt-4 p-6 bg-zinc-100 rounded-lg border border-zinc-200 shadow hover:bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-zinc-800">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
                 Subscription Status: 
                 @if ($subscription->status === 'active')
@@ -43,13 +43,32 @@ $shipping_address = json_decode($subscription->shipping_address, true);
             </p>
         </div>
 
+                <!-- Confirmation Modal -->
+        <div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+            <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-6 w-full max-w-md">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4" id="modal-title">Confirm Action</h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-6" id="modal-message">Are you sure you want to proceed?</p>
+
+                <div class="flex justify-end gap-3">
+                    <button id="cancel-modal"
+                        class="px-4 py-2 bg-gray-200 dark:bg-zinc-700 text-gray-800 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-zinc-600">
+                        Cancel
+                    </button>
+                    <button id="confirm-modal"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="mt-6 flex items-center justify-center gap-4">
             @if($subscription->status === 'paused')
                 <form method="POST" action="{{ route('subscription.resume') }}">
                     @csrf
                     <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                        onclick="return confirm('Are you sure you want to resume your subscription?')">
+                    data-action="resume"
+                    data-message="Are you sure you want to resume your subscription?">
                         Resume
                     </button>
                 </form>
@@ -57,7 +76,8 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                 <form method="POST" action="{{ route('subscription.pause') }}">
                     @csrf
                     <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
-                        onclick="return confirm('Are you sure you want to pause your subscription?')">
+                    data-action="Pause"
+                    data-message="Are you sure you want to pause your subscription?">
                         Pause
                     </button>
                 </form>
@@ -66,8 +86,10 @@ $shipping_address = json_decode($subscription->shipping_address, true);
             @else
             <form method="POST" action="{{ route('subscription.cancel') }}">
                 @csrf
-                <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    onclick="return confirm('Are you sure you want to cancel your subscription?')">
+                <button type="button"
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    data-action="cancel"
+                    data-message="Are you sure you want to cancel your subscription?">
                     Cancel
                 </button>
             </form>
@@ -84,33 +106,33 @@ $shipping_address = json_decode($subscription->shipping_address, true);
             </button>
         </form> --}}
         
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h2 class="text-2xl font-bold mb-6">Payment History</h2>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 dark:bg-zinc-900">
+            <h2 class="text-2xl font-bold mb-6 dark:text-white">Payment History</h2>
 
-            <div class="overflow-x-auto bg-white shadow rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div class="overflow-x-auto bg-white dark:bg-zinc-900 shadow rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-zinc-800">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Plan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-white">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-white">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-white">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-white">Plan</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-200 dark:bg-zinc-900">
                         @if (!$payments)
                             <tr>
-                                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center dark:text-white">
                                     No payment history available.
                                 </td>
                             </tr>
                         @elseif ($payments)
                             @foreach ($payments as $payment)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    {{ $payment->paid_at ? \Carbon\Carbon::parse($payment->paid_at)->format('M d, Y') : '—' }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-white">
+                                    {{ $payment->paid_at? \Carbon\Carbon::parse($payment->paid_at)->format('M d, Y') : '—' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-white">
                                     {{ number_format($payment->amount, 2) .'  '. $payment->currency}}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -119,7 +141,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                                         {{ ucfirst($payment->status) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-white">
                                     {{ $payment->plan_name ?? '—' }}
                                 </td>
                             </tr>
@@ -129,5 +151,45 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                 </table>
             </div>
         </div>
+        <script>
+            const modal = document.getElementById('confirmation-modal');
+            const confirmBtn = document.getElementById('confirm-modal');
+            const cancelBtn = document.getElementById('cancel-modal');
+            const modalMessage = document.getElementById('modal-message');
+        
+            let currentForm = null;
+        
+            // Attach event listeners to all action buttons
+            document.querySelectorAll('form button[data-action]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault(); // stop form from submitting immediately
+                    currentForm = button.closest('form'); // remember which form
+                    modalMessage.textContent = button.dataset.message; // set message
+                    modal.classList.remove('hidden'); // show modal
+                });
+            });
+        
+            // Confirm -> submit form
+            confirmBtn.addEventListener('click', () => {
+                if (currentForm) {
+                    currentForm.submit();
+                }
+            });
+        
+            // Cancel -> hide modal
+            cancelBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+                currentForm = null;
+            });
+        
+            // Close modal on outside click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    currentForm = null;
+                }
+            });
+        </script>
+        
 
 </x-app-layout>

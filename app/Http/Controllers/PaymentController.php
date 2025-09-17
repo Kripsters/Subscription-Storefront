@@ -56,7 +56,8 @@ class PaymentController extends Controller
                 'user_id' => auth()->id(),
                 'price_id' => $priceId,
                 'cart' => $cart,
-            ],        
+            ],
+            'allow_promotion_codes' => true, // 👈 adds coupon field to Stripe Checkout
         ]);
 
         return response()->json(['id' => $session->id]);
