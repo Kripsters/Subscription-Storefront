@@ -84,7 +84,7 @@ class StripeWebhookController extends Controller
                         ]);
                         
                         $user = User::find($userId);
-                        $user->notify(new PaymentSuccessNotification($subscription_data['amount'], $subscription_data['plan_name']));
+                        $user->notify(new PaymentSuccessNotification($subscription_data['amount'], data_get($session, 'customer_details.name'),json_encode(data_get($session, 'customer_details.address', [])), json_encode(data_get($session, 'shipping.address', []))));
 
 
                     } catch (\Exception $e) {

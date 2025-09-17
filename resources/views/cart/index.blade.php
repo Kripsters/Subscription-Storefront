@@ -180,10 +180,11 @@ foreach($cart->items as $item) {
           }
         </script>
 
-@else
+  @else
   <p class="mt-4 text-sm leading-5 font-medium text-gray-500 dark:text-gray-400">
     Your cart is empty.
   </p>
   @endif
+
 </x-app-layout>
 

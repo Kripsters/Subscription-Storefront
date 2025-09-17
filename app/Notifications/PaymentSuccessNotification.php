@@ -12,14 +12,24 @@ class PaymentSuccessNotification extends Notification
     use Queueable;
 
     protected $amount;
-    protected $planName;
+    protected $billing_name;
+    protected $billing_address;
+    protected $shipping_address;
     
     /**
      * Create a new notification instance.
+     *
+     * @param float $amount
+     * @param string $billing_name
+     * @param string $billing_address
+     * @param string $shipping_address
      */
-    public function __construct()
+    public function __construct(float $amount, string $billing_name, string $billing_address, string $shipping_address)
     {
-        //
+        $this->amount = $amount;
+        $this->billing_name = $billing_name;
+        $this->billing_address = $billing_address;
+        $this->shipping_address = $shipping_address;
     }
 
     /**
@@ -38,12 +48,26 @@ class PaymentSuccessNotification extends Notification
 
      public function toMail($notifiable)
      {
+        if (!$this->shipping_address) {
+            $shipping_address = 'Same as billing address';
+        } else {
+            $shipping_address = $this->shipping_address;
+        }
+        $billing_address = json_decode($this->billing_address, true);
+                           
          return (new MailMessage)
              ->subject('Payment Successful')
              ->greeting('Hello ' . $notifiable->name)
              ->line('Your payment was successful.')
              ->line('Amount: $' . number_format($this->amount, 2))
-             ->line('Plan: ' . $this->planName)
+             ->line('Billing name: ' . $this->billing_name)
+             ->line('Billing address: ' . $billing_address['line1'] . ', ' . 
+                    ($billing_address['line2'] ? $billing_address['line2'] . ', ' : '') .
+                    $billing_address['city'] . ', ' . 
+                    ($billing_address['state'] ? $billing_address['state'] . ', ' : '') .
+                    $billing_address['postal_code'] . ', ' . 
+                    $billing_address['country'])
+             ->line('Shipping address: ' . $shipping_address)
              ->line('Thank you for your purchase!');
      }
      
@@ -56,7 +80,12 @@ class PaymentSuccessNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'amount' => $this->amount,
+            'billing_name' => $this->billing_name,
+            'billing_address' => $this->billing_address,
+            'shipping_address' => $this->shipping_address,
         ];
     }
 }
+
+

@@ -49,6 +49,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart',             [CartController::class,'clear'])->name('cart.clear');
 
     Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+    Route::post('/subscription/pause', [SubscriptionController::class, 'pause'])->name('subscription.pause');
+    Route::post('/subscription/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
+    Route::post('/subscription/update-products', [SubscriptionController::class, 'updateProducts'])->name('subscription.updateProducts');
     
 
     Route::get('/subscribe', [PaymentController::class, 'subscribe'])->name('subscribe');

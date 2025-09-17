@@ -42,6 +42,47 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                 @endif
             </p>
         </div>
+
+
+        <div class="mt-6 flex items-center justify-center gap-4">
+            @if($subscription->status === 'paused')
+                <form method="POST" action="{{ route('subscription.resume') }}">
+                    @csrf
+                    <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        onclick="return confirm('Are you sure you want to resume your subscription?')">
+                        Resume
+                    </button>
+                </form>
+            @elseif ($subscription->status === 'active')
+                <form method="POST" action="{{ route('subscription.pause') }}">
+                    @csrf
+                    <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
+                        onclick="return confirm('Are you sure you want to pause your subscription?')">
+                        Pause
+                    </button>
+                </form>
+            @endif
+            @if ($subscription->status === 'canceled')
+            @else
+            <form method="POST" action="{{ route('subscription.cancel') }}">
+                @csrf
+                <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    onclick="return confirm('Are you sure you want to cancel your subscription?')">
+                    Cancel
+                </button>
+            </form>
+            @endif
+        </div>
+
+        {{-- <h2 class="text-xl font-semibold mt-8 mb-2">Products</h2>
+        <form method="POST" action="{{ route('subscription.updateProducts') }}">
+            @csrf
+            <textarea name="products[]" class="w-full border rounded p-2"
+                placeholder="Enter selected products here">{{ old('products', $subscription->products) }}</textarea>
+            <button class="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                Update Products
+            </button>
+        </form> --}}
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h2 class="text-2xl font-bold mb-6">Payment History</h2>

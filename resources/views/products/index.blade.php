@@ -39,17 +39,21 @@
     </div>
 
     @if ($products->count())
-    <div class="pt-6 px-5">
-            <div class="flex items-center justify-between">
-                <a class="text-zinc-500 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400" href="{{ $products->previousPageUrl() }}">Previous</a>
-                <div class="flex items-center space-x-2">
-                    @for ($i = max(1, $products->currentPage() - 2); $i <= min($products->lastPage(), $products->currentPage() + 2); $i++)
-                        <a class="{{ $i === $products->currentPage() ? 'bg-green-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400' }}" href="{{ $products->url($i) }}">{{ $i }}</a>
-                    @endfor
-                </div>
-                <a class="text-zinc-500 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400" href="{{ $products->nextPageUrl() }}">Next</a>
-            </div>
+    <div class="pt-6 px-5 flex items-center justify-center">
+        <div class="flex items-center space-x-2">
+            @if ($products->previousPageUrl() != null)
+            <a class="text-zinc-500 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400" href="{{ $products->previousPageUrl() }}">Previous</a>
+            @endif
+            @for ($i = max(1, $products->currentPage() - 2); $i <= min($products->lastPage(), $products->currentPage() + 2); $i++)
+                <button type="button" class="inline-flex items-center px-2 py-1 rounded-md {{ $i === $products->currentPage() ? 'bg-green-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400' }}" onclick="window.location='{{ $products->url($i) }}'">
+                    <span class="text-xs font-semibold">{{ $i }}</span>
+                </button>
+            @endfor
+            @if ($products->nextPageUrl() != null)
+            <a class="text-zinc-500 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-400" href="{{ $products->nextPageUrl() }}">Next</a>
+            @endif
         </div>
+    </div>
         {{-- Grid --}}
         <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-4 pt-5 px-5">
             @foreach ($products as $item)

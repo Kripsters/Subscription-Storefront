@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\PaymentHistory;
 use Faker\Provider\ar_EG\Payment;
+use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
 {
@@ -29,51 +30,65 @@ class SubscriptionController extends Controller
          return view('subscription.index', compact('subscription', 'payments'));
      }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+     public function cancel(Request $request)
     {
-        //
+        $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
+
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe->subscriptions->update($subscription->stripe_subscription_id, [
+            'cancel_at_period_end' => true,
+        ]);
+
+        $subscription->status = 'canceled';
+        $subscription->save();
+
+        return back()->with('status', 'Subscription will be canceled at the end of this billing period.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function pause(Request $request)
     {
-        //
+        $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
+
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe->subscriptions->update($subscription->stripe_subscription_id, [
+            'pause_collection' => ['behavior' => 'mark_uncollectible'],
+        ]);
+
+        $subscription->status = 'paused';
+        $subscription->save();
+
+        return back()->with('status', 'Subscription has been paused.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function resume(Request $request)
     {
-        //
+        $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
+
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe->subscriptions->update($subscription->stripe_subscription_id, [
+            'pause_collection' => '',
+        ]);
+
+        $subscription->status = 'active';
+        $subscription->save();
+
+        return back()->with('status', 'Subscription has been resumed.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
+    public function updateProducts(Request $request)
     {
-        //
+        $request->validate([
+            'products' => 'required|array',
+        ]);
+
+        $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
+
+        // Store the chosen products in your own DB
+        $subscription->products = json_encode($request->products);
+        $subscription->save();
+
+        return back()->with('status', 'Products updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
-    }
 }
