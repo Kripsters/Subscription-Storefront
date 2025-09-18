@@ -1,0 +1,29 @@
+<?php
+return [
+   
+    'title' => 'Subscription Overview',
+    'no_subscription' => 'You have no subscription yet.',
+    'status_title' => 'Subscription Status:',
+    'status_active' => 'Active',
+    'status_inactive' => 'Inactive',
+    'billing_name' => 'Billing name:',
+    'billing_email' => 'Billing e-mail:',
+    'billing_address' => 'Billing address:',
+    'shipping_address' => 'Shipping address:',
+    'shipping_address_none' => 'Shipping address is same as billing address',
+    'confirm_action' => 'Confirm Action',
+    'confirm_message' => 'Are you sure you want to proceed?',
+    'cancel' => 'Cancel',
+    'confirm' => 'Confirm',
+    'resume' => 'Resume',
+    'resume_message' => 'Are you sure you want to resume your subscription?',
+    'pause' => 'Pause',
+    'pause_message' => 'Are you sure you want to pause your subscription? The subscription will be paused at the end of the current billing period.',
+    'cancel_message' => 'Are you sure you want to cancel your subscription? The subscription will be canceled at the end of the current billing period.',
+    'payments_title' => 'Payment History',
+    'date' => 'Date',
+    'amount' => 'Amount',
+    'status' => 'Status',
+    'plan' => 'Subscription Plan',
+];  
+?>

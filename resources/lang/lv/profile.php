@@ -1,0 +1,26 @@
+<?php
+return [
+    'title' => 'Profils',
+    'info_title' => 'Profila informācija',
+    'info_subtext' => 'Atjauniniet sava konta profila informāciju un e-pasta adresi.',
+    'name' => 'Vārds',
+    'email' => 'E-pasts',
+    'email_unverified' => 'Jūsu e-pasta adrese nav verificēta.',
+    'resend' => 'Noklikšķiniet šeit, lai atkārtoti nosūtītu verifikācijas e-pastu.',
+    'resent' => 'Uz jūsu e-pasta adresi ir nosūtīta jauna verifikācijas saite.',
+    'saved' => 'Saglabāts.',
+    'password' => 'Atjaunināt paroli',
+    'password_subtext' => 'Pārliecinieties, ka jūsu kontā tiek izmantota gara, nejauša parole, lai nodrošinātu drošību.',
+    'current_password' => 'Pašreizējā parole',
+    'new_password' => 'Jaunā parole',
+    'confirm_password' => 'Apstipriniet paroli',
+    'save' => 'Saglabāt',
+    'delete' => 'Dzēst kontu',
+    'delete_subtext' => 'Kad jūsu konts tiks dzēsts, visi resursi un dati tiks neatgriezeniski dzēsti. Pirms konta dzēšanas, lūdzu, lejupielādējiet visus datus vai informāciju, kuru vēlaties paturēt.',
+    'delete_confirm' => 'Vai tiešām vēlaties dzēst savu kontu?',
+    'delete_confirm_subtext' => 'Kad jūsu konts tiks dzēsts, visi resursi un dati tiks neatgriezeniski dzēsti. Lūdzu, ievadiet savu paroli, lai apstiprinātu, ka vēlaties neatgriezeniski dzēst savu kontu.',
+    'password_asis' => 'Parole',
+    'cancel' => 'Atcelt',
+    'danger_button' => 'Dzēst kontu',
+];  
+?>

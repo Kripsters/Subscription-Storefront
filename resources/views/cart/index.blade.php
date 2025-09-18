@@ -10,7 +10,7 @@ foreach($cart->items as $item) {
   
   <!-- Title -->
   <h1 class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-6">
-    Your Cart
+    {{ __('cart.title') }}
   </h1>
 
   @if($cart->items->count() > 0)
@@ -21,11 +21,11 @@ foreach($cart->items as $item) {
       <!-- Header: hidden on mobile, shown on md+ -->
       <thead class="hidden md:table-header-group bg-zinc-50 dark:bg-zinc-700/50">
         <tr>
-          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">Item</th>
-          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">Quantity</th>
-          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">Unit Price</th>
-          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">Subtotal</th>
-          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">Remove</th>
+          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">{{ __('cart.item') }}</th>
+          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">{{ __('cart.quantity') }}</th>
+          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">{{ __('cart.unit_price') }}</th>
+          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">{{ __('cart.subtotal') }}</th>
+          <th class="px-6 py-3 text-xs font-semibold text-zinc-500 dark:text-zinc-300 uppercase">{{ __('cart.remove') }}</th>
         </tr>
       </thead>
   
@@ -43,7 +43,7 @@ foreach($cart->items as $item) {
   
           <!-- ITEM (mobile: label + value) -->
           <td class="block md:table-cell px-4 py-3 md:px-6 md:py-4 align-top">
-            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300">Item</span>
+            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300">{{ __('cart.item') }}</span>
             <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
               {{ $item->name }}
             </div>
@@ -51,7 +51,7 @@ foreach($cart->items as $item) {
   
           <!-- QUANTITY -->
           <td class="block md:table-cell px-4 py-3 md:px-6 md:py-4 align-top">
-            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300 mb-1">Quantity</span>
+            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300 mb-1">{{ __('cart.quantity') }}</span>
             <form method="POST" action="{{ route('cart.update', $item->product_id) }}" class="flex items-center gap-2">
               @csrf @method('PATCH')
               <input
@@ -62,14 +62,14 @@ foreach($cart->items as $item) {
               <button type="submit"
                 class="px-3 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-md
                        hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                Update
+                       {{ __('cart.updates') }}
               </button>
             </form>
           </td>
   
           <!-- UNIT PRICE -->
           <td class="block md:table-cell px-4 py-3 md:px-6 md:py-4 align-top">
-            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300">Unit Price</span>
+            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300">{{ __('cart.unit_price') }}</span>
             <div class="text-sm text-zinc-600 dark:text-zinc-400">
               €{{ number_format($item->unit_price, 2) }}
             </div>
@@ -77,7 +77,7 @@ foreach($cart->items as $item) {
   
           <!-- SUBTOTAL -->
           <td class="block md:table-cell px-4 py-3 md:px-6 md:py-4 align-top">
-            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300">Subtotal</span>
+            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300">{{ __('cart.subtotal') }}</span>
             <div class="text-sm text-zinc-600 dark:text-zinc-400">
               €{{ number_format($item->quantity * $item->unit_price, 2) }}
             </div>
@@ -85,13 +85,13 @@ foreach($cart->items as $item) {
   
           <!-- REMOVE -->
           <td class="block md:table-cell px-4 pb-4 md:px-6 md:py-4 align-top">
-            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300 mb-1">Remove</span>
+            <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300 mb-1">{{ __('cart.remove') }}</span>
             <form method="POST" action="{{ route('cart.remove', $item->product_id) }}">
               @csrf @method('DELETE')
               <button type="submit"
                 class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded-md
                        hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400">
-                Remove
+                       {{ __('cart.remove') }}
               </button>
             </form>
           </td>
@@ -104,45 +104,45 @@ foreach($cart->items as $item) {
   
   <!-- Total -->
   <p class="mt-6 text-lg font-semibold text-lime-600">
-    Total: €{{ $cart->subtotal }}
+    {{ __('cart.total') }}: €{{ $cart->subtotal }}
   </p>
 
   <!-- Subscription Plans -->
   <div class="mt-10 flex justify-center">
     @if ($cart->subtotal <= $prices[0]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3">Basic Plan</h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[0]->price }} / month</p>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">€10 allocated for shipping</p>
+        <h2 class="text-2xl font-bold mb-3">{{ __('cart.basic_title') }}</h2>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[0]->price }} / {{ __('cart.month') }}</p>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.basic_subtext') }}</p>
         <button id="subscribe-button-basic"
           class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-          Subscribe Now
+          {{ __('cart.subscribe') }}
         </button>
       </div>
     @elseif ($cart->subtotal > $prices[0]->price-10 && $cart->subtotal <= $prices[1]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3">Medium Plan</h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[1]->price }} / month</p>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">€10 allocated for shipping</p>
+        <h2 class="text-2xl font-bold mb-3">{{ __('cart.medium_title') }}</h2>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[1]->price }} / {{ __('cart.month') }}</p>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.medium_subtext') }}</p>
         <button id="subscribe-button-medium"
           class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-          Subscribe Now
+          {{ __('cart.subscribe') }}
         </button>
       </div>
     @elseif ($cart->subtotal > $prices[1]->price-10 && $cart->subtotal <= $prices[2]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3">Advanced Plan</h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[2]->price }} / month</p>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">€10 allocated for shipping</p>
+        <h2 class="text-2xl font-bold mb-3">{{ __('cart.advanced_title') }}</h2>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[2]->price }} / {{ __('cart.month') }}</p>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.advanced_subtext') }}</p>
         <button id="subscribe-button-advanced"
           class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-          Subscribe Now
+          {{ __('cart.subscribe') }}
         </button>
       </div>
     @elseif ($cart->subtotal > $prices[2]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3 text-red-600">Too much!</h2>
-        <p class="text-zinc-600 dark:text-zinc-400">Your cart total exceeds 110€, please remove some items.</p>
+        <h2 class="text-2xl font-bold mb-3 text-red-600">{{ __('cart.total_exceeded') }}</h2>
+        <p class="text-zinc-600 dark:text-zinc-400">{{ __('cart.total_exceeded_subtext') }}</p>
       </div>
     @endif
   </div>
@@ -177,7 +177,7 @@ foreach($cart->items as $item) {
 
   @else
     <p class="mt-6 text-lg font-medium text-zinc-600 dark:text-zinc-400">
-      Your cart is empty.
+      {{ __('cart.empty') }}
     </p>
   @endif
 

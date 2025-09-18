@@ -1,23 +1,21 @@
 <x-app-layout>
-    @section('title', 'Products')
-
     <!-- Search & Filters -->
     <div class="pt-6 px-6">
         <form method="GET" action="{{ route('products.search') }}">
             <div class="flex flex-col md:flex-row md:items-center gap-3">
                 <!-- Search -->
                 <input type="text" name="search" value="{{ request()->input('search') }}"
-                    placeholder="Search products..."
+                    placeholder='{{ __('product.search_placeholder') }}'
                     class="w-full rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
 
                 <!-- Sort -->
                 <select name="order"
                     class="rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    <option value="">Sort by</option>
+                    <option value="">{{__('product.sort')}}</option>
                     <option value="asc" {{ request('order') === 'asc' ? 'selected' : '' }}>A–Z</option>
                     <option value="desc" {{ request('order') === 'desc' ? 'selected' : '' }}>Z–A</option>
-                    <option value="price_asc" {{ request('order') === 'price_asc' ? 'selected' : '' }}>Price (Low to High)</option>
-                    <option value="price_desc" {{ request('order') === 'price_desc' ? 'selected' : '' }}>Price (High to Low)</option>
+                    <option value="price_asc" {{ request('order') === 'price_asc' ? 'selected' : '' }}>{{__('product.price_asc')}}</option>
+                    <option value="price_desc" {{ request('order') === 'price_desc' ? 'selected' : '' }}>{{ __('product.price_desc') }}</option>
                 </select>
 
                 <!-- Per page -->
@@ -25,7 +23,7 @@
                     class="rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     @foreach ([12, 24, 48] as $size)
                         <option value="{{ $size }}" {{ (int)request('per_page', 12) === $size ? 'selected' : '' }}>
-                            {{ $size }} items per page
+                            {{ $size }} {{ __('product.per_page') }}
                         </option>
                     @endforeach
                 </select>
@@ -33,7 +31,7 @@
                 <!-- Button -->
                 <button type="submit"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-sm text-white uppercase tracking-wide hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition">
-                    Search
+                    {{ __('product.search') }}
                 </button>
             </div>
         </form>
@@ -46,7 +44,7 @@
             @if ($products->previousPageUrl())
                 <a class="px-3 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                 href="{{ $products->previousPageUrl() }}">
-                    Previous
+                    <
                 </a>
             @endif
             <div class="flex items-center space-x-2">
@@ -61,7 +59,7 @@
             @if ($products->nextPageUrl())
                 <a class="px-3 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                 href="{{ $products->nextPageUrl() }}">
-                    Next
+                    >
                 </a>
             @endif
         </div>
@@ -75,7 +73,7 @@
                     <a href="{{ route('products.show', $item->id) }}">
                         <img class="rounded-lg shadow-md mx-auto w-full h-48 object-cover group-hover:scale-105 transition"
                              src="{{ asset($item->image) }}"
-                             alt="{{ 'an image of ' . $item->title }}"
+                             alt="{{ __('product.img_alt'). $item->title }}"
                              loading="lazy" />
                     </a>
 
@@ -119,7 +117,7 @@
                                        class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                                 <button type="submit"
                                         class="px-3 py-1 bg-lime-500 text-white text-sm rounded-md hover:bg-lime-400 focus:ring-2 focus:ring-lime-400">
-                                    Add to cart
+                                    {{ __('product.add_to_cart') }}
                                 </button>
                             </form>
                         @endif
@@ -130,7 +128,8 @@
     @else
         <!-- No results -->
         <div class="text-center text-2xl font-bold text-zinc-700 dark:text-zinc-200 py-10">
-            No products found
+            {{ __('product.no_results') }}
         </div>
     @endif
 </x-app-layout>
+

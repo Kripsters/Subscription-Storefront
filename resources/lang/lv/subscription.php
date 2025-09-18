@@ -1,0 +1,29 @@
+<?php
+return [
+   
+    'title' => 'Abonementa pārskats',
+    'no_subscription' => 'Jums vēl nav abonementa.',
+    'status_title' => 'Abonementa statuss:',
+    'status_active' => 'Aktīvs',
+    'status_inactive' => 'Neaktīvs',
+    'billing_name' => 'Rēķina vārds:',
+    'billing_email' => 'Rēķina e-pasts:',
+    'billing_address' => 'Rēķina adrese:',
+    'shipping_address' => 'Piegādes adrese:',
+    'shipping_address_none' => 'Piegādes adrese ir tāda pati kā rēķina adrese',
+    'confirm_action' => 'Apstiprināt darbību',
+    'confirm_message' => 'Vai tiešām vēlaties turpināt?',
+    'cancel' => 'Atcelt',
+    'confirm' => 'Apstiprināt',
+    'resume' => 'Atsākt',
+    'resume_message' => 'Vai tiešām vēlaties atsākt savu abonementu?',
+    'pause' => 'Apturēt',
+    'pause_message' => 'Vai tiešām vēlaties apturēt savu abonementu? Abonements tiks apturēts pašreizējā norēķinu perioda beigās.',
+    'cancel_message' => 'Vai tiešām vēlaties atcelt savu abonementu? Abonements tiks atcelts pašreizējā norēķinu perioda beigās.',
+    'payments_title' => 'Maksājumu vēsture',
+    'date' => 'Datums',
+    'amount' => 'Summa',
+    'status' => 'Statuss',
+    'plan' => 'Abonementa plāns',
+];  
+?>
