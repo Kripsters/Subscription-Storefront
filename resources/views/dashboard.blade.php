@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-2xl text-zinc-800 dark:text-zinc-100 tracking-tight">
-            {{ __('StockedUp') }}
+            {{ __('stockedup.name') }}
         </h2>
     </x-slot>
 
@@ -14,10 +14,10 @@
                     <x-application-logo class="h-12 w-12 fill-current text-zinc-800 dark:text-zinc-200" />
                     <div>
                         <p class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-                            {{ __('Welcome to your grocery delivery service!') }}
+                            {{ __('dashboard.welcome') }}
                         </p>
                         <p class="text-zinc-600 dark:text-zinc-400">
-                            {{ __('Here you can manage your orders, products, and more.') }}
+                            {{ __('dashboard.welcome_subtext') }}
                         </p>
                     </div>
                 </div>
@@ -29,27 +29,27 @@
                     <a href="{{ route('subscription.index') }}" 
                        class="group p-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow hover:shadow-lg transition-all">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-500">
-                            {{ __('Orders') }}
+                            {{ __('dashboard.orders') }}
                         </h2>
-                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all your orders') }}</p>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('dashboard.orders_subtext') }}</p>
                     </a>
 
                     <!-- Products -->
                     <a href="{{ route('products.index') }}" 
                        class="group p-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow hover:shadow-lg transition-all">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-green-500">
-                            {{ __('Products') }}
+                            {{ __('dashboard.products') }}
                         </h2>
-                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('View all available products') }}</p>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('dashboard.products_subtext') }}</p>
                     </a>
 
                     <!-- About Us -->
                     <a href="{{ route('about') }}" 
                        class="group p-6 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow hover:shadow-lg transition-all">
                         <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-pink-500">
-                            {{ __('About us') }}
+                            {{ __('dashboard.about') }}
                         </h2>
-                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('Learn more about us') }}</p>
+                        <p class="mt-2 text-zinc-600 dark:text-zinc-400">{{ __('dashboard.about_subtext') }}</p>
                     </a>
 
                 </div>

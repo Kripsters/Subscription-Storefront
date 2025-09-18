@@ -63,36 +63,38 @@ $shipping_address = json_decode($subscription->shipping_address, true);
         </div>
 
         <div class="mt-6 flex items-center justify-center gap-4">
-            @if($subscription->status === 'paused')
-                <form method="POST" action="{{ route('subscription.resume') }}">
+            @if($subscription)
+                @if($subscription->status === 'paused')
+                    <form method="POST" action="{{ route('subscription.resume') }}">
+                        @csrf
+                        <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        data-action="resume"
+                        data-message="Are you sure you want to resume your subscription?">
+                            Resume
+                        </button>
+                    </form>
+                @elseif ($subscription->status === 'active')
+                    <form method="POST" action="{{ route('subscription.pause') }}">
+                        @csrf
+                        <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
+                        data-action="Pause"
+                        data-message="Are you sure you want to pause your subscription?">
+                            Pause
+                        </button>
+                    </form>
+                @endif
+                @if ($subscription->status === 'canceled')
+                @else
+                <form method="POST" action="{{ route('subscription.cancel') }}">
                     @csrf
-                    <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                    data-action="resume"
-                    data-message="Are you sure you want to resume your subscription?">
-                        Resume
+                    <button type="button"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                        data-action="cancel"
+                        data-message="Are you sure you want to cancel your subscription?">
+                        Cancel
                     </button>
                 </form>
-            @elseif ($subscription->status === 'active')
-                <form method="POST" action="{{ route('subscription.pause') }}">
-                    @csrf
-                    <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
-                    data-action="Pause"
-                    data-message="Are you sure you want to pause your subscription?">
-                        Pause
-                    </button>
-                </form>
-            @endif
-            @if ($subscription->status === 'canceled')
-            @else
-            <form method="POST" action="{{ route('subscription.cancel') }}">
-                @csrf
-                <button type="button"
-                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    data-action="cancel"
-                    data-message="Are you sure you want to cancel your subscription?">
-                    Cancel
-                </button>
-            </form>
+                @endif
             @endif
         </div>
 
@@ -128,7 +130,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                             </tr>
                         @elseif ($payments)
                             @foreach ($payments as $payment)
-                            <tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-white">
                                     {{ $payment->paid_at? \Carbon\Carbon::parse($payment->paid_at)->format('M d, Y') : '—' }}
                                 </td>

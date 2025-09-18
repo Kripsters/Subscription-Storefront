@@ -22,23 +22,23 @@
                 <div class="hidden sm:flex sm:items-center sm:gap-1">
                     <a href="{{ route('dashboard') }}"
                        class="{{ request()->routeIs('dashboard') ? "$base $active" : $base }}">
-                        {{ __('Dashboard') }}
+                        {{ __('navigation.dashboard') }}
                     </a>
                     <a href="{{ route('about') }}"
                        class="{{ request()->routeIs('about') ? "$base $active" : $base }}">
-                        {{ __('About us') }}
+                        {{ __('navigation.about') }}
                     </a>
                     <a href="{{ route('products.index') }}"
                        class="{{ (request()->routeIs('products.index') || request()->routeIs('products.search')) ? "$base $active" : $base }}">
-                        {{ __('Products') }}
+                        {{ __('navigation.products') }}
                     </a>
                     <a href="{{ route('cart.index') }}"
                        class="{{ request()->routeIs('cart.index') ? "$base $active" : $base }}">
-                        {{ __('Cart') }}
+                        {{ __('navigation.cart') }}
                     </a>
                     <a href="{{ route('subscription.index') }}"
                        class="{{ request()->routeIs('subscription.index') ? "$base $active" : $base }}">
-                        {{ __('Subscription') }}
+                        {{ __('navigation.subscription') }}
                     </a>
                 </div>
             </div>
@@ -62,13 +62,23 @@
                                       d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"
                                       clip-rule="evenodd"/>
                             </svg>
-                            <span class="sr-only">{{ __('Open user menu') }}</span>
+                            <span class="sr-only">{{ __('navigation.user_menu') }}</span>
                         </button>
                     </x-slot>
 
+
+
                     <x-slot name="content">
+                        <x-dropdown-link href="{{ route('lang.switch', 'en') }}">
+                            {{ __('English') }}
+                        </x-dropdown-link>
+    
+                        <x-dropdown-link href="{{ route('lang.switch', 'lv') }}">
+                            {{ __('Latviešu') }}
+                        </x-dropdown-link>
+
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('navigation.profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -76,7 +86,7 @@
                             @csrf
                             <x-dropdown-link :href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('navigation.logout') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -92,7 +102,7 @@
                                text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white
                                hover:bg-zinc-950/5 dark:hover:bg-white/5 
                                focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 transition">
-                    <span class="sr-only">{{ __('Open main menu') }}</span>
+                    <span class="sr-only">{{ __('navigation.menu') }}</span>
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex"
                               stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -122,35 +132,35 @@
                       {{ request()->routeIs('dashboard')
                         ? 'bg-zinc-950/5 dark:bg-white/5 text-zinc-900 dark:text-white ring-1 ring-inset ring-zinc-900/10 dark:ring-white/10'
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
-                {{ __('Dashboard') }}
+                {{ __('navigation.dashboard') }}
             </a>
             <a href="{{ route('about') }}"
                class="block rounded-lg px-3 py-2 text-sm font-medium
                       {{ request()->routeIs('about')
                         ? 'bg-zinc-950/5 dark:bg-white/5 text-zinc-900 dark:text-white ring-1 ring-inset ring-zinc-900/10 dark:ring-white/10'
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
-                {{ __('About us') }}
+                {{ __('navigation.about') }}
             </a>
             <a href="{{ route('products.index') }}"
                class="block rounded-lg px-3 py-2 text-sm font-medium
                       {{ (request()->routeIs('products.index') || request()->routeIs('products.search'))
                         ? 'bg-zinc-950/5 dark:bg-white/5 text-zinc-900 dark:text-white ring-1 ring-inset ring-zinc-900/10 dark:ring-white/10'
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
-                {{ __('Products') }}
+                {{ __('navigation.products') }}
             </a>
             <a href="{{ route('cart.index') }}"
                class="block rounded-lg px-3 py-2 text-sm font-medium
                       {{ request()->routeIs('cart.index')
                         ? 'bg-zinc-950/5 dark:bg-white/5 text-zinc-900 dark:text-white ring-1 ring-inset ring-zinc-900/10 dark:ring-white/10'
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
-                {{ __('Cart') }}
+                {{ __('navigation.cart') }}
             </a>
             <a href="{{ route('subscription.index') }}"
                class="block rounded-lg px-3 py-2 text-sm font-medium
                       {{ request()->routeIs('subscription.index')
                         ? 'bg-zinc-950/5 dark:bg-white/5 text-zinc-900 dark:text-white ring-1 ring-inset ring-zinc-900/10 dark:ring-white/10'
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
-                {{ __('Subscription') }}
+                {{ __('navigation.subscriptions') }}
             </a>
         </div>
 
@@ -166,7 +176,7 @@
                    class="block rounded-lg px-3 py-2 text-sm font-medium
                           text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white
                           hover:bg-zinc-950/5 dark:hover:bg-white/5">
-                    {{ __('Profile') }}
+                    {{ __('navigation.profile') }}
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}">
@@ -176,7 +186,7 @@
                        class="block rounded-lg px-3 py-2 text-sm font-medium
                               text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white
                               hover:bg-zinc-950/5 dark:hover:bg-white/5">
-                        {{ __('Log Out') }}
+                        {{ __('navigation.logout') }}
                     </a>
                 </form>
             </div>

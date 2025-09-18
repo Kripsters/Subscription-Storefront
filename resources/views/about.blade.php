@@ -1,33 +1,42 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-zinc-800 dark:text-zinc-200 leading-tight">
-            {{ __('StockedUp') }}
+            {{ __('stockedup.name') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
-                <h2 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">
-                    {{ __('About us') }}
-                </h2>
-                <p class="mt-2 text-zinc-600 dark:text-zinc-400">
-                    {{ __('StockedUp is a grocery delivery service, designed to make it easier for you to order your groceries online. We believe that everyone should have access to fresh and healthy food, regardless of their location and availability. Our mission is to make grocery shopping as convenient as possible, by providing a one-stop-shop for all your grocery needs.') }}
-                </p>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 overflow-hidden shadow-xl sm:rounded-2xl hover:shadow-2xl transition">
+                <div class="p-8 border-b border-zinc-300 dark:border-zinc-700 flex items-center space-x-6">
+                    <x-application-logo class="hidden sm:block h-24 w-24 fill-current text-zinc-800 dark:text-zinc-200" />
+                    <div>
+                        <p class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                            {{ __('about.about') }}
+                        </p>
+                        <p class="text-zinc-600 dark:text-zinc-400">
+                            {{ __('about.about_subtext') }}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-zinc-800 shadow sm:rounded-lg">
-                <h2 class="text-2xl font-semibold text-zinc-800 dark:text-zinc-200">
-                    {{ __('Contact') }}
-                </h2>
-                <p class="mt-2 text-zinc-600 dark:text-zinc-400">
-                    {{ __('If you have any questions or concerns, please do not hesitate to contact us. Our team is available 24/7 to assist you with any issues you may have.') }}
-                </p>
-                <!-- <img class="rounded-lg shadow-lg mx-auto size-fit" src="{{ asset('storage/images/JavaScript-Candle.jpg') }}" alt="A candle made of JavaScript"/> -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-900 overflow-hidden shadow-xl sm:rounded-2xl hover:shadow-2xl transition">
+                <div class="p-8 border-b border-zinc-300 dark:border-zinc-700 flex items-center space-x-6">
+                    <x-application-logo class="hidden sm:block h-12 w-12 fill-current text-zinc-800 dark:text-zinc-200" />
+                    <div>
+                        <p class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+                            {{ __('about.contact') }}
+                        </p>
+                        <p class="text-zinc-600 dark:text-zinc-400">
+                            {{ __('about.contact_subtext') }}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

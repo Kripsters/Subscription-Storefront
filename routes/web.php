@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -31,6 +32,10 @@ Route::prefix('admin')->group(function () {
 
     // Add more admin routes here
 });
+
+
+Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
+
 
 
 Route::middleware('auth')->group(function () {
