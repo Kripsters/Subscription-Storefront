@@ -10,5 +10,7 @@ return [
     'img_alt' => 'An image of ',
     'add_to_cart' => 'Add to cart',
     'no_results' => 'No products found',
+    'price' => 'Price:',
+    'back' => 'Go Back',
 ];  
 ?>

@@ -116,7 +116,7 @@
                                 <input type="number" name="quantity" value="1" min="1"
                                        class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
                                 <button type="submit"
-                                        class="px-3 py-1 bg-lime-500 text-white text-sm rounded-md hover:bg-lime-400 focus:ring-2 focus:ring-lime-400">
+                                        class="px-3 py-1 bg-lime-500 text-white text-sm rounded-md hover:bg-lime-400 focus:ring-2 focus:ring-lime-400 transition duration-300 ease-in-out">
                                     {{ __('product.add_to_cart') }}
                                 </button>
                             </form>

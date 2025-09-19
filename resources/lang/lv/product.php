@@ -10,5 +10,7 @@ return [
     'img_alt' => 'Attēls kurā redzams ',
     'add_to_cart' => 'Pievienot grozam',
     'no_results' => 'Nekas nav atrasts',
+    'price' => 'Cena:',
+    'back' => 'Atpakaļ',
 ];  
 ?>
