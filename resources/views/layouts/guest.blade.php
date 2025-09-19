@@ -18,10 +18,10 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-zinc-100 dark:bg-zinc-900">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-zinc-500" />
+                    <x-application-logo class="w-20 h-20 fill-current text-zinc-500 animate-pulse">
+                    </x-application-logo>
                 </a>
             </div>
-
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-zinc dark:bg-zinc-800 shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>

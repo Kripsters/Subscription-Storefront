@@ -6,7 +6,7 @@
             <div class="flex items-center gap-6">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}" class="shrink-0 flex items-center">
-                    <x-application-logo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200" />
+                    <x-application-logo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200 animate-pulse" />
                 </a>
 
                 <!-- Primary Navigation Links -->
