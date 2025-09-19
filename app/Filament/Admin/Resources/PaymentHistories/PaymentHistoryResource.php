@@ -22,7 +22,7 @@ class PaymentHistoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'PaymentHistory';
+    protected static ?string $recordTitleAttribute = 'stripe_invoice_id';
 
     public static function form(Schema $schema): Schema
     {

@@ -22,7 +22,7 @@ class SubscriptionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Subscriptions';
+    protected static ?string $recordTitleAttribute = 'billing_name';
 
     public static function form(Schema $schema): Schema
     {

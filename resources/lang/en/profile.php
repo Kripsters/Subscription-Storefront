@@ -22,5 +22,7 @@ return [
     'password_asis' => 'Password',
     'cancel' => 'Cancel',
     'danger_button' => 'Delete Account',
+    'handle_cancel' => 'Payment Cancelled!',
+    'handle_success' => 'Payment Successful!',
 ];  
 ?>

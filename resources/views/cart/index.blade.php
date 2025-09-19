@@ -57,7 +57,7 @@ foreach($cart->items as $item) {
               <input
                 type="number" name="quantity" min="0" step="1" value="{{ $item->quantity }}"
                 class="w-20 rounded-md border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 shadow-sm
-                       focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm"
+                       focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm text-zinc-900 dark:text-zinc-100"
                 inputmode="numeric" />
               <button type="submit"
                 class="px-3 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-md
@@ -111,7 +111,7 @@ foreach($cart->items as $item) {
   <div class="mt-10 flex justify-center">
     @if ($cart->subtotal <= $prices[0]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3">{{ __('cart.basic_title') }}</h2>
+        <h2 class="text-2xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">{{ __('cart.basic_title') }}</h2>
         <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[0]->price }} / {{ __('cart.month') }}</p>
         <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.basic_subtext') }}</p>
         <button id="subscribe-button-basic"
@@ -121,7 +121,7 @@ foreach($cart->items as $item) {
       </div>
     @elseif ($cart->subtotal > $prices[0]->price-10 && $cart->subtotal <= $prices[1]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3">{{ __('cart.medium_title') }}</h2>
+        <h2 class="text-2xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">{{ __('cart.medium_title') }}</h2>
         <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[1]->price }} / {{ __('cart.month') }}</p>
         <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.medium_subtext') }}</p>
         <button id="subscribe-button-medium"
@@ -131,7 +131,7 @@ foreach($cart->items as $item) {
       </div>
     @elseif ($cart->subtotal > $prices[1]->price-10 && $cart->subtotal <= $prices[2]->price-10)
       <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3">{{ __('cart.advanced_title') }}</h2>
+        <h2 class="text-2xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">{{ __('cart.advanced_title') }}</h2>
         <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[2]->price }} / {{ __('cart.month') }}</p>
         <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.advanced_subtext') }}</p>
         <button id="subscribe-button-advanced"

@@ -22,5 +22,7 @@ return [
     'password_asis' => 'Parole',
     'cancel' => 'Atcelt',
     'danger_button' => 'Dzēst kontu',
+    'handle_cancel' => 'Maksājums atcelts!',
+    'handle_success' => 'Maksājums veiksmīgs!',
 ];  
 ?>

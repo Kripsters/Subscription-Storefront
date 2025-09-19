@@ -44,7 +44,7 @@
             </div>
 
             <!-- Right: User dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-64">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
@@ -69,22 +69,22 @@
 
 
                     <x-slot name="content">
-                        <x-dropdown-link href="{{ route('lang.switch', 'en') }}">
+                        <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" href="{{ route('lang.switch', 'en') }}">
                             {{ __('English') }}
                         </x-dropdown-link>
     
-                        <x-dropdown-link href="{{ route('lang.switch', 'lv') }}">
+                        <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" href="{{ route('lang.switch', 'lv') }}">
                             {{ __('Latviešu') }}
                         </x-dropdown-link>
 
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" :href="route('profile.edit')">
                             {{ __('navigation.profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-dropdown-link :href="route('logout')"
+                            <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" :href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
                                 {{ __('navigation.logout') }}
                             </x-dropdown-link>
@@ -160,7 +160,7 @@
                       {{ request()->routeIs('subscription.index')
                         ? 'bg-zinc-950/5 dark:bg-white/5 text-zinc-900 dark:text-white ring-1 ring-inset ring-zinc-900/10 dark:ring-white/10'
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
-                {{ __('navigation.subscriptions') }}
+                {{ __('navigation.subscription') }}
             </a>
         </div>
 

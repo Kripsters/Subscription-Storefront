@@ -20,7 +20,7 @@ class CartItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Cart-Items';
+    protected static ?string $recordTitleAttribute = 'cart_id';
 
     public static function form(Schema $schema): Schema
     {

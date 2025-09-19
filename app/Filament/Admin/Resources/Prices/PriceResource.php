@@ -20,7 +20,7 @@ class PriceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Prices';
+    protected static ?string $recordTitleAttribute = 'plan';
 
     public static function form(Schema $schema): Schema
     {
