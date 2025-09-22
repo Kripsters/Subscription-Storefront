@@ -15,18 +15,20 @@ use App\Models\PaymentHistory;
 use App\Models\User;
 use App\Notifications\PaymentSuccessNotification;
 
+
+
+
 class StripeWebhookController extends Controller
 {
     public function handleWebhook(Request $request)
     {
         // The raw JSON payload sent by Stripe
         $payload = $request->getContent();
-
         // Signature header used to verify payload authenticity
         $sigHeader = $request->header('Stripe-Signature');
-
         // Secret used to validate signature (configured in Stripe Dashboard)
         $secret = env('STRIPE_WEBHOOK_SECRET');
+
 
         try {
             // Verify the webhook signature and construct a strongly-typed Event
@@ -37,6 +39,7 @@ class StripeWebhookController extends Controller
             return response()->json(['error' => 'Invalid payload'], 400);
         }
 
+
         // Log the event metadata.
         // ⚠️ Consider redacting payload or logging only IDs in production to avoid storing PII.
         Log::info('✅ Stripe Event Received', [
@@ -46,16 +49,17 @@ class StripeWebhookController extends Controller
 
 
 
-            // Handle the event based on its type
+            
 
+        // Handle the event based on its type
+        switch ($event->type) { 
 
-        switch ($event->type) {
-            case 'checkout.session.completed':
-                // Fires when a Checkout Session is successfully completed
+            case 'checkout.session.completed': // Fires when a Checkout Session is successfully completed
+                // Log the Checkout Session object
                 Log::info('session: ' . json_encode($event->data->object));
                 $session = $event->data->object;
 
-                // These are custom values you attached to the Checkout Session at creation time
+                // These are custom values attached to the Checkout Session at creation time
                 $userId = $session->metadata->user_id ?? null;
                 $cartId = $session->metadata->cart ?? null;
 
@@ -143,7 +147,7 @@ class StripeWebhookController extends Controller
 
                         if ($subscription) { // Ensure the subscription exists
                             foreach ($cartItems as $item) {
-                                
+
                                 // TODO: Eager-load products and ensure $subscription is set before this block.
                                 // Store each item as a SubscriptionOrder
                                 SubscriptionOrder::updateOrCreate([

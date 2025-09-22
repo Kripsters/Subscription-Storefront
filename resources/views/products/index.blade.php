@@ -38,16 +38,21 @@
     </div>
 
     <!-- Results -->
-    @if ($products->count())
+    @if ($products->count()) <!-- If there are products that match the search -->
+
         <!-- Pagination Top -->
         <div class="pt-6 px-6 flex items-center justify-center">
-            @if ($products->previousPageUrl())
+
+
+            @if ($products->previousPageUrl()) <!-- If there is a previous page -->
                 <a class="px-3 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                 href="{{ $products->previousPageUrl() }}">
                     <
                 </a>
             @endif
-            <div class="flex items-center space-x-2">
+
+
+            <div class="flex items-center space-x-2"> <!-- Pagination numbers -->
                 @for ($i = max(1, $products->currentPage() - 2); $i <= min($products->lastPage(), $products->currentPage() + 2); $i++)
                     <button type="button"
                         class="px-3 py-1 rounded-lg text-sm font-medium {{ $i === $products->currentPage() ? 'bg-indigo-600 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
@@ -56,17 +61,20 @@
                     </button>
                 @endfor
             </div>
-            @if ($products->nextPageUrl())
+
+
+            @if ($products->nextPageUrl()) <!-- If there is a next page -->
                 <a class="px-3 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                 href="{{ $products->nextPageUrl() }}">
                     >
                 </a>
             @endif
-        </div>
+
+        </div> <!-- End of pagination -->
 
         <!-- Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-            @foreach ($products as $item)
+            @foreach ($products as $item) <!-- For each product -->
                 <div class="group relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-sm hover:shadow-lg transition p-4 flex flex-col">
                     
                     <!-- Image -->
@@ -92,44 +100,30 @@
                         ${{ $item->price }}
                     </div>
 
-                    <!-- Actions -->
+                    <!-- Action(s) -->
                     <div class="mt-4 flex justify-between items-center">
-                        @if (auth()->check() && auth()->user()->role == 'admin')
-                            <div class="flex space-x-2">
-                                <a href="{{ route('products.edit', $item->id) }}"
-                                   class="px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-400">
-                                   Edit
-                                </a>
-                                <form method="POST" action="{{ route('products.delete', $item->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="px-3 py-1 bg-red-600 text-white text-sm rounded-md hover:bg-red-500 focus:ring-2 focus:ring-red-400">
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        @else
-                            <form method="POST" action="{{ route('cart.add') }}" class="flex items-center gap-2">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $item->id }}">
-                                <input type="number" name="quantity" value="1" min="1"
-                                       class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                                <button type="submit"
-                                        class="px-3 py-1 bg-lime-500 text-white text-sm rounded-md hover:bg-lime-400 focus:ring-2 focus:ring-lime-400 transition duration-300 ease-in-out">
-                                    {{ __('product.add_to_cart') }}
-                                </button>
-                            </form>
-                        @endif
+                        
+                        <!-- Add to cart -->
+                        <form method="POST" action="{{ route('cart.add') }}" class="flex items-center gap-2">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $item->id }}">
+                            <input type="number" name="quantity" value="1" min="1"
+                                    class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                            <button type="submit"
+                                    class="px-3 py-1 bg-lime-500 text-white text-sm rounded-md hover:bg-lime-400 focus:ring-2 focus:ring-lime-400 transition duration-300 ease-in-out">
+                                {{ __('product.add_to_cart') }}
+                            </button>
+                        </form>
+
                     </div>
                 </div>
-            @endforeach
+            @endforeach <!-- End of product foreach -->
         </div>
     @else
         <!-- No results -->
         <div class="text-center text-2xl font-bold text-zinc-700 dark:text-zinc-200 py-10">
             {{ __('product.no_results') }}
         </div>
-    @endif
+    @endif <!-- End of product search if -->
 </x-app-layout>
 

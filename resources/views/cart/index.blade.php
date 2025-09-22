@@ -109,43 +109,36 @@ foreach($cart->items as $item) {
 
   <!-- Subscription Plans -->
   <div class="mt-10 flex justify-center">
-    @if ($cart->subtotal <= $prices[0]->price-10)
-      <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">{{ __('cart.basic_title') }}</h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[0]->price }} / {{ __('cart.month') }}</p>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.basic_subtext') }}</p>
-        <button id="subscribe-button-basic"
-          class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-          {{ __('cart.subscribe') }}
-        </button>
-      </div>
-    @elseif ($cart->subtotal > $prices[0]->price-10 && $cart->subtotal <= $prices[1]->price-10)
-      <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">{{ __('cart.medium_title') }}</h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[1]->price }} / {{ __('cart.month') }}</p>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.medium_subtext') }}</p>
-        <button id="subscribe-button-medium"
-          class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-          {{ __('cart.subscribe') }}
-        </button>
-      </div>
-    @elseif ($cart->subtotal > $prices[1]->price-10 && $cart->subtotal <= $prices[2]->price-10)
-      <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3 text-zinc-900 dark:text-zinc-100">{{ __('cart.advanced_title') }}</h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-2">€{{ $prices[2]->price }} / {{ __('cart.month') }}</p>
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">{{ __('cart.advanced_subtext') }}</p>
-        <button id="subscribe-button-advanced"
-          class="px-6 py-3 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-          {{ __('cart.subscribe') }}
-        </button>
-      </div>
-    @elseif ($cart->subtotal > $prices[2]->price-10)
-      <div class="w-full max-w-sm bg-white dark:bg-zinc-800 shadow-lg rounded-2xl p-8 text-center">
-        <h2 class="text-2xl font-bold mb-3 text-red-600">{{ __('cart.total_exceeded') }}</h2>
-        <p class="text-zinc-600 dark:text-zinc-400">{{ __('cart.total_exceeded_subtext') }}</p>
-      </div>
+    @if ($cart->subtotal <= $prices[0]->price - 10)
+        <x-subscription-card 
+            :title="__('cart.basic_title')" 
+            :price="$prices[0]->price" 
+            :subtext="__('cart.basic_subtext')" 
+            id="basic" 
+            :error="false" />
+    @elseif ($cart->subtotal > $prices[0]->price - 10 && $cart->subtotal <= $prices[1]->price - 10)
+        <x-subscription-card 
+            :title="__('cart.medium_title')" 
+            :price="$prices[1]->price" 
+            :subtext="__('cart.medium_subtext')" 
+            id="medium" 
+            :error="false" />
+    @elseif ($cart->subtotal > $prices[1]->price - 10 && $cart->subtotal <= $prices[2]->price - 10)
+        <x-subscription-card 
+            :title="__('cart.advanced_title')" 
+            :price="$prices[2]->price" 
+            :subtext="__('cart.advanced_subtext')" 
+            id="advanced" 
+            :error="false" />
+    @elseif ($cart->subtotal > $prices[2]->price - 10)
+        <x-subscription-card 
+            :title="__('cart.total_exceeded')" 
+            :price="null" 
+            :subtext="__('cart.total_exceeded_subtext')" 
+            id="exceeded" 
+            :error="true" />
     @endif
-  </div>
+</div>
 
   <!-- Stripe Checkout -->
   <script>
