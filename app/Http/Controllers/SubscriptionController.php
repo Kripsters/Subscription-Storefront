@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\PaymentHistory;
-use Faker\Provider\ar_EG\Payment;
 use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
@@ -34,6 +32,7 @@ class SubscriptionController extends Controller
     }
 
 
+
     // Cancel a user's subscription
     public function cancel(Request $request)
     {
@@ -53,6 +52,7 @@ class SubscriptionController extends Controller
         // Redirect back with a success message
         return back()->with('status', 'Subscription will be canceled at the end of this billing period.');
     }
+
 
 
 

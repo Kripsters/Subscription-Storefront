@@ -20,6 +20,7 @@ use App\Notifications\PaymentSuccessNotification;
 
 class StripeWebhookController extends Controller
 {
+    //The one and only function as all events are handled here
     public function handleWebhook(Request $request)
     {
         // The raw JSON payload sent by Stripe
@@ -69,6 +70,7 @@ class StripeWebhookController extends Controller
 
                         // Set API key to allow server-side SDK calls
                         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
                         // Retrieve the Stripe Subscription created by Checkout (if it was a subscription flow)
                         $subscription_info = \Stripe\Subscription::retrieve($session->subscription);
 
@@ -106,8 +108,7 @@ class StripeWebhookController extends Controller
                         );
 
 
-                        // Record the initial payment in your ledger/history.
-                        // ⚠️ Make this idempotent by unique constraint on payment_intent or invoice ID.
+                        // Record the initial payment.
                         PaymentHistory::create([
                             'user_id' => $userId,
                             'stripe_payment_intent_id' => $session->payment_intent,
@@ -129,7 +130,7 @@ class StripeWebhookController extends Controller
                             json_encode(data_get($session, 'shipping.address', []))
                         ));
 
-                    } catch (\Exception $e) {
+                    } catch (\Exception $e) {  //Catch any errors
 
                         // Log any failures in saving subscription or payment history
                         Log::error("DB Save Failed: " . $e->getMessage());
@@ -175,7 +176,7 @@ class StripeWebhookController extends Controller
                         $cart->items()->delete();
                         $cart->delete();
 
-                    } catch (\Exception $e) {
+                    } catch (\Exception $e) { // Catch any errors and log them
                         Log::error("Order Save Failed: " . $e->getMessage());
                     }
                 } // end if $userId
@@ -212,9 +213,11 @@ class StripeWebhookController extends Controller
 
                 // Subscription canceled webhook
             case 'customer.subscription.deleted':
+
                 // Fires when a subscription is canceled (by you or via dunning)
                 $subscription = $event->data->object;
 
+                // Update subscription to canceled
                 Subscription::where('stripe_subscription_id', $subscription->id)
                     ->update(['status' => 'canceled']);
                 break;
