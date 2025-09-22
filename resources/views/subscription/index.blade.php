@@ -42,7 +42,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                 </p>
                 <p class="font-normal text-zinc-700 dark:text-zinc-300">
                     {{ __('subscription.shipping_address') }} 
-                    
+
                     @if ($shipping_address)  
                     <!-- If shipping address is set, display it, 
                         else display "Shipping address is same as billing address" -->
@@ -60,7 +60,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
 
 
                 <!-- Confirmation Modal -->
-        <div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden backdrop-blur-md">
             <div class="bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-6 w-full max-w-md">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4" id="modal-title">{{ __('subscription.confirm_action') }}</h2>
                 <p class="text-gray-600 dark:text-gray-300 mb-6" id="modal-message">{{ __('subscription.confirm_message') }}</p>
