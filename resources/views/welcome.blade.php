@@ -28,10 +28,10 @@
                 </h1>
                 <div class="p-6">
                     <x-primary-button class="w-full">
-                        <a href="{{route('login')}}">{{ __('welcome.login') }}</a>
+                        <a href="{{route('login')}}" class="w-full block text-center">{{ __('welcome.login') }}</a>
                     </x-primary-button>
                     <x-primary-button class="w-full mt-4">
-                        <a href="{{route('register')}}">{{ __('welcome.register') }}</a>
+                        <a href="{{route('register')}}" class="w-full block text-center">{{ __('welcome.register') }}</a>
                     </x-primary-button>
                 </div>
             </div>

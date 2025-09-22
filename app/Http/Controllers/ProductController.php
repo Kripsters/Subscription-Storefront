@@ -7,10 +7,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
+    // Display all products
      public function index(Request $request)
      {
          $perPage = $request->integer('per_page', 12); // default page size
@@ -25,20 +22,25 @@ class ProductController extends Controller
  
 
 
+     // Process search request
      public function search(Request $request)
      {
+         // Validate the request
          $validated = $request->validate([
              'search'   => 'nullable|string|max:100',
              'order'    => 'nullable|in:asc,desc,price_asc,price_desc',
              'per_page' => 'nullable|integer|min:1|max:100',
          ]);
  
+         // Get the search term, order, and per_page
          $term    = $validated['search'] ?? null;
          $order   = $validated['order'] ?? null;
          $perPage = $validated['per_page'] ?? 12;
  
+         // Build the query
          $builder = Product::query();
  
+         // Apply the search term
          if ($term) {
              $builder->where(function ($q) use ($term) {
                  $q->where('title', 'LIKE', "%{$term}%")
@@ -46,7 +48,10 @@ class ProductController extends Controller
              });
          }
  
+         // Apply the order
          if ($order) {
+
+            // Switch the order based on the value
              switch ($order) {
                  case 'price_asc':
                      $builder->orderBy('price', 'asc');
@@ -59,80 +64,20 @@ class ProductController extends Controller
              }
          }
  
+         // Get the products, now with order applied
          $products = $builder
              ->paginate($perPage)
              ->withQueryString();
  
+         // Return the view
          return view('products.index', compact('products'));
      }
- 
 
-    public function addToCart($id)
-    {
-        $productId = $id;
-        $product = Product::find($productId);
-
-        if (!$product) {
-            return redirect()->route('products.index')->with('error', 'Product not found!');
-        }
-
-        // Add product to cart
-        $cart = session()->get('cart', []);
-        $cart[$productId] = [
-            'name' => $product->title,
-            'price' => $product->price,
-        ];
-        session()->put('cart', $cart);
-        dd(session()->all());
-        return redirect()->route('products.index')->with('success', 'Product added to cart successfully!');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
+    // Route to show a specific product
     public function show($id)
     {
         $product = Product::find($id);
         return view('products.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
-    }
 }
