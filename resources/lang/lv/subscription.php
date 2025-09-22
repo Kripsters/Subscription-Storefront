@@ -21,6 +21,7 @@ return [
     'pause_message' => 'Vai tiešām vēlaties apturēt savu abonementu? Abonements tiks apturēts pašreizējā norēķinu perioda beigās.',
     'cancel_message' => 'Vai tiešām vēlaties atcelt savu abonementu? Abonements tiks atcelts pašreizējā norēķinu perioda beigās.',
     'payments_title' => 'Maksājumu vēsture',
+    'payments_empty' => 'Nav maksājumu vēsture',
     'date' => 'Datums',
     'amount' => 'Summa',
     'status' => 'Statuss',

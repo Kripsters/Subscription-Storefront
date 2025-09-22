@@ -21,6 +21,7 @@ return [
     'pause_message' => 'Are you sure you want to pause your subscription? The subscription will be paused at the end of the current billing period.',
     'cancel_message' => 'Are you sure you want to cancel your subscription? The subscription will be canceled at the end of the current billing period.',
     'payments_title' => 'Payment History',
+    'payments_empty' => 'No payment history',
     'date' => 'Date',
     'amount' => 'Amount',
     'status' => 'Status',
