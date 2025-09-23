@@ -15,15 +15,22 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-zinc-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-zinc-100 dark:bg-zinc-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-zinc-500 animate-pulse">
-                    </x-application-logo>
-                </a>
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative">
+            <!-- Background layer -->
+            <div class="absolute inset-0 bg-no-repeat bg-center bg-cover" 
+                 style="background-image: url('storage/images/background-guest.jpg'); filter: blur(10px);">
             </div>
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-zinc dark:bg-zinc-800 shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+    
+            <!-- Content layer -->
+            <div class="relative z-10">
+                <div class="bg-zinc-100/70 dark:bg-zinc-800/70 sm:rounded-lg flex items-center justify-center"> 
+                    <a href="/">
+                        <x-application-logo class="w-20 h-20 fill-current text-zinc-800 dark:text-zinc-200 animate-pulse" />
+                    </a>
+                </div>
+                <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-zinc-100/70 dark:bg-zinc-800/70 shadow-md overflow-hidden sm:rounded-lg">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
     </body>

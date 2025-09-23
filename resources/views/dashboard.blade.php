@@ -12,7 +12,7 @@
             <x-about-card :title="__('dashboard.welcome')" :subtext="__('dashboard.welcome_subtext')"> </x-about-card>
 
             
-            <div class="bg-gradient-to-r from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900 overflow-hidden shadow-xl dark:shadow-zinc-800 sm:rounded-2xl hover:shadow-2xl transition">
+            <div class="bg-gradient-to-r from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900 overflow-hidden shadow-xl dark:shadow-zinc-800 sm:rounded-2xl hover:shadow-2xl dark:hover:shadow-zinc-700 dark:hover:shadow-xl transition">
                 <!-- Cards Section -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
                     
