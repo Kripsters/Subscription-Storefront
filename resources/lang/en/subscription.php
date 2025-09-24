@@ -26,5 +26,7 @@ return [
     'amount' => 'Amount',
     'status' => 'Status',
     'plan' => 'Subscription Plan',
+    'paid' => 'Paid',
+    'unpaid' => 'Unpaid',
 ];  
 ?>

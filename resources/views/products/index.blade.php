@@ -75,6 +75,11 @@
         <!-- Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
             @foreach ($products as $item) <!-- For each product -->
+                @php
+                    // Adjust this number to how many product cards are visible on initial load
+                    $isAboveFold = $loop->index < 4;
+                @endphp
+
                 <div class="group relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-sm hover:shadow-lg transition p-4 flex flex-col">
                     
                     <!-- Image -->
@@ -82,7 +87,14 @@
                         <img class="rounded-lg shadow-md mx-auto w-full h-48 object-cover group-hover:scale-105 transition"
                              src="{{ asset($item->image) }}"
                              alt="{{ __('product.img_alt'). $item->title }}"
-                             loading="lazy" />
+                             @if ($isAboveFold) 
+                             loading="eager"
+                             fetchpriority="high"
+                             @else  
+                             loading="lazy"
+                             fetchpriority="low"
+                             @endif 
+                             decoding="async"/>
                     </a>
 
                     <!-- Info -->

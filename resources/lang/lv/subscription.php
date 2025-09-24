@@ -26,5 +26,7 @@ return [
     'amount' => 'Summa',
     'status' => 'Statuss',
     'plan' => 'Abonementa plāns',
+    'paid' => 'Samaksāts',
+    'unpaid' => 'Nesamaksāts',
 ];  
 ?>

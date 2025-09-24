@@ -18,53 +18,64 @@
         <div class="min-h-screen bg-zinc-100 dark:bg-zinc-900">
             @include('layouts.navigation')
 
-            @if (request()->routeIs('dashboard'))
+
+
+            @if (request()->routeIs('dashboard')) <!-- If the current route is dashboard -->
                 <div class="absolute inset-0 overflow-hidden">
                     <!-- Slideshow container -->
-                    <div id="slideshow" class="absolute inset-0">
-                        <div class="slide absolute inset-0 bg-cover bg-center filter blur-[10px] opacity-100 transition-opacity duration-1000"></div>
-                        <div class="slide absolute inset-0 bg-cover bg-center filter blur-[10px] opacity-0 transition-opacity duration-1000"></div>
-                    </div>
+                    <div id="slideshow" class="absolute inset-0"></div>
                 </div>
 
+                {{-- JS for slideshow --}}
                 <script>
                         document.addEventListener("DOMContentLoaded", () => {
+
+                        const numImages = 4; // configurable number of images
+                        const images = []; // set image array
+
+                        for (let i = 1; i <= numImages; i++) {
+                        images.push(`storage/images/background-dash-${i}.jpg`); // add image URLs to array from 1 to numImages
+                        }
+                        
+
+
+                        const slideshow = document.getElementById("slideshow");
+
+                        // Create slides dynamically
+                        images.forEach((src, i) => {
+                            const slide = document.createElement("div");
+                            slide.className =
+                            "slide absolute inset-0 bg-cover bg-center filter blur-[10px] transition-opacity duration-1000 " +
+                            (i === 0 ? "opacity-100" : "opacity-0");
+                            slide.style.backgroundImage = `url(${src})`;
+                            slideshow.appendChild(slide);
+                        });
+                        
+
+                        
                         const slides = document.querySelectorAll("#slideshow .slide");
-
-                        const images = [
-                            "storage/images/background-dash-1.jpg",
-                            "storage/images/background-dash-2.jpg"
-                        ];
-
                         let current = 0;
-                        let next = 1;
-
-                        // Set initial images
-                        slides[current].style.backgroundImage = `url(${images[current]})`;
-                        slides[next].style.backgroundImage = `url(${images[next]})`;
-
+                        
                         function changeSlide() {
+                            const next = (current + 1) % slides.length;
+                        
                             // Fade out current
                             slides[current].classList.remove("opacity-100");
                             slides[current].classList.add("opacity-0");
-
+                        
                             // Fade in next
                             slides[next].classList.remove("opacity-0");
                             slides[next].classList.add("opacity-100");
-
-                            // Cycle indices
+                        
                             current = next;
-                            next = (next + 1) % images.length;
-
-                            // Preload upcoming image
-                            slides[next].style.backgroundImage = `url(${images[next]})`;
                         }
-
+                        
                         setInterval(changeSlide, 5000); // switch every 5s
                         });
-
                     </script>
+                    {{-- JS end --}}
             @endif
+            {{-- End of dashboard if --}}
 
 
 
@@ -81,6 +92,7 @@
                 </video>
             </div> --}}
 
+            
             <div class="relative z-10">
                                 <!-- Page Heading -->
                                 @isset($header)

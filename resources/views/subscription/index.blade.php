@@ -89,7 +89,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                         <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                         data-action={{ __('subscription.resume') }}
                         data-message='{{ __('subscription.resume_message') }}'>
-                            Resume
+                            {{ __('subscription.resume') }}
                         </button>
                     </form>
                 @elseif ($subscription->status === 'active')
@@ -154,7 +154,7 @@ $shipping_address = json_decode($subscription->shipping_address, true);
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
                                         {{ $payment->status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                        {{ ucfirst($payment->status) }}
+                                        {{ $payment->status === 'paid' ? __('subscription.paid') : __('subscription.unpaid') }} 
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-white">
