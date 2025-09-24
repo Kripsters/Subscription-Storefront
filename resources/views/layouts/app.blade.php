@@ -109,5 +109,36 @@
             </div>
             <x-footer />
         </div>
+        <script>
+            const themeToggle = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light');
+            const darkIcon = document.getElementById('theme-toggle-dark');
+        
+            // On page load -> set icon
+            if (localStorage.theme === 'dark' || 
+                (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            }
+        
+            // On click -> toggle
+            themeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('theme', 'dark');
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                }
+            });
+        </script>
     </body>
 </html>

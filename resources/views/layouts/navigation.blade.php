@@ -45,6 +45,13 @@
 
             <!-- Right: User dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-64">
+                                    
+                    <!-- Dark mode toggle -->
+                    <button id="theme-toggle" 
+                        class="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition sm:mx-12">
+                        <span id="theme-toggle-light" class="hidden">🌙</span>
+                        <span id="theme-toggle-dark" class="hidden">🌞</span>
+                    </button>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
