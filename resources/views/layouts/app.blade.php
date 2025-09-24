@@ -21,9 +21,9 @@
 
 
             @if (request()->routeIs('dashboard')) <!-- If the current route is dashboard -->
-                <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute inset-0 overflow-hidden border-2 sm:border-4 rounded-2xl border-zinc-800 dark:border-zinc-200">
                     <!-- Slideshow container -->
-                    <div id="slideshow" class="absolute inset-0"></div>
+                    <div id="slideshow" class="absolute inset-0 h-full"></div>
                 </div>
 
                 {{-- JS for slideshow --}}
@@ -96,7 +96,7 @@
             <div class="relative z-10">
                                 <!-- Page Heading -->
                                 @isset($header)
-                                    <header class="bg-zinc-50/70 dark:bg-zinc-800 shadow">
+                                    <header class="bg-zinc-50/70 dark:bg-zinc-900/60 shadow">
                                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                                             {{ $header }}
                                         </div>
@@ -107,6 +107,7 @@
                     {{ $slot }}
                 </main>
             </div>
+            <x-footer />
         </div>
     </body>
 </html>
