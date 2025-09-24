@@ -21,7 +21,7 @@
 
 
             @if (request()->routeIs('dashboard')) <!-- If the current route is dashboard -->
-                <div class="absolute inset-0 overflow-hidden border-2 sm:border-4 rounded-2xl border-zinc-800 dark:border-zinc-200">
+                <div class="absolute inset-0 overflow-hidden border-2 sm:border-4 rounded-2xl border-zinc-800/70 dark:border-zinc-200/70">
                     <!-- Slideshow container -->
                     <div id="slideshow" class="absolute inset-0 h-full"></div>
                 </div>
