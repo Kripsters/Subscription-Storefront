@@ -1,7 +1,7 @@
 <?php 
-if (isset($subscription->billing_address)) {
-$billing_address = json_decode($subscription->billing_address, true);
-$shipping_address = json_decode($subscription->shipping_address, true);
+if (isset($address)) {
+$billing_address = json_decode($address->billing, true);
+$shipping_address = json_decode($address->shipping, true);
 
 }
 ?>

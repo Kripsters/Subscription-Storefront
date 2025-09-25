@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,10 @@ class ProductController extends Controller
              ->orderBy('title', 'asc') // or created_at desc
              ->paginate($perPage)
              ->withQueryString();      // keep ?per_page etc. in pagination links
+
+         foreach ($products as $product) {
+             $product->category = Category::find($product->category_id)->name;
+         }
  
          return view('products.index', compact('products'));
      }
