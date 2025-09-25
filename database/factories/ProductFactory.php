@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'title' => fake()->words(3, true),
             'description' => fake()->sentence(),
             'price' => fake()->randomFloat(2, 5, 200), // price between 5 and 200
-            'category' => fake()->randomElement(['tools', 'books', 'accessories', 'software']),
+            'category_id' => fake()->numberBetween(0, 11),
             'image' => '/storage/images/' . fake()->randomElement([
                 'Debugging-Duck.jpg',
                 'Eloquent-JavaScript-Book.jpg',

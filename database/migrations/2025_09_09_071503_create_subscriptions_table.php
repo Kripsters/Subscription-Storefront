@@ -29,8 +29,8 @@ return new class extends Migration
     
             $table->string('billing_name')->nullable();
             $table->string('billing_email')->nullable();
-            $table->json('billing_address')->nullable();
-            $table->json('shipping_address')->nullable();
+            // $table->json('billing_address')->nullable();
+            // $table->json('shipping_address')->nullable();
             
             $table->timestamps();
         });

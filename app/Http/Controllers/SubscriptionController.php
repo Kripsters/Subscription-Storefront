@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\PaymentHistory;
+use App\Models\Address;
 use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
@@ -14,6 +15,7 @@ class SubscriptionController extends Controller
     {
         // Fetch the user's subscription
         $subscription = Subscription::where('user_id', auth()->id())->first();
+        $address = Address::where('user_id', auth()->id())->first();
         
         // Check if there are any payment histories for the user
         if (PaymentHistory::where('user_id', auth()->id())->exists()) {
@@ -28,7 +30,7 @@ class SubscriptionController extends Controller
         }
 
         // Pass the subscription and payments to the view
-        return view('subscription.index', compact('subscription', 'payments'));
+        return view('subscription.index', compact('subscription', 'payments', 'address'));
     }
 
 

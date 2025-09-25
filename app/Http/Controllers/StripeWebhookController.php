@@ -9,6 +9,7 @@ use App\Models\SubscriptionOrder;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\Address;
 use Stripe\Stripe;
 use Stripe\Webhook;
 use App\Models\PaymentHistory;
@@ -92,8 +93,6 @@ class StripeWebhookController extends Controller
                             // Billing & shipping details captured by Checkout
                             'billing_name'      => data_get($session, 'customer_details.name'),
                             'billing_email'     => data_get($session, 'customer_details.email'),
-                            'billing_address'   => json_encode(data_get($session, 'customer_details.address', [])),
-                            'shipping_address'  => json_encode(data_get($session, 'shipping.address', [])),
                         ];
 
 
@@ -106,6 +105,14 @@ class StripeWebhookController extends Controller
                             ['user_id' => $userId],
                             $subscription_data
                         );
+
+                        Address::updateOrCreate(
+                            ['user_id' => $userId],
+                            [
+                                'billing' => json_encode(data_get($session, 'customer_details.address', [])),
+                                'shipping' => json_encode(data_get($session, 'shipping.address', [])),
+                            ]
+                            );
 
 
                         // Record the initial payment.
