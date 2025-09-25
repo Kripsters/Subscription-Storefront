@@ -86,7 +86,7 @@
                     loop 
                     muted 
                     playsinline 
-                    class="w-full h-auto object-cover filter blur-[10px]"
+                    class="w-full h-full object-cover filter blur-[10px]"
                 >
                     <source src="storage/videos/background-video.mp4" type="video/mp4">
                     Your browser does not support the video tag.
