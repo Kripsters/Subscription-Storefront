@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Stripe\Stripe;
-use Stripe\Checkout\Session;
+use Stripe\Checkout\Session as CheckoutSession;
+use Carbon\Carbon;
 class PaymentController extends Controller
 {
     // Subscription view (This should be index page)
@@ -16,69 +17,67 @@ class PaymentController extends Controller
     // Process subscription
     public function session(Request $request)
     {
-        
-        try{ // Create a Stripe Checkout Session | The entire function is wrapped in a try/catch block to handle errors
-        // Get the cart and plan
-        $cart = $request->input('cart');
-        $plan = $request->input('plan');
+      
+    $cart = $request->input('cart');
+    $plan = $request->input('plan');
 
-        // Set your Stripe API key
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+    Stripe::setApiKey(config('services.stripe.secret'));
 
-        // Get the price ID based on the selected plan
-        switch ($plan) {
-            case 'basic':
-                $priceId = env('STRIPE_SUBSCRIPTION_PRICE_BASIC');
-                break;
-            case 'medium':
-                $priceId = env('STRIPE_SUBSCRIPTION_PRICE_MEDIUM');
-                break;
-            case 'advanced':
-                $priceId = env('STRIPE_SUBSCRIPTION_PRICE_ADVANCED');
-                break;
-            default:
-                return response()->json(['error' => 'Invalid plan selected'], 400);
-        }
+    switch ($plan) {
+        case 'basic':
+            $priceId = env('STRIPE_SUBSCRIPTION_PRICE_BASIC');
+            break;
+        case 'medium':
+            $priceId = env('STRIPE_SUBSCRIPTION_PRICE_MEDIUM');
+            break;
+        case 'advanced':
+            $priceId = env('STRIPE_SUBSCRIPTION_PRICE_ADVANCED');
+            break;
+        default:
+            return response()->json(['error' => 'Invalid plan selected'], 400);
+    }
 
-        // Create the Stripe Checkout Session
-        $session = Session::create([
-            
+    try {
+        // Build absolute URLs (route() returns absolute by default if APP_URL is set)
+        $successUrl = route('success') . '?session_id={CHECKOUT_SESSION_ID}';
+        $cancelUrl  = route('cancel');
+
+        $session = CheckoutSession::create([
+            'client_reference_id' => auth()->id(),
+            'mode' => 'subscription',
+
+            // ✅ absolute URLs required by Stripe
+            'success_url' => $successUrl,
+            'cancel_url'  => $cancelUrl,
+
             'payment_method_types' => ['card'],
-
-            // Addresses
             'billing_address_collection' => 'required',
             'shipping_address_collection' => [
                 'allowed_countries' => ['LV'],
             ],
 
-            // Line items
             'line_items' => [[
-                'price' => $priceId,
+                'price'    => $priceId,
                 'quantity' => 1,
             ]],
 
-            // Payment
-            'mode' => 'subscription',
-            'success_url' => route('success'),
-            'cancel_url' => route('cancel'),
-            'metadata' => [
-                // Metadata
-                'user_id' => auth()->id(),
-                'price_id' => $priceId,
-                'cart' => $cart,
-            ],
-            // Promo Codes allowed
             'allow_promotion_codes' => true,
+
+            // Metadata must be strings; JSON-encode arrays/objects
+            'metadata' => [
+                'user_id'  => (string) auth()->id(),
+                'price_id' => $priceId,
+                'cart'     => is_string($cart) ? $cart : json_encode($cart),
+            ],
         ]);
 
-        // Return the session ID
         return response()->json(['id' => $session->id]);
+    } catch (\Throwable $e) {
+        // Log full Stripe error for you; return a generic error to the client
+        \Log::error('Checkout Session create failed', ['error' => $e->getMessage()]);
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
 
-
-        } catch (\Exception $e) { // Catch exceptions
-            // Handle errors by returning a JSON response
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
     } // End of session function
 
 

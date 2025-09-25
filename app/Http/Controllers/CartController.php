@@ -34,6 +34,7 @@ class CartController extends Controller
         $cartItems = CartItem::where('cart_id', $cartId)->get();
         $prices = Price::all();
 
+        $cart->items->each->makeHidden(['product']);
         // Return view
         return view('cart.index', compact('cart','prices'));
     }

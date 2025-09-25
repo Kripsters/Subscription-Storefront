@@ -141,32 +141,53 @@ foreach($cart->items as $item) {
 </div>
 
   <!-- Stripe Checkout -->
-  <script>
-    const stripe = Stripe("{{ config('services.stripe.key') }}"); 
-    const cartId = @json($cart->id);
+  
+<script>
+  const stripe = Stripe("{{ config('services.stripe.key') }}");
+  const cartId = @json($cart->id);
 
-    const setupButton = (id, plan) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.addEventListener("click", () => {
-          fetch("{{ route('subscription.session') }}", {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ cart: cartId, plan })
-          })
-          .then(res => res.json())
-          .then(data => stripe.redirectToCheckout({ sessionId: data.id }));
-        });
-      }
-    };
+  async function createCheckoutSession(plan) {
+    const res = await fetch("{{ route('subscription.session') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+      },
+      body: JSON.stringify({ cart: cartId, plan })
+    });
 
-    setupButton("subscribe-button-basic", "basic");
-    setupButton("subscribe-button-medium", "medium");
-    setupButton("subscribe-button-advanced", "advanced");
-  </script>
+    const data = await res.json();
+    if (!res.ok || !data?.id) {
+      throw new Error(data?.error || "Unable to create Stripe session.");
+    }
+    return data.id;
+  }
+
+  function wireSubscribeButtons() {
+    // Use data attributes to avoid hard-coding multiple IDs
+    document.querySelectorAll("[data-subscribe][data-plan]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        btn.classList.add("opacity-70", "cursor-not-allowed");
+
+        try {
+          const sessionId = await createCheckoutSession(btn.dataset.plan);
+          const { error } = await stripe.redirectToCheckout({ sessionId });
+          if (error) throw error;
+        } catch (err) {
+          console.error(err);
+          alert(err.message || "Checkout failed. Please try again.");
+        } finally {
+          btn.disabled = false;
+          btn.classList.remove("opacity-70", "cursor-not-allowed");
+        }
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", wireSubscribeButtons);
+</script>
+
 
   @else
     <p class="mt-6 text-lg font-medium text-zinc-600 dark:text-zinc-400">

@@ -29,8 +29,14 @@ class SubscriptionController extends Controller
             $payments = [];
         }
 
+        if (isset($address)) {
+            $billing_address = json_decode($address->billing, true);
+            $shipping_address = json_decode($address->shipping, true);
+            
+            }
+
         // Pass the subscription and payments to the view
-        return view('subscription.index', compact('subscription', 'payments', 'address'));
+        return view('subscription.index', compact('subscription', 'payments', 'address', 'billing_address', 'shipping_address'));   
     }
 
 

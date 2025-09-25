@@ -57,136 +57,126 @@ class StripeWebhookController extends Controller
         switch ($event->type) { 
 
             case 'checkout.session.completed': // Fires when a Checkout Session is successfully completed
-                // Log the Checkout Session object
-                Log::info('session: ' . json_encode($event->data->object));
-                $session = $event->data->object;
+                                    // Log the raw Checkout Session object we received in the event
+                    Log::info('session: ' . json_encode($event->data->object));
 
-                // These are custom values attached to the Checkout Session at creation time
-                $userId = $session->metadata->user_id ?? null;
-                $cartId = $session->metadata->cart ?? null;
+                    $session = $event->data->object;
 
-                    
-                if ($userId) { // Ensure we have a user ID to associate the subscription and payment history
-                    try { // try to save subscription and payment history
+                    // Read metadata (remember you JSON-encoded `cart` at session creation)
+                    $userId = data_get($session, 'metadata.user_id');
+                    $cartRaw = data_get($session, 'metadata.cart'); // JSON string (may be null)
+                    $cart    = $cartRaw ? json_decode($cartRaw, true) : null;
 
-                        // Set API key to allow server-side SDK calls
-                        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                    if ($userId && $session->mode === 'subscription' && $session->subscription) {
+                        try {
+                            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
-                        // Retrieve the Stripe Subscription created by Checkout (if it was a subscription flow)
-                        $subscription_info = \Stripe\Subscription::retrieve($session->subscription);
+                            // Retrieve the Subscription with the objects we need inline.
+                            // Keep the expand depth <= 4: items.data.price.product (3 levels),
+                            // latest_invoice.payment_intent (2 levels).
+                            $subscription = \Stripe\Subscription::retrieve([
+                                'id' => $session->subscription,
+                                'expand' => [
+                                    'items.data.price.product',
+                                    'latest_invoice.payment_intent',
+                                ],
+                            ]);
 
+                            $firstItem = $subscription->items->data[0] ?? null;
+                            $price     = $firstItem?->price;
+                            $product   = $price?->product;
 
-                        // Build local subscription record payload from Stripe data
-                        $subscription_data = [
-                            'user_id' => $userId,
-                            'stripe_customer_id' => $session->customer,
-                            'stripe_subscription_id' => $session->subscription,
-                            'stripe_price_id' => $session->metadata->price_id ?? null,
-                            'status' => 'active',
-                            'plan_name' => $subscription_info->items->data[0]->plan->nickname,
-                            'amount' => $subscription_info->items->data[0]->plan->amount / 100,
-                            'currency' => strtoupper($subscription_info->items->data[0]->plan->currency),
-                            'interval' => $subscription_info->items->data[0]->plan->interval,
-                            'current_period_start' => $subscription_info->current_period_start ? \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_start) : null,
-                            'current_period_end' => $subscription_info->current_period_end ? \Carbon\Carbon::createFromTimestamp($subscription_info->current_period_end) : null,
+                            // Human-facing “plan” label:
+                            $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
 
-                            // Billing & shipping details captured by Checkout
-                            'billing_name'      => data_get($session, 'customer_details.name'),
-                            'billing_email'     => data_get($session, 'customer_details.email'),
-                        ];
+                            // Amount/currency from the Price (unit_amount is in the smallest currency unit)
+                            $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : null;
+                            $currency = isset($price->currency) ? strtoupper($price->currency) : null;
 
+                            // Billing interval (e.g., month, year)
+                            $interval = $price?->recurring?->interval ?? null;
 
-                        // Log the subscription data being saved
-                        Log::info('Subscription Data: ' . json_encode($subscription_data));
+                            // Subscription period (Unix seconds -> Carbon)
+                            $currentPeriodStart = $subscription->current_period_start
+                                ? \Carbon\Carbon::createFromTimestamp($subscription->current_period_start)
+                                : null;
+                            $currentPeriodEnd = $subscription->current_period_end
+                                ? \Carbon\Carbon::createFromTimestamp($subscription->current_period_end)
+                                : null;
 
+                            // Prefer latest_invoice from the expanded subscription
+                            $invoiceId = is_object($subscription->latest_invoice)
+                                ? $subscription->latest_invoice->id
+                                : $subscription->latest_invoice;
 
-                        // Create or update the local subscription for the user.
-                        $subscription = Subscription::updateOrCreate(
-                            ['user_id' => $userId],
-                            $subscription_data
-                        );
+                            $paymentIntentId = null;
+                            if (is_object($subscription->latest_invoice) && isset($subscription->latest_invoice->payment_intent)) {
+                                $paymentIntentId = is_object($subscription->latest_invoice->payment_intent)
+                                    ? $subscription->latest_invoice->payment_intent->id
+                                    : $subscription->latest_invoice->payment_intent;
+                            }
 
-                        Address::updateOrCreate(
-                            ['user_id' => $userId],
-                            [
-                                'billing' => json_encode(data_get($session, 'customer_details.address', [])),
-                                'shipping' => json_encode(data_get($session, 'shipping.address', [])),
-                            ]
+                            // Build local subscription record payload
+                            $subscription_data = [
+                                'user_id'                 => $userId,
+                                'stripe_customer_id'      => $session->customer,
+                                'stripe_subscription_id'  => $subscription->id,
+                                'stripe_price_id'         => $price?->id ?? data_get($session, 'metadata.price_id'),
+                                'status'                  => $subscription->status, // e.g., 'active', 'trialing'
+                                'plan_name'               => $planName,
+                                'amount'                  => $amount,
+                                'currency'                => $currency,
+                                'interval'                => $interval,
+                                'current_period_start'    => $currentPeriodStart,
+                                'current_period_end'      => $currentPeriodEnd,
+
+                                // Billing details captured by Checkout
+                                'billing_name'            => data_get($session, 'customer_details.name'),
+                                'billing_email'           => data_get($session, 'customer_details.email'),
+                            ];
+
+                            Log::info('Subscription Data: ' . json_encode($subscription_data));
+
+                            // Upsert your local subscription
+                            $subscriptionModel = Subscription::updateOrCreate(
+                                ['user_id' => $userId],
+                                $subscription_data
                             );
 
+                            // Save addresses (as JSON strings)
+                            Address::updateOrCreate(
+                                ['user_id' => $userId],
+                                [
+                                    'billing'  => json_encode(data_get($session, 'customer_details.address', [])),
+                                    'shipping' => json_encode(data_get($session, 'shipping.address', [])),
+                                ]
+                            );
 
-                        // Record the initial payment.
-                        PaymentHistory::create([
-                            'user_id' => $userId,
-                            'stripe_payment_intent_id' => $session->payment_intent,
-                            'stripe_invoice_id' => $session->invoice ?? null,
-                            'amount' => $subscription_info->items->data[0]->plan->amount / 100,
-                            'currency' => strtoupper($subscription_info->items->data[0]->plan->currency),
-                            'status' => 'paid',
-                            'paid_at' => \Carbon\Carbon::now(),
-                            'raw_data' => json_encode($session),
-                        ]);
+                            // Record the initial payment (if invoice & amount are known)
+                            PaymentHistory::create([
+                                'user_id'                 => $userId,
+                                'stripe_payment_intent_id'=> $paymentIntentId,
+                                'stripe_invoice_id'       => $invoiceId,
+                                'amount'                  => $amount,
+                                'currency'                => $currency,
+                                'status'                  => 'paid', // or check invoice/payment intent status if you want to be exact
+                                'paid_at'                 => \Carbon\Carbon::now(),
+                                'raw_data'                => json_encode($session), // keep the raw session for audit
+                            ]);
 
-
-                        // Notify the user about successful payment
-                        $user = User::find($userId);
-                        $user->notify(new PaymentSuccessNotification(
-                            $subscription_data['amount'],
-                            data_get($session, 'customer_details.name'),
-                            json_encode(data_get($session, 'customer_details.address', [])),
-                            json_encode(data_get($session, 'shipping.address', []))
-                        ));
-
-                    } catch (\Exception $e) {  //Catch any errors
-
-                        // Log any failures in saving subscription or payment history
-                        Log::error("DB Save Failed: " . $e->getMessage());
-                        Log::error("Error Trace: " . $e->getTraceAsString());
-
-                    } // end catch
-
-
-                    try { // try to create subscription order
-
-                        // Build SubscriptionOrder entries from the user's cart items
-                        $cartItems = CartItem::where('cart_id', $cartId)->get();
-                        Log::info('Cart Items for Order: ' . $cartItems->toJson());
-
-
-                        if ($subscription) { // Ensure the subscription exists
-                            foreach ($cartItems as $item) {
-
-                                // TODO: Eager-load products and ensure $subscription is set before this block.
-                                // Store each item as a SubscriptionOrder
-                                SubscriptionOrder::updateOrCreate([
-                                    'subscription_id' => $subscription->id,
-                                    'product_id' => $item->product_id,
-                                ], [
-                                    'subscription_id' => Subscription::where('user_id', $userId)->first()->id,
-                                    'product_id' => $item->product_id,
-                                    'product_name' => Product::find($item->product_id)->title,
-                                    'quantity' => $item->quantity,
-                                ]);
-                            }
-                        } else {
-                            // If subscription creation failed, log and skip order creation
-                            Log::warning("Skipping SubscriptionOrder creation: Subscription not found for user_id {$userId}");
+                            // Notify the user
+                            $user = User::find($userId);
+                            $user?->notify(new PaymentSuccessNotification(
+                                $amount,
+                                data_get($session, 'customer_details.name'),
+                                json_encode(data_get($session, 'customer_details.address', [])),
+                                json_encode(data_get($session, 'shipping.address', []))
+                            ));
+                        } catch (\Throwable $e) {
+                            Log::error('Webhook processing error: ' . $e->getMessage());
+                            // Optional: capture to an error reporting service
                         }
-
-
-                        // Clear the user's active cart after converting to subscription order
-                        // ⚠️ Ensure the cart belongs to the same user and the conversion succeeded before delete.
-                        $cart = Cart::firstOrCreate(
-                            ['user_id' => $userId, 'status' => 'active']
-                        )->load('items.product');
-
-                        $cart->items()->delete();
-                        $cart->delete();
-
-                    } catch (\Exception $e) { // Catch any errors and log them
-                        Log::error("Order Save Failed: " . $e->getMessage());
                     }
-                } // end if $userId
                 break; // end of success case
 
 
