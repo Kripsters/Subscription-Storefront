@@ -79,18 +79,20 @@
 
 
 
-            {{-- <div class="absolute inset-0 overflow-hidden">
+            @if (request()->routeIs('about')) <!-- If the current route is about -->
+             <div class="absolute inset-0 overflow-hidden">
                 <video 
                     autoplay 
                     loop 
                     muted 
                     playsinline 
-                    class="w-full h-full object-cover filter blur-[10px]"
+                    class="w-full h-auto object-cover filter blur-[10px]"
                 >
                     <source src="storage/videos/background-video.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
-            </div> --}}
+            </div>
+            @endif
 
             
             <div class="relative z-10">
@@ -106,8 +108,9 @@
                 <main>
                     {{ $slot }}
                 </main>
+                <x-footer />
             </div>
-            <x-footer />
+            
         </div>
         <script>
             const themeToggle = document.getElementById('theme-toggle');

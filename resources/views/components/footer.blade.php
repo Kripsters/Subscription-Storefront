@@ -3,7 +3,7 @@
         
         {{-- Logo / About --}}
         <div>
-            <h2 class="text-xl font-bold text-purple-600">{{ __('about.about') }}</h2>
+            <h2 class="text-xl font-bold text-zinc-800 dark:text-zinc-200">{{ __('about.about') }}</h2>
             <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                 {{ __('about.about_shortsubtext') }}
             </p>
