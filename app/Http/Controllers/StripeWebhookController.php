@@ -63,77 +63,107 @@ class StripeWebhookController extends Controller
                     $session = $event->data->object;
 
                     // Read metadata (remember you JSON-encoded `cart` at session creation)
-                    $userId = data_get($session, 'metadata.user_id');
+                    $userId = $session->metadata->user_id ?? null;
                     $cartRaw = data_get($session, 'metadata.cart'); // JSON string (may be null)
                     $cart    = $cartRaw ? json_decode($cartRaw, true) : null;
+                    $cartId = $session->metadata->cart ?? null;
 
                     if ($userId && $session->mode === 'subscription' && $session->subscription) {
                         try {
                             \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
-                            // Retrieve the Subscription with the objects we need inline.
-                            // Keep the expand depth <= 4: items.data.price.product (3 levels),
-                            // latest_invoice.payment_intent (2 levels).
-                            $subscription = \Stripe\Subscription::retrieve([
-                                'id' => $session->subscription,
-                                'expand' => [
-                                    'items.data.price.product',
-                                    'latest_invoice.payment_intent',
-                                ],
-                            ]);
+                                // ✅ Retrieve with correct PHP signature + expansions
+                                $subscription = \Stripe\Subscription::retrieve(
+                                    $session->subscription,               // ID as string
+                                    ['expand' => [
+                                        'items.data.price.product',       // so you can read product->name
+                                        'latest_invoice.lines.data'
+                                    ]]
+                                );
+                                
 
-                            $firstItem = $subscription->items->data[0] ?? null;
-                            $price     = $firstItem?->price;
-                            $product   = $price?->product;
+                                
+                                Log::info('Subscription full', ['subscription' => $subscription]);
 
-                            // Human-facing “plan” label:
-                            $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
 
-                            // Amount/currency from the Price (unit_amount is in the smallest currency unit)
-                            $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : null;
-                            $currency = isset($price->currency) ? strtoupper($price->currency) : null;
+                                // --- Price/Product (modern replacement for deprecated `plan`) ---
+                                $item    = $subscription->items->data[0] ?? null;
+                                $price   = $item?->price->unit_amount;                   // has unit_amount, currency, recurring
+                                
+                                // Plan name: prefer Price nickname; fall back to Product name
+                                $planName = 'Subscription';
+                                
+                                // Amount & currency
+                                $amount   = isset($price) ? $price / 100 : null;
+                                $currency = $item?->price->currency;
+                                
+                                // Interval
+                                $interval = $price?->recurring?->interval ?? null;
+                                
+                                // Periods: use item-level current_period_{start,end}
+                                $periodStart = isset($item->current_period_start)
+                                    ? \Carbon\Carbon::createFromTimestamp($item->current_period_start)
+                                    : null;
+                                
+                                $periodEnd = isset($item->current_period_end)
+                                    ? \Carbon\Carbon::createFromTimestamp($item->current_period_end)
+                                    : null;
+                                
+                                    $invoice = \Stripe\Invoice::retrieve([
+                                        'id' => is_object($subscription->latest_invoice)
+                                                 ? $subscription->latest_invoice->id
+                                                 : $subscription->latest_invoice,
+                                        'expand' => ['lines.data.price.product'],
+                                    ]);
+                                    
+                                    $subLine = collect($invoice->lines->data)
+                                               ->firstWhere('proration', false) ?? $invoice->lines->data[0] ?? null;
+                                    
+                                    $linePeriodStart = $subLine?->period?->start;
+                                    $linePeriodEnd   = $subLine?->period?->end;
+                                    
+                                if (is_object($subscription->latest_invoice)) {
+                                    $lines = $subscription->latest_invoice->lines->data ?? [];
+                                    // find the subscription line (non-proration)
+                                    foreach ($lines as $line) {
+                                        if (($line->type ?? null) === 'subscription' && empty($line->proration)) {
+                                            $linePeriodStart = $line->period->start ?? null;
+                                            $linePeriodEnd   = $line->period->end   ?? null;
+                                            break;
+                                        }
+                                    }
+                                }
 
-                            // Billing interval (e.g., month, year)
-                            $interval = $price?->recurring?->interval ?? null;
+                                // --- Build your local payload with guaranteed values ---
+                                $subscription_data = [
+                                    'user_id'                => $userId,
+                                    'stripe_customer_id'     => $session->customer,
+                                    'stripe_subscription_id' => $subscription->id,
+                                    'stripe_price_id'        => $price?->id ?? data_get($session, 'metadata.price_id'),
+                                    'status'                 => $subscription->status,
+                                    'plan_name'              => $planName,
+                                    'amount'                 => $amount,
+                                    'currency'               => $currency,
+                                    'interval'               => $interval,
+                                    'current_period_start'   => $periodStart,
+                                    'current_period_end'     => $periodEnd,
+                                    'billing_name'           => data_get($session, 'customer_details.name'),
+                                    'billing_email'          => data_get($session, 'customer_details.email'),
+                                ];
 
-                            // Subscription period (Unix seconds -> Carbon)
-                            $currentPeriodStart = $subscription->current_period_start
-                                ? \Carbon\Carbon::createFromTimestamp($subscription->current_period_start)
-                                : null;
-                            $currentPeriodEnd = $subscription->current_period_end
-                                ? \Carbon\Carbon::createFromTimestamp($subscription->current_period_end)
-                                : null;
+
 
                             // Prefer latest_invoice from the expanded subscription
                             $invoiceId = is_object($subscription->latest_invoice)
-                                ? $subscription->latest_invoice->id
-                                : $subscription->latest_invoice;
+                            ? $subscription->latest_invoice->id
+                            : $subscription->latest_invoice;
 
-                            $paymentIntentId = null;
-                            if (is_object($subscription->latest_invoice) && isset($subscription->latest_invoice->payment_intent)) {
-                                $paymentIntentId = is_object($subscription->latest_invoice->payment_intent)
-                                    ? $subscription->latest_invoice->payment_intent->id
-                                    : $subscription->latest_invoice->payment_intent;
-                            }
-
-                            // Build local subscription record payload
-                            $subscription_data = [
-                                'user_id'                 => $userId,
-                                'stripe_customer_id'      => $session->customer,
-                                'stripe_subscription_id'  => $subscription->id,
-                                'stripe_price_id'         => $price?->id ?? data_get($session, 'metadata.price_id'),
-                                'status'                  => $subscription->status, // e.g., 'active', 'trialing'
-                                'plan_name'               => $planName,
-                                'amount'                  => $amount,
-                                'currency'                => $currency,
-                                'interval'                => $interval,
-                                'current_period_start'    => $currentPeriodStart,
-                                'current_period_end'      => $currentPeriodEnd,
-
-                                // Billing details captured by Checkout
-                                'billing_name'            => data_get($session, 'customer_details.name'),
-                                'billing_email'           => data_get($session, 'customer_details.email'),
-                            ];
+                        $paymentIntentId = null;
+                        if (is_object($subscription->latest_invoice) && isset($subscription->latest_invoice->payment_intent)) {
+                            $paymentIntentId = is_object($subscription->latest_invoice->payment_intent)
+                                ? $subscription->latest_invoice->payment_intent->id
+                                : $subscription->latest_invoice->payment_intent;
+                        }
 
                             Log::info('Subscription Data: ' . json_encode($subscription_data));
 
@@ -142,6 +172,29 @@ class StripeWebhookController extends Controller
                                 ['user_id' => $userId],
                                 $subscription_data
                             );
+
+                            $cartItems = CartItem::where('cart_id', $cartId)->get();
+                            Log::info('Cart Items for Order: ' . $cartItems->toJson());
+
+                            if ($subscriptionModel) { // Ensure the subscription exists
+                                foreach ($cartItems as $item) {
+    
+                                    // TODO: Eager-load products and ensure $subscription is set before this block.
+                                    // Store each item as a SubscriptionOrder
+                                    SubscriptionOrder::updateOrCreate([
+                                        'subscription_id' => $subscription->id,
+                                        'product_id' => $item->product_id,
+                                    ], [
+                                        'subscription_id' => Subscription::where('user_id', $userId)->first()->id,
+                                        'product_id' => $item->product_id,
+                                        'product_name' => Product::find($item->product_id)->title,
+                                        'quantity' => $item->quantity,
+                                    ]);
+                                }
+                            } else {
+                                // If subscription creation failed, log and skip order creation
+                                Log::warning("Skipping SubscriptionOrder creation: Subscription not found for user_id {$userId}");
+                            }
 
                             // Save addresses (as JSON strings)
                             Address::updateOrCreate(
@@ -172,6 +225,15 @@ class StripeWebhookController extends Controller
                                 json_encode(data_get($session, 'customer_details.address', [])),
                                 json_encode(data_get($session, 'shipping.address', []))
                             ));
+
+                            // Clear the cart
+                            $cart = Cart::firstOrCreate(
+                                ['user_id' => $userId, 'status' => 'active']
+                            )->load('items.product');
+    
+                            $cart->items()->delete();
+                            $cart->delete();
+
                         } catch (\Throwable $e) {
                             Log::error('Webhook processing error: ' . $e->getMessage());
                             // Optional: capture to an error reporting service

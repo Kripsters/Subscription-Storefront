@@ -30,5 +30,7 @@ return [
     'unpaid' => 'Unpaid',
     'billing_details' => 'Billing Details',
     'shipping_details' => 'Shipping Details',
+    'price' => 'Price',
+    'current_period' => 'Current Period',
 ];  
 ?>
