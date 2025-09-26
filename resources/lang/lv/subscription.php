@@ -28,5 +28,7 @@ return [
     'plan' => 'Abonementa plāns',
     'paid' => 'Samaksāts',
     'unpaid' => 'Nesamaksāts',
+    'billing_details' => 'Rēķina informācija',
+    'shipping_details' => 'Piegādes informācija',
 ];  
 ?>

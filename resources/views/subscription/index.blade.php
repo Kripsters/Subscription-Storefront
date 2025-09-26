@@ -155,18 +155,6 @@
                                 @endif
                             </dd>
                         </div>
-                        <div class="flex justify-between py-3">
-                            <dt class="text-zinc-500 dark:text-zinc-400">Stripe {{ __('subscription.subscription_id') ?? 'Subscription ID' }}</dt>
-                            <dd class="font-mono text-sm text-zinc-700 dark:text-zinc-300">{{ $subscription->stripe_subscription_id ?? '—' }}</dd>
-                        </div>
-                        <div class="flex justify-between py-3">
-                            <dt class="text-zinc-500 dark:text-zinc-400">Stripe {{ __('subscription.customer_id') ?? 'Customer ID' }}</dt>
-                            <dd class="font-mono text-sm text-zinc-700 dark:text-zinc-300">{{ $subscription->stripe_customer_id ?? '—' }}</dd>
-                        </div>
-                        <div class="flex justify-between py-3">
-                            <dt class="text-zinc-500 dark:text-zinc-400">Stripe {{ __('subscription.price_id') ?? 'Price ID' }}</dt>
-                            <dd class="font-mono text-sm text-zinc-700 dark:text-zinc-300">{{ $subscription->stripe_price_id ?? '—' }}</dd>
-                        </div>
                     </dl>
 
                     <div class="mt-4 flex gap-3 flex-wrap">
@@ -339,5 +327,5 @@
             }
         });
     </script>
-    
+
 </x-app-layout>
