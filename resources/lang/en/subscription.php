@@ -28,5 +28,7 @@ return [
     'plan' => 'Subscription Plan',
     'paid' => 'Paid',
     'unpaid' => 'Unpaid',
+    'billing_details' => 'Billing Details',
+    'shipping_details' => 'Shipping Details',
 ];  
 ?>
