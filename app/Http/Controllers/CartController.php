@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\User;
+use App\Models\Subscription;
 use App\Models\Price;
+use Tiptap\Marks\Subscript;
 
 class CartController extends Controller
 {
@@ -35,8 +38,16 @@ class CartController extends Controller
         $prices = Price::all();
 
         $cart->items->each->makeHidden(['product']);
+
+        $subscription = Subscription::where('user_id', auth()->id())->get();
+        if ($subscription->isEmpty() || $subscription[0]->status != 'active') {        
+            $allowed = true;
+        } else {
+            $allowed = false;
+        }
+
         // Return view
-        return view('cart.index', compact('cart','prices'));
+        return view('cart.index', compact('cart','prices', 'cartItems', 'allowed'));
     }
 
 

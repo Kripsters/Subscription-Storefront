@@ -107,39 +107,50 @@ foreach($cart->items as $item) {
     {{ __('cart.total') }}: €{{ $cart->subtotal }}
   </p>
 
-  <!-- Subscription Plans -->
+
   <div class="mt-10 flex justify-center">
-    @if ($cart->subtotal <= $prices[0]->price - 10)
-        <x-subscription-card 
-            :title="__('cart.basic_title')" 
-            :price="$prices[0]->price" 
-            :subtext="__('cart.basic_subtext')" 
-            id="basic" 
-            :error="false" />
-    @elseif ($cart->subtotal > $prices[0]->price - 10 && $cart->subtotal <= $prices[1]->price - 10)
-        <x-subscription-card 
-            :title="__('cart.medium_title')" 
-            :price="$prices[1]->price" 
-            :subtext="__('cart.medium_subtext')" 
-            id="medium" 
-            :error="false" />
-    @elseif ($cart->subtotal > $prices[1]->price - 10 && $cart->subtotal <= $prices[2]->price - 10)
-        <x-subscription-card 
-            :title="__('cart.advanced_title')" 
-            :price="$prices[2]->price" 
-            :subtext="__('cart.advanced_subtext')" 
-            id="advanced" 
-            :error="false" />
-    @elseif ($cart->subtotal > $prices[2]->price - 10)
-        <x-subscription-card 
-            :title="__('cart.total_exceeded')" 
+  @if ($allowed) <!-- If user has no active subscription -->
+          <!-- Subscription Plans -->
+
+            @if ($cart->subtotal <= $prices[0]->price - 10)
+                <x-subscription-card 
+                    :title="__('cart.basic_title')" 
+                    :price="$prices[0]->price" 
+                    :subtext="__('cart.basic_subtext')" 
+                    id="basic" 
+                    :error="false" />
+            @elseif ($cart->subtotal > $prices[0]->price - 10 && $cart->subtotal <= $prices[1]->price - 10)
+                <x-subscription-card 
+                    :title="__('cart.medium_title')" 
+                    :price="$prices[1]->price" 
+                    :subtext="__('cart.medium_subtext')" 
+                    id="medium" 
+                    :error="false" />
+            @elseif ($cart->subtotal > $prices[1]->price - 10 && $cart->subtotal <= $prices[2]->price - 10)
+                <x-subscription-card 
+                    :title="__('cart.advanced_title')" 
+                    :price="$prices[2]->price" 
+                    :subtext="__('cart.advanced_subtext')" 
+                    id="advanced" 
+                    :error="false" />
+            @elseif ($cart->subtotal > $prices[2]->price - 10)
+                <x-subscription-card 
+                    :title="__('cart.total_exceeded')" 
+                    :price="null" 
+                    :subtext="__('cart.total_exceeded_subtext')" 
+                    id="exceeded" 
+                    :error="true" />
+            @endif
+
+            @else
+            <x-subscription-card 
+            :title="__('cart.existing_subscription')" 
             :price="null" 
-            :subtext="__('cart.total_exceeded_subtext')" 
+            :subtext="__('cart.existing_subscription_subtext')" 
             id="exceeded" 
             :error="true" />
     @endif
-</div>
-
+          </div>
   <!-- Stripe Checkout -->
   
 <script>
