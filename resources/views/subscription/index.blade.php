@@ -193,10 +193,10 @@
                         </h2>
                         @if($shippingBlock)
                             <pre class="whitespace-pre-line text-sm text-zinc-800 dark:text-zinc-200">{{ $shippingBlock }}</pre>
-                        @elseif(isset($address) && $address->shipping)
+                        @elseif(isset($address) && $address->shipping && empty($address->shipping))
                             <pre class="whitespace-pre-line text-sm text-zinc-800 dark:text-zinc-200">{{ $address->shipping }}</pre>
                         @else
-                            <p class="text-zinc-500 dark:text-zinc-400 italic">{{ __('subscription.shipping_missing') ?? 'No shipping address on file.' }}</p>
+                            <p class="text-zinc-500 dark:text-zinc-400 italic">{{ __('subscription.shipping_address_none') ?? 'No shipping address on file.' }}</p>
                         @endif
                     </div>
                 </div>
