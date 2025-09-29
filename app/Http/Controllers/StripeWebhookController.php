@@ -24,7 +24,28 @@ use App\Notifications\PaymentSuccessNotification;
 
 class StripeWebhookController extends Controller
 {
-    //The one and only function as all events are handled here
+        /**
+     * Extracts the subscription ID from a Stripe Invoice object (object or array).
+     */
+    function extractSubscriptionIdFromInvoice($invoice) {
+        // 1) Standard subscription field
+        $sub = $invoice->subscription ?? null;
+        if (is_string($sub)) return $sub;
+        if (is_object($sub) && isset($sub->id)) return $sub->id;
+
+        // 2) Parent > subscription_details > subscription
+        $fromParent = data_get($invoice, 'parent.subscription_details.subscription');
+        if (is_string($fromParent)) return $fromParent;
+
+        // 3) Lines > parent > subscription_item_details > subscription
+        foreach (($invoice->lines->data ?? []) as $line) {
+            $sid = data_get($line, 'parent.subscription_item_details.subscription');
+            if (is_string($sid)) return $sid;
+        }
+
+        return null;
+    }
+
     public function handleWebhook(Request $request)
     {
         // The raw JSON payload sent by Stripe
@@ -298,6 +319,9 @@ class StripeWebhookController extends Controller
                                 json_encode(data_get($session, 'shipping.address', []))
                             ));
 
+                            $user->stripe_customer_id = $invoice->customer;
+                            $user->save();
+
                             // Clear the cart
                             $cart = Cart::firstOrCreate(
                                 ['user_id' => $userId, 'status' => 'active']
@@ -311,7 +335,7 @@ class StripeWebhookController extends Controller
                             // Optional: capture to an error reporting service
                         }
                     }
-                break; // end of success case
+        break; // end of success case
 
 
                 // Payment failed webhook
@@ -342,8 +366,11 @@ class StripeWebhookController extends Controller
                 break;
 
 
+
+
+
                 // Subscription canceled webhook
-            case 'customer.subscription.deleted':
+                case 'customer.subscription.deleted':
 
                 // Fires when a subscription is canceled (by you or via dunning)
                 $subscription = $event->data->object;
@@ -353,122 +380,207 @@ class StripeWebhookController extends Controller
                     ->update(['status' => 'canceled']);
                 break;
 
+
+
+
             
-                case 'invoice.paid':
-                case 'invoice.payment_succeeded': {
-                    // Always re-fetch with expansions you need
-                    $invoice = Invoice::retrieve([
-                        'id' => $obj->id,
-                        'expand' => ['subscription', 'lines.data.price.product', 'payment_intent'],
+                
+        case 'invoice.paid':
+        case 'invoice.payment_succeeded': {
+                // 1) Re-fetch the invoice with useful expansions
+                $invoice = \Stripe\Invoice::retrieve([
+                    'id'     => $obj->id,
+                    'expand' => [
+                        'subscription',          // top-level (might be absent on your API shape)
+                        'lines.data',            // we’ll read parent.subscription_item_details + period
+                        'payment_intent',
+                    ],
+                ]);
+            
+                // 2) Find the Subscription ID wherever it lives in this Invoice shape
+                $subId = null;
+            
+                // A) Standard place (string or object)
+                if (isset($invoice->subscription)) {
+                    $subId = is_object($invoice->subscription) ? $invoice->subscription->id : $invoice->subscription;
+                }
+            
+                // B) Newer ‘parent.subscription_details.subscription’ (present in your logs)
+                if (!$subId) {
+                    $subId = data_get($invoice, 'parent.subscription_details.subscription');
+                }
+            
+                // C) Line-level parent (present in your logs)
+                if (!$subId && isset($invoice->lines->data)) {
+                    foreach ($invoice->lines->data as $line) {
+                        $maybe = data_get($line, 'parent.subscription_item_details.subscription');
+                        if ($maybe) { $subId = $maybe; break; }
+                    }
+                }
+            
+                // 3) Resolve the local user. Your current line triggers the Builder error:
+                //    Subscription::where(...)->user_id->first()  // ❌ ‘user_id’ on Builder
+                //    Replace with value('user_id') (returns scalar):
+                $stripeCustomerId = $invoice->customer;
+                $userId = \App\Models\Subscription::where('stripe_customer_id', $stripeCustomerId)
+                            ->value('user_id');
+            
+                // (Optional) If you also store 'stripe_customer_id' on users, prefer users table:
+                if (!$userId) {
+                    $userId = \App\Models\User::where('stripe_customer_id', $stripeCustomerId)->value('id');
+                }
+            
+                if (!$userId) {
+                    Log::warning('invoice.paid: Could not resolve local user for customer', [
+                        'customer' => $stripeCustomerId, 'invoice' => $invoice->id
                     ]);
-
-                    $subscriptionId = is_object($invoice->subscription)
-                        ? $invoice->subscription->id
-                        : $invoice->subscription;
-
-                    // Pull the authoritative subscription snapshot, with price/product
-                    $sub = StripeSubscription::retrieve(
+                    return response('ok', 200);
+                }
+            
+                // 4) Get plan/amount/interval from Subscription if we have one,
+                //    otherwise from the invoice line’s price (fallback).
+                $planName = 'Subscription';
+                $amount   = null;
+                $currency = null;
+                $interval = null;
+            
+                $periodStartTs = null;
+                $periodEndTs   = null;
+            
+                $priceIdFromLine = data_get($invoice, 'lines.data.0.pricing.price_details.price'); // present in your logs
+                $lineForPeriod   = $invoice->lines->data[0] ?? null; // used for period fallback
+            
+                if ($subId) {
+                    // Pull the authoritative subscription snapshot
+                    $sub = \Stripe\Subscription::retrieve(
                         $subId,
                         ['expand' => ['items.data.price.product']]
                     );
-
-                    // Map price/product
+            
                     $item    = $sub->items->data[0] ?? null;
                     $price   = $item?->price;
                     $product = is_object($price?->product) ? $price->product : null;
-
-                    $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
-                    $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : null;
-                    $currency = isset($price->currency) ? strtoupper($price->currency) : null;
-                    $interval = $price?->recurring?->interval ?? null;
-
-                    // Periods — prefer item-level; fall back to invoice line period
+            
+                    $planName = $price?->nickname ?? ($product->name ?? $planName);
+                    $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : $amount;
+                    $currency = isset($price->currency) ? strtoupper($price->currency) : $currency;
+                    $interval = $price?->recurring?->interval ?? $interval;
+            
+                    // Prefer item-level periods on modern API versions
                     $periodStartTs = $item->current_period_start ?? null;
                     $periodEndTs   = $item->current_period_end   ?? null;
-
-                    if (!$periodStartTs || !$periodEndTs) {
-                        $line = collect($invoice->lines->data)
-                            ->firstWhere('type', 'subscription') ?? $invoice->lines->data[0] ?? null;
-                        $periodStartTs = $periodStartTs ?: ($line->period->start ?? null);
-                        $periodEndTs   = $periodEndTs   ?: ($line->period->end   ?? null);
-                    }
-
-                    $periodStart = $periodStartTs ? Carbon::createFromTimestamp($periodStartTs) : null;
-                    $periodEnd   = $periodEndTs   ? Carbon::createFromTimestamp($periodEndTs)   : null;
-
-                    // Who is the user? (You may store stripe_customer_id on users)
-                    $stripeCustomerId = $invoice->customer;
-                    $userId = Subscription::where('stripe_customer_id', $stripeCustomerId)->user_id->first();
-
-                    if ($userId) {
-                        // Upsert your local subscription
-                        \App\Models\Subscription::updateOrCreate(
-                            ['user_id' => $userId],
-                            [
-                                'stripe_customer_id'     => $stripeCustomerId,
-                                'stripe_subscription_id' => $sub->id,
-                                'stripe_price_id'        => $price?->id,
-                                'status'                 => 'active', // invoice paid
-                                'plan_name'              => $planName,
-                                'amount'                 => $amount,
-                                'currency'               => $currency,
-                                'interval'               => $interval,
-                                'current_period_start'   => $periodStart,
-                                'current_period_end'     => $periodEnd,
-                            ]
-                        );
-
-                        // Record payment
-                        try {
-                        PaymentHistory::create([
-                            'user_id'                 => $userId,
-                            'stripe_payment_intent_id'=> is_object($invoice->payment_intent) ? $invoice->payment_intent->id : $invoice->payment_intent,
-                            'stripe_invoice_id'       => $invoice->id,
-                            'amount'                  => ($invoice->amount_paid ?? 0) / 100,
-                            'currency'                => strtoupper($invoice->currency ?? $currency ?? 'EUR'),
-                            'status'                  => 'paid',
-                            'paid_at'                 => Carbon::createFromTimestamp($invoice->status_transitions->paid_at ?? time()),
-                            'raw_data'                => json_encode($invoice),
-                        ]);
-                    } catch (\Throwable $e) {
-                        Log::error('Error creating payment history: ' . $e->getMessage());
-                    }
-                    }
-
-                    break;
                 }
+            
+                // Fallbacks when no subscription (or missing fields) — derive from invoice line
+                if (!$amount || !$currency || !$interval || !$planName || !$periodStartTs || !$periodEndTs) {
+                    // Periods from invoice line
+                    $periodStartTs = $periodStartTs ?: data_get($lineForPeriod, 'period.start');
+                    $periodEndTs   = $periodEndTs   ?: data_get($lineForPeriod, 'period.end');
+            
+                    // Price details from invoice line (then retrieve the Price to read nickname/product if needed)
+                    if ($priceIdFromLine && (!$amount || !$currency || !$interval || $planName === 'Subscription')) {
+                        $priceObj = \Stripe\Price::retrieve([
+                            'id'     => $priceIdFromLine,
+                            'expand' => ['product'],
+                        ]);
+                        $amount   = $amount   ?: ($priceObj->unit_amount ?? null) / 100;
+                        $currency = $currency ?: strtoupper($priceObj->currency ?? '');
+                        $interval = $interval ?: data_get($priceObj, 'recurring.interval');
+                        $planName = ($priceObj->nickname ?? data_get($priceObj, 'product.name')) ?: $planName;
+                    }
+                }
+            
+                $periodStart = $periodStartTs ? \Carbon\Carbon::createFromTimestamp($periodStartTs) : null;
+                $periodEnd   = $periodEndTs   ? \Carbon\Carbon::createFromTimestamp($periodEndTs)   : null;
+            
+                // 5) Upsert your local subscription (by user_id)
+                \App\Models\Subscription::updateOrCreate(
+                    ['user_id' => $userId],
+                    [
+                        'stripe_customer_id'     => $stripeCustomerId,
+                        'stripe_subscription_id' => $subId,               // may be null; OK to store or leave previous
+                        'stripe_price_id'        => $priceIdFromLine ?? ($priceObj->id ?? null) ?? null,
+                        'status'                 => 'active',              // because invoice is paid
+                        'plan_name'              => $planName,
+                        'amount'                 => $amount,
+                        'currency'               => $currency,
+                        'interval'               => $interval,
+                        'current_period_start'   => $periodStart,
+                        'current_period_end'     => $periodEnd,
+                    ]
+                );
+            
+                // 6) Record the payment (always)
+                try {
+                    \App\Models\PaymentHistory::create([
+                        'user_id'                 => $userId,
+                        'stripe_payment_intent_id'=> is_object($invoice->payment_intent) ? $invoice->payment_intent->id : $invoice->payment_intent,
+                        'stripe_invoice_id'       => $invoice->id,
+                        'amount'                  => ($invoice->amount_paid ?? 0) / 100,
+                        'currency'                => strtoupper($invoice->currency ?? $currency ?? 'EUR'),
+                        'status'                  => 'paid',
+                        'paid_at'                 => \Carbon\Carbon::createFromTimestamp($invoice->status_transitions->paid_at ?? time()),
+                        'raw_data'                => json_encode($invoice),
+                    ]);
+                } catch (\Throwable $e) {
+                    Log::error('Error creating payment history: '.$e->getMessage());
+                }
+    
+        break;
+    }
+    
 
 
 
                 
-            case 'customer.subscription.updated': {
-                // Keep your local copy in sync on plan/status/period changes
-                $sub = StripeSubscription::retrieve(
-                    $obj->id,
-                    ['expand' => ['items.data.price.product']]
-                );
 
-                $item    = $sub->items->data[0] ?? null;
-                $price   = $item?->price;
-                $product = is_object($price?->product) ? $price->product : null;
-
-                $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
-                $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : null;
-                $currency = isset($price->currency) ? strtoupper($price->currency) : null;
-                $interval = $price?->recurring?->interval ?? null;
-
-                $periodStart = $item->current_period_start ? Carbon::createFromTimestamp($item->current_period_start) : null;
-                $periodEnd   = $item->current_period_end   ? Carbon::createFromTimestamp($item->current_period_end)   : null;
-
-                $user = Subscription::where('stripe_customer_id', $sub->customer)->user_id->first();
-                if ($user) {
+                case 'customer.subscription.updated': {
+                    // $obj is the thin Subscription object from the event
+                    // Re-fetch with the fields you need
+                    $stripeSub = \Stripe\Subscription::retrieve(
+                        $obj->id,
+                        ['expand' => ['items.data.price.product']]
+                    );
+                
+                    // Resolve the local user id from the Stripe customer id
+                    // Use ->value('id') to avoid the Builder-attrib issue entirely
+                    $userId = \App\Models\User::where('stripe_customer_id', $stripeSub->customer)->value('id');
+                
+                    if (!$userId) {
+                        Log::warning('No local user for stripe customer on sub.updated', [
+                            'stripe_customer_id' => $stripeSub->customer,
+                            'subscription_id'    => $stripeSub->id,
+                        ]);
+                        return response('ok', 200);
+                    }
+                
+                    // Map price/product
+                    $item    = $stripeSub->items->data[0] ?? null;
+                    $price   = $item?->price;
+                    $product = is_object($price?->product) ? $price->product : null;
+                
+                    $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
+                    $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : null;
+                    $currency = isset($price->currency) ? strtoupper($price->currency) : null;
+                    $interval = $price?->recurring?->interval ?? null;
+                
+                    // Periods: item-level (preferred)
+                    $periodStart = isset($item->current_period_start)
+                        ? \Carbon\Carbon::createFromTimestamp($item->current_period_start)
+                        : null;
+                
+                    $periodEnd = isset($item->current_period_end)
+                        ? \Carbon\Carbon::createFromTimestamp($item->current_period_end)
+                        : null;
+                
+                    // Upsert your local Subscription (use the Model statically)
                     \App\Models\Subscription::updateOrCreate(
-                        ['user_id' => $user],
+                        ['user_id' => $userId],   // <- this is a scalar, not a Builder
                         [
-                            'stripe_customer_id'     => $sub->customer,
-                            'stripe_subscription_id' => $sub->id,
+                            'stripe_customer_id'     => $stripeSub->customer,
+                            'stripe_subscription_id' => $stripeSub->id,
                             'stripe_price_id'        => $price?->id,
-                            'status'                 => $sub->status,
+                            'status'                 => $stripeSub->status,
                             'plan_name'              => $planName,
                             'amount'                 => $amount,
                             'currency'               => $currency,
@@ -477,9 +589,10 @@ class StripeWebhookController extends Controller
                             'current_period_end'     => $periodEnd,
                         ]
                     );
+                
+                    return response('ok', 200);
                 }
-                break;
-            }
+                
 
             // TODO: Consider handling:
             // - invoice.paid / invoice.payment_succeeded (to record recurring payments)

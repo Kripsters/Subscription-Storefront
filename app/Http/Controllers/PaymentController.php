@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as CheckoutSession;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 class PaymentController extends Controller
 {
     // Subscription view (This should be index page)
@@ -74,7 +75,7 @@ class PaymentController extends Controller
         return response()->json(['id' => $session->id]);
     } catch (\Throwable $e) {
         // Log full Stripe error for you; return a generic error to the client
-        \Log::error('Checkout Session create failed', ['error' => $e->getMessage()]);
+        Log::error('Checkout Session create failed', ['error' => $e->getMessage()]);
         return response()->json(['error' => $e->getMessage()], 500);
     }
 
