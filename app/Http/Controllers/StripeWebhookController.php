@@ -129,14 +129,18 @@ class StripeWebhookController extends Controller
 
         Log::info('Normalized subId', ['subId' => $subId]);
 
-        
-        if (!is_string($subId) || strpos($subId, 'sub_') !== 0) {
-            Log::warning('Missing/invalid subscription ID, skipping Stripe retrieve', [
-                'event_id' => $event->id,
-                'subId'    => $subId,
-            ]);
-            return response('ok', 200);
+        if (in_array($event->type, ['invoice.paid','invoice.payment_failed'])) {
+
+        } else {
+            if (!is_string($subId) || strpos($subId, 'sub_') !== 0) {
+                Log::warning('Missing/invalid subscription ID, skipping Stripe retrieve', [
+                    'event_id' => $event->id,
+                    'subId'    => $subId,
+                ]);
+                return response('ok', 200);
+            }
         }
+        
 
 
 
