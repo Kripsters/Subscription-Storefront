@@ -28,4 +28,14 @@ class Subscription extends Model
     {
         return $this->hasMany(SubscriptionOrder::class);
     }
+
+    static function isActiveSubscription() {
+        $subscription = Subscription::where('user_id', auth()->id())->get();
+        if ($subscription->isEmpty() || $subscription[0]->status != 'active') {        
+            $allowed = false;
+        } else {
+            $allowed = true;
+        }
+        return $allowed;
+    }
 }

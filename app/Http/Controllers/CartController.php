@@ -27,6 +27,7 @@ class CartController extends Controller
     // Show cart
     public function index()
     {
+        
         // Get active cart
         $cart = $this->activeCart();
         // Grab each cart item

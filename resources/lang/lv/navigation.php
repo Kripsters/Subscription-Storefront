@@ -11,5 +11,6 @@ return [
     'menu' => 'Atvērt galveno izvēlni',	
     'user_menu' => 'Atvērt lietotāja izvēlni',
     'github' => 'Github',
+    'subscription-cart' => 'Abon. grozs',
 ];  
 ?>

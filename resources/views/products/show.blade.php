@@ -44,6 +44,9 @@
 
                 {{-- Actions --}}
                 <div>
+                    @if ($isActive)
+                    <p> placeholder </p>
+                    @else
                     <form method="POST" action="{{ route('cart.add') }}">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -54,6 +57,7 @@
                             {{ __('product.add_to_cart') }}
                         </button>
                     </form>
+                    @endif
                 </div>
             </div>
         </div>

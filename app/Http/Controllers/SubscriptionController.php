@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\PaymentHistory;
 use App\Models\Address;
+use App\Models\SubscriptionOrder;
+use App\Models\Product;
 use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
@@ -127,6 +129,20 @@ class SubscriptionController extends Controller
 
         // Redirect back with a success message
         return back()->with('status', 'Products updated successfully.');
+    }
+
+
+    public function subCart() {
+        $subId = Subscription::where('user_id', auth()->id())->first();
+        $existingItemsPre = SubscriptionOrder::where('subscription_id', $subId->id)->get();
+        $existingItems = [];
+
+        foreach ($existingItemsPre as $item) {
+            $itemReal = Product::find($item->product_id);
+            array_push($existingItems, $itemReal);
+        }
+
+        return view('subscription.cart', compact('existingItems'));
     }
 }
 

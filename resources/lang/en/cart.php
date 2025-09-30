@@ -23,6 +23,7 @@ return [
     'total_exceeded_subtext' => 'Your cart total exceeds 110€, please remove some items.',
     'existing_subscription' => 'You already have an active subscription.',
     'existing_subscription_subtext' => 'You can edit your subscription elsewhere.',
+    'summary' => 'Summary',
 ]
 ;
 ?>

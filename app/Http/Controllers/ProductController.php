@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -21,8 +22,10 @@ class ProductController extends Controller
          foreach ($products as $product) {
              $product->category = Category::find($product->category_id)->name;
          }
+
+         $isActive = Subscription::isActiveSubscription();
  
-         return view('products.index', compact('products'));
+         return view('products.index', compact('products', 'isActive'));
      }
  
 
@@ -69,20 +72,24 @@ class ProductController extends Controller
              }
          }
  
-         // Get the products, now with order applied
-         $products = $builder
-             ->paginate($perPage)
-             ->withQueryString();
+            // Get the products, now with order applied
+            $products = $builder
+                ->paginate($perPage)
+                ->withQueryString();      // keep ?per_page etc. in pagination links
+
+                $isActive = Subscription::isActiveSubscription();
  
          // Return the view
-         return view('products.index', compact('products'));
+         return view('products.index', compact('products', 'isActive'));
      }
 
     // Route to show a specific product
     public function show($id)
     {
+        $isActive = Subscription::isActiveSubscription();
+        
         $product = Product::find($id);
-        return view('products.show', compact('product'));
+        return view('products.show', compact('product', 'isActive'));
     }
 
 }

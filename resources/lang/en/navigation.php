@@ -11,5 +11,6 @@ return [
     'menu' => 'Open main menu',
     'user_menu' => 'Open User menu',
     'github' => 'Github',
+    'subscription-cart' => 'Subscription Cart',
 ];  
 ?>

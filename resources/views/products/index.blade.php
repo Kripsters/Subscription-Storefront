@@ -121,6 +121,9 @@
                     <div class="mt-4 flex justify-between items-center">
                         
                         <!-- Add to cart -->
+                        @if ($isActive)
+                        <p>placeholder</p>
+                        @else
                         <form method="POST" action="{{ route('cart.add') }}" class="flex items-center gap-2">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $item->id }}">
@@ -131,6 +134,7 @@
                                 {{ __('product.add_to_cart') }}
                             </button>
                         </form>
+                        @endif
 
                     </div>
                 </div>

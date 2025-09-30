@@ -58,12 +58,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscription/pause', [SubscriptionController::class, 'pause'])->name('subscription.pause');
     Route::post('/subscription/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
     Route::post('/subscription/update-products', [SubscriptionController::class, 'updateProducts'])->name('subscription.updateProducts');
+    Route::get('/subscription/cart', [SubscriptionController::class, 'subCart'])->name('subscription.cart');
     
 
     Route::get('/subscribe', [PaymentController::class, 'subscribe'])->name('subscribe');
     Route::post('/create-subscription-session', [PaymentController::class, 'session'])->name('subscription.session');
     Route::get('/success', [PaymentController::class, 'success'])->name('success');
     Route::get('/cancel', [PaymentController::class, 'cancel'])->name('cancel');
+
+    
+    Route::get('/subscriptions/{subscription}/edit-items', [CartController::class, 'editSubscriptionItems'])
+        ->name('subscriptions.edit-items');
+
+    Route::post('/subscriptions/{subscription}/apply-items', [CartController::class, 'applySubscriptionItems'])
+        ->name('subscriptions.apply-items');
+
 
     
     Route::get('/test-email', function () {
