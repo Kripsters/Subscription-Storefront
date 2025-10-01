@@ -122,7 +122,16 @@
                         
                         <!-- Add to cart -->
                         @if ($isActive)
-                        <p>placeholder</p>
+                        <form method="POST" action="{{ route('subscription.add') }}">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $item->id }}">
+                            <input type="number" name="quantity" value="1" min="1"
+                                   class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                            <button type="submit"
+                                class="inline-flex items-center px-8 py-3 bg-lime-500 text-white text-lg font-semibold rounded-2xl shadow-lg hover:bg-lime-400 hover:shadow-xl transition duration-300 ease-in-out">
+                                {{ __('subscription.add_to_cart') }}
+                            </button>
+                        </form>
                         @else
                         <form method="POST" action="{{ route('cart.add') }}" class="flex items-center gap-2">
                             @csrf
@@ -139,7 +148,40 @@
                     </div>
                 </div>
             @endforeach <!-- End of product foreach -->
+            
         </div>
+
+                <!-- Pagination Top -->
+                <div class="pt-6 px-6 flex items-center justify-center">
+
+
+                    @if ($products->previousPageUrl()) <!-- If there is a previous page -->
+                        <a class="px-3 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        href="{{ $products->previousPageUrl() }}">
+                            <
+                        </a>
+                    @endif
+        
+        
+                    <div class="flex items-center space-x-2"> <!-- Pagination numbers -->
+                        @for ($i = max(1, $products->currentPage() - 2); $i <= min($products->lastPage(), $products->currentPage() + 2); $i++)
+                            <button type="button"
+                                class="px-3 py-1 rounded-lg text-sm font-medium {{ $i === $products->currentPage() ? 'bg-indigo-600 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
+                                onclick="window.location='{{ $products->url($i) }}'">
+                                {{ $i }}
+                            </button>
+                        @endfor
+                    </div>
+        
+        
+                    @if ($products->nextPageUrl()) <!-- If there is a next page -->
+                        <a class="px-3 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        href="{{ $products->nextPageUrl() }}">
+                            >
+                        </a>
+                    @endif
+        
+                </div> <!-- End of pagination -->
     @else
         <!-- No results -->
         <div class="text-center text-2xl font-bold text-zinc-700 dark:text-zinc-200 py-10">

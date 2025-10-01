@@ -32,5 +32,6 @@ return [
     'shipping_details' => 'Piegādes informācija',
     'price' => 'Cena',
     'current_period' => 'Pašreizējais periods',
+    'add_to_cart' => 'Pievienot abon. grozam',
 ];  
 ?>

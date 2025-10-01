@@ -45,7 +45,16 @@
                 {{-- Actions --}}
                 <div>
                     @if ($isActive)
-                    <p> placeholder </p>
+                    <form method="POST" action="{{ route('subscription.add') }}">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="number" name="quantity" value="1" min="1"
+                               class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <button type="submit"
+                            class="inline-flex items-center px-8 py-3 bg-lime-500 text-white text-lg font-semibold rounded-2xl shadow-lg hover:bg-lime-400 hover:shadow-xl transition duration-300 ease-in-out">
+                            {{ __('subscription.add_to_cart') }}
+                        </button>
+                    </form>
                     @else
                     <form method="POST" action="{{ route('cart.add') }}">
                         @csrf

@@ -24,6 +24,8 @@ return [
     'existing_subscription' => 'Jums jau ir aktīvs abonements.',
     'existing_subscription_subtext' => 'Jūs varat pārvaldīt savu abonementu citur.',
     'summary' => 'Kopsavilkums',
+    'subcart' => 'Aboenementa grozs',
+    'subcart-new' => 'Jaunais abonementa grozs',
 ];
 
 ?>

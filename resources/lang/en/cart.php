@@ -24,6 +24,8 @@ return [
     'existing_subscription' => 'You already have an active subscription.',
     'existing_subscription_subtext' => 'You can edit your subscription elsewhere.',
     'summary' => 'Summary',
+    'subcart' => 'Subscription cart',
+    'subcart-new' => 'New subscription cart',
 ]
 ;
 ?>

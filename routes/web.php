@@ -59,6 +59,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscription/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
     Route::post('/subscription/update-products', [SubscriptionController::class, 'updateProducts'])->name('subscription.updateProducts');
     Route::get('/subscription/cart', [SubscriptionController::class, 'subCart'])->name('subscription.cart');
+    Route::post('/subscription/items',         [SubscriptionController::class,'store'])->name('subscription.add');
+    Route::patch('/subcart/items/{id}',   [SubscriptionController::class,'update'])->name('subcart.update');
+    Route::delete('/subcart/items/{id}',  [SubscriptionController::class,'destroy'])->name('subcart.remove');
     
 
     Route::get('/subscribe', [PaymentController::class, 'subscribe'])->name('subscribe');

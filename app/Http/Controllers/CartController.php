@@ -102,10 +102,8 @@ class CartController extends Controller
     // Remove item
     public function destroy(int $productId)
     {
-        // Get cart
-        $cart = $this->activeCart();
-        // Remove item
-        $cart->items()->where('product_id',$productId)->delete();
+
+        CartItem::where('product_id',$productId)->delete();
 
         // Return response
         return back()->with('success','Item removed');

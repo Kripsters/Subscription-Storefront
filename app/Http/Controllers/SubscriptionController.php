@@ -7,11 +7,22 @@ use App\Models\Subscription;
 use App\Models\PaymentHistory;
 use App\Models\Address;
 use App\Models\SubscriptionOrder;
+use App\Models\Subcart;
+use App\Models\SubcartItem;
 use App\Models\Product;
 use Stripe\StripeClient;
 
 class SubscriptionController extends Controller
 {
+
+    protected function activeSubcart()
+    {
+        // Returns active cart for current user
+        return Subcart::firstOrCreate(
+            ['user_id' => auth()->id()]
+        );
+    }
+
     // Display the subscription page
     public function index()
     {
@@ -109,8 +120,6 @@ class SubscriptionController extends Controller
         return back()->with('status', 'Subscription has been resumed.');
     }
 
-
-
     // Update the products for a user's subscription
 
     public function updateProducts(Request $request)
@@ -132,6 +141,8 @@ class SubscriptionController extends Controller
     }
 
 
+
+
     public function subCart() {
         $subId = Subscription::where('user_id', auth()->id())->first();
         $existingItemsPre = SubscriptionOrder::where('subscription_id', $subId->id)->get();
@@ -142,7 +153,72 @@ class SubscriptionController extends Controller
             array_push($existingItems, $itemReal);
         }
 
-        return view('subscription.cart', compact('existingItems'));
+
+        $subcartId = $this->activeSubcart()->id;
+        $subcartItems = SubcartItem::where('subcart_id', $subcartId)->get();
+        $subcart = [];
+
+        foreach ($subcartItems as $item) {
+            $itemReal = Product::find($item->product_id);
+            $itemReal->quantity = $item->quantity;
+            array_push($subcart, $itemReal);
+        }
+
+        return view('subscription.cart', compact('existingItems', 'subcart'));
+    }
+
+    public function store(Request $request) {
+        // Validate request
+        $data = $request->validate([
+            'product_id' => ['required','exists:products,id'],
+            'quantity'   => ['nullable','integer','min:1']
+        ]);
+
+        // Finds or creates cart
+        $subcart = $this->activeSubcart();
+        $product = Product::findOrFail($data['product_id']);
+        $item = SubcartItem::firstOrNew([
+            'subcart_id'    => $subcart->id,
+            'product_id' => $product->id,
+        ]);
+
+        // Add or update cart item
+        $item->unit_price = $item->exists ? $item->unit_price : $product->price;
+        $item->quantity   = ($item->exists ? $item->quantity : 0) + ($data['quantity'] ?? 1);
+        $item->save();
+
+        // Return response
+        return back()->with('success','Added to cart');
+    }
+
+    public function update(Request $request, int $productId)
+    {
+        // Validate request
+        $data = $request->validate(['quantity'=>'required|integer|min:0']);
+
+        // Update cart
+        $item = SubcartItem::where('product_id',$productId)->firstOrFail();
+
+        // If quantity gets set to 0, remove item
+        if ($data['quantity'] == 0) {
+            $item->delete();
+        } else {
+            // Otherwise, update quantity
+            $item->update(['quantity'=>$data['quantity']]);
+        }
+
+        // Return response
+        return back()->with('success','Cart updated');
+    }
+
+    // Remove item
+    public function destroy(int $productId)
+    {
+        // Get cart
+        SubcartItem::where('product_id',$productId)->delete();
+
+        // Return response
+        return back()->with('success','Item removed');
     }
 }
 

@@ -32,5 +32,6 @@ return [
     'shipping_details' => 'Shipping Details',
     'price' => 'Price',
     'current_period' => 'Current Period',
+    'add_to_cart' => 'Add to sub. cart',
 ];  
 ?>
