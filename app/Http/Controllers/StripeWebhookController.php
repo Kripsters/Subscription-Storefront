@@ -273,7 +273,9 @@ class StripeWebhookController extends Controller
                             $cartItems = CartItem::where('cart_id', $cartId)->get();
                             Log::info('Cart Items for Order: ' . $cartItems->toJson());
 
+                            
                             if ($subscriptionModel) { // Ensure the subscription exists
+                                SubscriptionOrder::where('subscription_id', $subscriptionModel->id)->delete();
                                 foreach ($cartItems as $item) {
     
                                     // TODO: Eager-load products and ensure $subscription is set before this block.
@@ -329,9 +331,9 @@ class StripeWebhookController extends Controller
                             // Clear the cart
                             $cart = Cart::firstOrCreate(
                                 ['user_id' => $userId, 'status' => 'active']
-                            )->load('items.product');
-    
-                            $cart->items()->delete();
+                            );
+                            
+                            CartItem::where('cart_id', $cartId)->delete();
                             $cart->delete();
 
                         } catch (\Throwable $e) {
@@ -576,6 +578,11 @@ class StripeWebhookController extends Controller
                     $periodEnd = isset($item->current_period_end)
                         ? \Carbon\Carbon::createFromTimestamp($item->current_period_end)
                         : null;
+
+                    if ($stripeSub->cancel_at_period_end) {
+                        // You could invent your own local status, e.g. "cancelling" or "pending_cancellation"
+                        $status = 'canceled';
+                    }
                 
                     // Upsert your local Subscription (use the Model statically)
                     \App\Models\Subscription::updateOrCreate(
@@ -584,7 +591,7 @@ class StripeWebhookController extends Controller
                             'stripe_customer_id'     => $stripeSub->customer,
                             'stripe_subscription_id' => $stripeSub->id,
                             'stripe_price_id'        => $price?->id,
-                            'status'                 => $stripeSub->status,
+                            'status'                 => $status,
                             'plan_name'              => $planName,
                             'amount'                 => $amount,
                             'currency'               => $currency,

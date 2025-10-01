@@ -11,9 +11,19 @@ use App\Models\Subcart;
 use App\Models\SubcartItem;
 use App\Models\Product;
 use Stripe\StripeClient;
+use Tiptap\Marks\Subscript;
 
 class SubscriptionController extends Controller
 {
+    protected function activeSubscription()
+    {
+        $subscription = Subscription::where('user_id', auth()->id())->first();
+        if ($subscription && $subscription::isActiveSubscription()) {
+            return true;            
+        } else {
+            return false;
+        }
+    }
 
     protected function activeSubcart()
     {

@@ -38,4 +38,14 @@ class Subscription extends Model
         }
         return $allowed;
     }
+
+    static function billingSubscription() {
+        $subscription = Subscription::where('user_id', auth()->id())->get();
+        if ($subscription->isEmpty() && $subscription[0]->current_period_end > now()) {        
+            $allowed = false;
+        } else {
+            $allowed = true;
+        }
+        return $allowed;
+    }
 }

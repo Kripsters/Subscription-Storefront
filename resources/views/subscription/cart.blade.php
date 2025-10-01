@@ -181,7 +181,7 @@
                   <!-- REMOVE -->
                   <td class="block md:table-cell px-4 pb-4 md:px-6 md:py-4 align-top">
                     <span class="md:hidden block text-xs font-semibold uppercase text-zinc-500 dark:text-zinc-300 mb-1">{{ __('cart.remove') }}</span>
-                    <form method="POST" action="{{ route('cart.remove', $item->id) }}">
+                    <form method="POST" action="{{ route('subcart.remove', $item->id) }}">
                       @csrf @method('DELETE')
                       <button type="submit"
                         class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded-md
@@ -196,6 +196,7 @@
             </table>
           </div>
         
+          <div class="mt-20"> </div>
         @else
             {{-- Empty state --}}
             <div class="mt-12 rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-800 dark:bg-zinc-900">

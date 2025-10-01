@@ -1,3 +1,4 @@
+<?php use App\Models\Subscription; ?>
 <nav x-data="{ open: false }"
      class="sticky top-0 z-50 border-0 bg-zinc-50/70 dark:bg-zinc-900/60 backdrop-blur-md supports-[backdrop-filter]:bg-zinc-50/70 ring-1 ring-zinc-900/10 dark:ring-white/10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -40,10 +41,12 @@
                        class="{{ request()->routeIs('subscription.index') ? "$base $active" : $base }}">
                         {{ __('navigation.subscription') }}
                     </a>
+                    @if (Subscription::billingSubscription())
                     <a href="{{ route('subscription.cart') }}"
                     class="{{ request()->routeIs('subscription.cart') ? "$base $active" : $base }}">
                      {{ __('navigation.subscription-cart') }}
                  </a>
+                 @endif
                 </div>
             </div>
 
@@ -173,6 +176,7 @@
                         : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
                 {{ __('navigation.subscription') }}
             </a>
+            @if (Subscription::billingSubscription())
             <a href="{{ route('subscription.cart') }}"
             class="block rounded-lg px-3 py-2 text-sm font-medium
                    {{ request()->routeIs('subscription.cart')
@@ -180,6 +184,7 @@
                      : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5' }}">
              {{ __('navigation.subscription-cart') }}
          </a>
+         @endif
         </div>
 
         <!-- Responsive Settings -->
