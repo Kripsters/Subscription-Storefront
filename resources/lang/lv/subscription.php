@@ -33,5 +33,6 @@ return [
     'price' => 'Cena',
     'current_period' => 'Pašreizējais periods',
     'add_to_cart' => 'Pievienot abon. grozam',
+    'update_subscription' => 'Atjaunot abonementu',
 ];  
 ?>

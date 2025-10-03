@@ -156,6 +156,7 @@ class SubscriptionController extends Controller
     public function subCart() {
         $subId = Subscription::where('user_id', auth()->id())->first();
         $existingItemsPre = SubscriptionOrder::where('subscription_id', $subId->id)->get();
+        $subscriptionPrice = Subscription::where('user_id', auth()->id())->first()->amount;
         $existingItems = [];
 
         foreach ($existingItemsPre as $item) {
@@ -167,14 +168,18 @@ class SubscriptionController extends Controller
         $subcartId = $this->activeSubcart()->id;
         $subcartItems = SubcartItem::where('subcart_id', $subcartId)->get();
         $subcart = [];
+        $subcartSubtotal = 0;
 
         foreach ($subcartItems as $item) {
             $itemReal = Product::find($item->product_id);
             $itemReal->quantity = $item->quantity;
             array_push($subcart, $itemReal);
+            $subcartSubtotal += $itemReal->price * $item->quantity;
         }
 
-        return view('subscription.cart', compact('existingItems', 'subcart'));
+        $subcartIds = SubcartItem::where('subcart_id', $subcartId)->pluck('product_id');
+
+        return view('subscription.cart', compact('existingItems', 'subcart', 'subscriptionPrice', 'subcartIds', 'subcartSubtotal'));
     }
 
     public function store(Request $request) {
@@ -231,10 +236,43 @@ class SubscriptionController extends Controller
         return back()->with('success','Item removed');
     }
 
-    public function modify(Request $request) {
+    public function modify() {
+        $subcartId = $this->activeSubcart()->id;
+        $subcartItems = SubcartItem::where('subcart_id', $subcartId)->get();
         $subId = Subscription::where('user_id', auth()->id())->first();
         $sub = Subscription::find($subId->id);
-        dd($request->all());
+
+        $subcartSubtotal = 0;
+        foreach ($subcartItems as $item) {
+            $itemReal = Product::find($item->product_id);
+            $subcartSubtotal += $itemReal->price * $item->quantity;
+        }
+
+        if ($subcartSubtotal > $sub->amount) {
+            return back()->with('error','Subscription amount is not enough to cover cart');
+        }
+
+        $currentOrders = SubscriptionOrder::where('subscription_id', $sub->id)->get();
+        if ($currentOrders) {
+            foreach ($currentOrders as $order) {
+                $order->delete();
+            }
+        }
+
+        $subcartItems = SubcartItem::where('subcart_id', $subcartId)->get();
+        foreach ($subcartItems as $item) {
+            $order = new SubscriptionOrder;
+            $order->subscription_id = $sub->id;
+            $order->product_id = $item->product_id;
+            $order->product_name = Product::find($item->product_id)->title;
+            $order->quantity = $item->quantity;
+            $order->created_at = now();
+            $order->updated_at = now();
+            $order->save();
+        }
+
+        SubcartItem::where('subcart_id', $subcartId)->delete();
+
         return back()->with('success','Subscription updated');
     }
 }

@@ -20,7 +20,11 @@ class ProductController extends Controller
              ->withQueryString();      // keep ?per_page etc. in pagination links
 
          foreach ($products as $product) {
-             $product->category = Category::find($product->category_id)->name;
+            if (Category::find($product->category_id) == null) {
+                $product->category = 'Uncategorized';
+            } else {
+                $product->category = Category::find($product->category_id)->name;
+            }
          }
 
          $isActive = Subscription::isActiveSubscription();
@@ -78,6 +82,14 @@ class ProductController extends Controller
                 ->withQueryString();      // keep ?per_page etc. in pagination links
 
                 $isActive = Subscription::isActiveSubscription();
+
+            foreach ($products as $product) {
+                if (Category::find($product->category_id) == null) {
+                    $product->category = 'Uncategorized';
+                } else {
+                    $product->category = Category::find($product->category_id)->name;
+                }
+            }
  
          // Return the view
          return view('products.index', compact('products', 'isActive'));

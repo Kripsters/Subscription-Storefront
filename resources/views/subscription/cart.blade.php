@@ -87,20 +87,7 @@
             
         @else
             {{-- Empty state --}}
-            <div class="mt-12 rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 dark:bg-zinc-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 8h14l-2-8M10 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/>
-                    </svg>
-                </div>
-                <h3 class="mt-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                    {{ __('cart.empty') }}
-                </h3>
-                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {{ __('cart.empty_cta') ?? 'Browse products and add them to your subscription.' }}
-                </p>
-            </div>
+            <x-empty-cart />
         @endif
 
         
@@ -198,37 +185,34 @@
           </div>
         
           <div class="mt-20"> </div>
+
+
+            @if ($subcartSubtotal > $subscriptionPrice-10)
+                <div class="flex items-center justify-center">
+                    <x-subscription-card 
+                        :title="__('cart.total_exceeded')" 
+                        :price="null" 
+                        :subtext="__('cart.total_subcart_exceeded_subtext')" 
+                        id="exceeded"
+                        :error="true" />
+                </div>
+            @else
+                <div class="flex items-center justify-center">
+                    <form method="POST" action="{{ route('subcart.modify') }}">
+                        @csrf
+                        <button type="submit"
+                            class="inline-flex items-center px-8 py-3 bg-lime-500 text-white text-lg font-semibold rounded-2xl shadow-lg hover:bg-lime-400 hover:shadow-xl transition duration-300 ease-in-out">
+                            {{ __('subscription.update_subscription') }}
+                        </button>
+                    </form>
+                </div>
+            @endif
+
+
+
         @else
             {{-- Empty state --}}
-            <div class="mt-12 rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 dark:bg-zinc-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 8h14l-2-8M10 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/>
-                    </svg>
-                </div>
-                <h3 class="mt-4 text-lg font-medium text-zinc-900 dark:text-zinc-100">
-                    {{ __('cart.empty') }}
-                </h3>
-                <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {{ __('cart.empty') ?? 'Browse products and add them to your subscription.' }}
-                </p>
-            </div>
+            <x-empty-cart />
         @endif
-
-
-
-
-
-
-
-    </div>
-    <div class="flex items-center justify-center">
-        <x-subscription-card 
-            :title="__('cart.total_exceeded')" 
-            :price="null" 
-            :subtext="__('cart.total_subcart_exceeded_subtext')" 
-            id="exceeded"
-            :error="true" />
     </div>
 </x-app-layout>
