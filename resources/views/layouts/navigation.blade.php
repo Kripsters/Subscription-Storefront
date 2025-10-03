@@ -84,11 +84,11 @@
 
                     <x-slot name="content">
                         <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" href="{{ route('lang.switch', 'en') }}">
-                            {{ __('English') }}
+                            {{ __('English  🇬🇧') }}
                         </x-dropdown-link>
     
                         <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" href="{{ route('lang.switch', 'lv') }}">
-                            {{ __('Latviešu') }}
+                            {{ __('Latviešu  🇱🇻') }}
                         </x-dropdown-link>
 
                         <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" :href="route('profile.edit')">
@@ -202,6 +202,22 @@
                     {{ __('navigation.profile') }}
                 </a>
 
+                <a href="
+                    {{ route('lang.switch', 'en') }}"
+                class="block rounded-lg px-3 py-2 text-sm font-medium
+                       text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white
+                       hover:bg-zinc-950/5 dark:hover:bg-white/5">
+                 {{ 'English  🇬🇧' }}
+                </a>
+
+                <a href="
+                    {{ route('lang.switch', 'lv') }}"
+                class="block rounded-lg px-3 py-2 text-sm font-medium
+                        text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white
+                        hover:bg-zinc-950/5 dark:hover:bg-white/5">
+                {{ 'Latviešu  🇱🇻' }}
+                </a>
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <a href="{{ route('logout') }}"
@@ -211,6 +227,8 @@
                               hover:bg-zinc-950/5 dark:hover:bg-white/5">
                         {{ __('navigation.logout') }}
                     </a>
+
+
                 </form>
             </div>
         </div>

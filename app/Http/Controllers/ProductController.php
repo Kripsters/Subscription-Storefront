@@ -101,6 +101,13 @@ class ProductController extends Controller
         $isActive = Subscription::isActiveSubscription();
         
         $product = Product::find($id);
+
+        if (Category::find($product->category_id) == null) {
+            $product->category = 'Uncategorized';
+        } else {
+            $product->category = Category::find($product->category_id)->name;
+        }
+
         return view('products.show', compact('product', 'isActive'));
     }
 

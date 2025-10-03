@@ -1,10 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-bold text-2xl text-zinc-800 dark:text-zinc-100 tracking-tight">
-            {{ __('stockedup.name') }}
-        </h2>
-    </x-slot>
-
+    <div class="py-4 sm:py-12">
     <div class="py-0 sm:py-12">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
         

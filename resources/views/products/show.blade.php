@@ -3,7 +3,7 @@
         <header class="bg-gradient-to-r from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 shadow">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <h1 class="text-3xl font-extrabold text-zinc-800 dark:text-zinc-100 tracking-tight">
-                    {{ $product->title }}
+                    {{ $product->category }}
                 </h1>
                 <div class="flex items-center space-x-4 mt-4">
                     <a href="{{ url()->previous() }}" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-zinc-700 text-gray-600 dark:text-gray-300 rounded-md">
