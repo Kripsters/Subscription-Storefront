@@ -194,6 +194,7 @@
                 @endforeach
               </tbody>
             </table>
+            
           </div>
         
           <div class="mt-20"> </div>
@@ -221,5 +222,13 @@
 
 
 
+    </div>
+    <div class="flex items-center justify-center">
+        <x-subscription-card 
+            :title="__('cart.total_exceeded')" 
+            :price="null" 
+            :subtext="__('cart.total_subcart_exceeded_subtext')" 
+            id="exceeded"
+            :error="true" />
     </div>
 </x-app-layout>

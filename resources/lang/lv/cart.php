@@ -20,6 +20,7 @@ return [
     'advanced_title' => 'Paplašinātais plāns',
     'advanced_subtext' => '€10 paredzēti piegādei',
     'total_exceeded' => 'Par daudz!',
+    'total_subcart_exceeded_subtext' => 'Jūsu groza kopsumma pārsniedz jūsu abonementa cenu, lūdzu, noņemiet dažas preces.',
     'total_exceeded_subtext' => 'Jūsu groza kopsumma pārsniedz 110€, lūdzu, noņemiet dažas preces.',
     'existing_subscription' => 'Jums jau ir aktīvs abonements.',
     'existing_subscription_subtext' => 'Jūs varat pārvaldīt savu abonementu citur.',

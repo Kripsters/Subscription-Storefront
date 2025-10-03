@@ -230,5 +230,12 @@ class SubscriptionController extends Controller
         // Return response
         return back()->with('success','Item removed');
     }
+
+    public function modify(Request $request) {
+        $subId = Subscription::where('user_id', auth()->id())->first();
+        $sub = Subscription::find($subId->id);
+        dd($request->all());
+        return back()->with('success','Subscription updated');
+    }
 }
 

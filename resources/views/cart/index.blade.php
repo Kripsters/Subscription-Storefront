@@ -138,7 +138,7 @@ foreach($cart->items as $item) {
                     :title="__('cart.total_exceeded')" 
                     :price="null" 
                     :subtext="__('cart.total_exceeded_subtext')" 
-                    id="exceeded" 
+                    id="exceeded"
                     :error="true" />
             @endif
 

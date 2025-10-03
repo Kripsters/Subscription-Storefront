@@ -21,6 +21,7 @@ return [
     'advanced_subtext' => '€10 allocated for shipping',
     'total_exceeded' => 'Too much!',
     'total_exceeded_subtext' => 'Your cart total exceeds 110€, please remove some items.',
+    'total_subcart_exceeded_subtext' => 'Your subscription cart total exceeds the price of your subscription, please remove some items.',
     'existing_subscription' => 'You already have an active subscription.',
     'existing_subscription_subtext' => 'You can edit your subscription elsewhere.',
     'summary' => 'Summary',
