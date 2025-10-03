@@ -6,11 +6,11 @@
                 <!-- Search -->
                 <input type="text" name="search" value="{{ request()->input('search') }}"
                     placeholder='{{ __('product.search_placeholder') }}'
-                    class="w-full rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                    class="w-full rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100" />
 
                 <!-- Sort -->
                 <select name="order"
-                    class="rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="rounded-lg border dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="">{{__('product.sort')}}</option>
                     <option value="asc" {{ request('order') === 'asc' ? 'selected' : '' }}>A–Z</option>
                     <option value="desc" {{ request('order') === 'desc' ? 'selected' : '' }}>Z–A</option>
@@ -20,7 +20,7 @@
 
                 <!-- Per page -->
                 <select name="per_page"
-                    class="rounded-lg border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="rounded-lg border dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     @foreach ([12, 24, 48] as $size)
                         <option value="{{ $size }}" {{ (int)request('per_page', 12) === $size ? 'selected' : '' }}>
                             {{ $size }} {{ __('product.per_page') }}
@@ -80,73 +80,62 @@
                     $isAboveFold = $loop->index < 4;
                 @endphp
 
-                <div class="group relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-sm hover:shadow-lg transition p-4 flex flex-col">
-                    
-                    <!-- Image -->
-                    <a href="{{ route('products.show', $item->id) }}">
-                        <img class="rounded-lg shadow-md mx-auto w-full h-48 object-cover group-hover:scale-105 transition"
-                             src="{{ asset($item->image) }}"
-                             alt="{{ __('product.img_alt'). $item->title }}"
-                             @if ($isAboveFold) 
-                             loading="eager"
-                             fetchpriority="high"
-                             @else  
-                             loading="lazy"
-                             fetchpriority="low"
-                             @endif 
-                             decoding="async"/>
-                    </a>
+<div class="group relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition duration-300 p-5 flex flex-col overflow-hidden">
+    
+    <!-- Image -->
+    <a href="{{ route('products.show', $item->id) }}" class="block relative overflow-hidden rounded-xl">
+        <img class="rounded-xl shadow-md w-full h-52 object-cover transform group-hover:scale-105 transition duration-500 ease-out"
+             src="{{ asset($item->image) }}"
+             alt="{{ __('product.img_alt'). $item->title }}"
+             @if ($isAboveFold) 
+             loading="eager"
+             fetchpriority="high"
+             @else  
+             loading="lazy"
+             fetchpriority="low"
+             @endif 
+             decoding="async"/>
+        <span class="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></span>
+    </a>
 
-                    <!-- Info -->
-                    <div class="mt-4 flex-1">
-                        <h5 class="text-lg font-semibold text-zinc-900 dark:text-zinc-50 truncate">
-                            <a href="{{ route('products.show', $item->id) }}">{{ $item->title }}</a>
-                        </h5>
-                        <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
-                            {{ Str::limit($item->description, 60) }}
-                        </p>
-                        <p>
-                                <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                                    {{ $item->category }} 
-                                </span>
-                        </p>
-                    </div>
+    <!-- Info -->
+    <div class="mt-4 flex-1">
+        <h5 class="text-xl font-semibold text-zinc-900 dark:text-zinc-50 line-clamp-1">
+            <a href="{{ route('products.show', $item->id) }}" class="hover:text-lime-600 transition">
+                {{ $item->title }}
+            </a>
+        </h5>
+        <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300 line-clamp-2">
+            {{ Str::limit($item->description, 80) }}
+        </p>
+        <p class="mt-2">
+            <span class="inline-block text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                {{ $item->category }}
+            </span>
+        </p>
+    </div>
 
-                    <!-- Price -->
-                    <div class="mt-3 text-lg font-bold text-lime-600">
-                        ${{ $item->price }}
-                    </div>
+    <!-- Price -->
+    <div class="mt-3 text-xl font-bold text-lime-600">
+        ${{ $item->price }}
+    </div>
 
-                    <!-- Action(s) -->
-                    <div class="mt-4 flex justify-between items-center">
-                        
-                        <!-- Add to cart -->
-                        @if ($isActive)
-                        <form method="POST" action="{{ route('subscription.add') }}">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $item->id }}">
-                            <input type="number" name="quantity" value="1" min="1"
-                                   class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                            <button type="submit"
-                                class="inline-flex items-center px-8 py-3 bg-lime-500 text-white text-lg font-semibold rounded-2xl shadow-lg hover:bg-lime-400 hover:shadow-xl transition duration-300 ease-in-out">
-                                {{ __('subscription.add_to_cart') }}
-                            </button>
-                        </form>
-                        @else
-                        <form method="POST" action="{{ route('cart.add') }}" class="flex items-center gap-2">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $item->id }}">
-                            <input type="number" name="quantity" value="1" min="1"
-                                    class="w-16 rounded-md border-zinc-300 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                            <button type="submit"
-                                    class="px-3 py-1 bg-lime-500 text-white text-sm rounded-md hover:bg-lime-400 focus:ring-2 focus:ring-lime-400 transition duration-300 ease-in-out">
-                                {{ __('product.add_to_cart') }}
-                            </button>
-                        </form>
-                        @endif
+    <!-- Action(s) -->
+    <div class="mt-5 flex justify-between items-center gap-3">
+        <form method="POST" action="{{ $isActive ? route('subscription.add') : route('cart.add') }}" class="flex items-center gap-3">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $item->id }}">
+            <input type="number" name="quantity" value="1" min="1"
+                   class="text-zinc-900 dark:text-zinc-200 w-16 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-1 text-center text-sm focus:border-lime-400 focus:ring focus:ring-lime-300/40 focus:outline-none transition" />
+            
+            <button type="submit"
+                class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-xl text-white bg-lime-500 hover:bg-lime-400 shadow-md hover:shadow-lg focus:ring-2 focus:ring-lime-400 transition duration-300 ease-in-out">
+                {{ $isActive ? __('subscription.add_to_cart') : __('product.add_to_cart') }}
+            </button>
+        </form>
+    </div>
+</div>
 
-                    </div>
-                </div>
             @endforeach <!-- End of product foreach -->
             
         </div>
