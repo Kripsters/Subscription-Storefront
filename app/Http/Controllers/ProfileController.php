@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Address;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -16,8 +17,14 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $address = Address::where('user_id', auth()->id())->first();
+        $billing_address = json_decode($address->billing);
+        $shipping_address = json_decode($address->shipping);
+        
         return view('profile.edit', [
             'user' => $request->user(),
+            'billing_address' => $billing_address,
+            'shipping_address' => $shipping_address
         ]);
     }
 
@@ -36,6 +43,18 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+    public function billingUpdate(Request $request): RedirectResponse
+    {
+        dd($request);
+        
+    }
+
+    public function shippingUpdate(Request $request)
+    {
+        
+    }
+
 
     /**
      * Delete the user's account.
