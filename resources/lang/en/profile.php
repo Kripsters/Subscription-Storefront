@@ -24,5 +24,15 @@ return [
     'danger_button' => 'Delete Account',
     'handle_cancel' => 'Payment Cancelled!',
     'handle_success' => 'Payment Successful!',
+    'billing_address' => 'Billing Address',
+    'billing_address_subtext' => 'Update your billing address.',
+    'shipping_address' => 'Shipping Address',
+    'shipping_address_subtext' => 'Update your shipping address. (If your billing address is the same as your shipping address, leave this blank.)',
+    'address-line-1' => 'Address Line 1',
+    'address-line-2' => 'Address Line 2',
+    'city' => 'City',
+    'state' => 'State',
+    'zip' => 'Postal Code',
+    'country' => 'Country ISO code (Ex. LV, GBR, USA e.t.c.)',
 ];  
 ?>

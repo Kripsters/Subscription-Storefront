@@ -24,5 +24,15 @@ return [
     'danger_button' => 'Dzēst kontu',
     'handle_cancel' => 'Maksājums atcelts!',
     'handle_success' => 'Maksājums veiksmīgs!',
+    'billing_address' => 'Rēķina adrese',
+    'billing_address_subtext' => 'Rediģējiet jūsu rēķina adresi.',
+    'shipping_address' => 'Piegādes adrese',
+    'shipping_address_subtext' => 'Rediģējiet jūsu piegādes adresi (Ja vēlaties lai rēķina adrese būtu vienāda ar piegādes adresi, tad atstājiet šo tukšu).',
+    'address-line-1' => '1. Adreses līnija',
+    'address-line-2' => '2. Adreses līnija',
+    'city' => 'Pilsēta',
+    'state' => 'Novads',
+    'zip' => 'Pasta indekss',
+    'country' => 'Valsts ISO kods (Piem. LV, GBR, USA u.t.t.)',
 ];  
 ?>
