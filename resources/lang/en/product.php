@@ -14,5 +14,8 @@ return [
     'back' => 'Go Back',
     'quantity' => 'Quantity',
     'hover_to_zoom' => 'Hover to zoom',
+    'showing' => 'Showing',
+    'of' => 'of',
+    'products' => 'products',
 ];  
 ?>

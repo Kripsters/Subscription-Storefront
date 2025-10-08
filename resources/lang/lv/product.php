@@ -14,5 +14,8 @@ return [
     'back' => 'Atpakaļ',
     'quantity' => 'Daudzums',
     'hover_to_zoom' => 'Novietot virsū, lai palielinātu',
+    'showing' => 'Rāda',
+    'of' => 'no',
+    'products' => 'produktiem',
 ];  
 ?>
