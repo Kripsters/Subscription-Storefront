@@ -12,5 +12,7 @@ return [
     'no_results' => 'No products found',
     'price' => 'Price:',
     'back' => 'Go Back',
+    'quantity' => 'Quantity',
+    'hover_to_zoom' => 'Hover to zoom',
 ];  
 ?>

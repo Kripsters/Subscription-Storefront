@@ -12,5 +12,7 @@ return [
     'no_results' => 'Nekas nav atrasts',
     'price' => 'Cena:',
     'back' => 'Atpakaļ',
+    'quantity' => 'Daudzums',
+    'hover_to_zoom' => 'Novietot virsū, lai palielinātu',
 ];  
 ?>
