@@ -46,13 +46,36 @@ class ProfileController extends Controller
 
     public function billingUpdate(Request $request): RedirectResponse
     {
-        dd($request);
-        
+        $addressJson = json_encode(array_diff_key($request->all(), array_flip(['_token', '_method'])));
+        $address = Address::where('user_id', auth()->id())->first();
+        if ($address) {
+            $address->billing = $addressJson;
+            $address->save();
+        } else {
+            $newAddress = new Address();
+            $newAddress->user_id = auth()->id();
+            $newAddress->billing = $addressJson;
+            $newAddress->shipping = '{}'; // Initialize shipping as empty JSON
+            $newAddress->save();
+        }
+        return Redirect::route('profile.edit')->with('status', 'billing-updated');
     }
 
     public function shippingUpdate(Request $request)
     {
-        
+        $addressJson = json_encode(array_diff_key($request->all(), array_flip(['_token', '_method'])));
+        $address = Address::where('user_id', auth()->id())->first();
+        if ($address) {
+            $address->shipping = $addressJson;
+            $address->save();
+        } else {
+            $newAddress = new Address();
+            $newAddress->user_id = auth()->id();
+            $newAddress->shipping = $addressJson;
+            $newAddress->billing = '{}'; // Initialize billing as empty JSON
+            $newAddress->save();
+        }
+        return Redirect::route('profile.edit')->with('status', 'shipping-updated'); 
     }
 
 

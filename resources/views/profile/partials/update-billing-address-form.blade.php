@@ -15,13 +15,13 @@
 
         <div>
             <x-input-label for="line1" :value="__('profile.address-line-1')" />
-            <x-text-input id="line1" name="line1" type="text" class="mt-1 block w-full" :value="old('address', $billing_address->line1)" required autofocus autocomplete="address_line1" />
+            <x-text-input id="line1" name="line1" type="text" class="mt-1 block w-full" :value="old('address1', $billing_address->line1)" required autofocus autocomplete="address_line1" />
             <x-input-error class="mt-2" :messages="$errors->get('address1')" />
         </div>
 
         <div>
             <x-input-label for="line2" :value="__('profile.address-line-2')" />
-            <x-text-input id="line2" name="line2" type="text" class="mt-1 block w-full" :value="old('address', $billing_address->line2)" required autofocus autocomplete="address_line2" />
+            <x-text-input id="line2" name="line2" type="text" class="mt-1 block w-full" :value="old('address2', $billing_address->line2)" required autofocus autocomplete="address_line2" />
             <x-input-error class="mt-2" :messages="$errors->get('address2')" />
         </div>
 
@@ -39,7 +39,7 @@
 
         <div>
             <x-input-label for="zip" :value="__('profile.zip')" />
-            <x-text-input id="zip" name="zip" type="text" class="mt-1 block w-full" :value="old('zip', $billing_address->postal_code)" required autofocus autocomplete="postal_code" />
+            <x-text-input id="postal_code" name="postal_code" type="text" class="mt-1 block w-full" :value="old('postal_code', $billing_address->postal_code)" required autofocus autocomplete="postal_code" />
             <x-input-error class="mt-2" :messages="$errors->get('postal_code')" />
         </div>
 
