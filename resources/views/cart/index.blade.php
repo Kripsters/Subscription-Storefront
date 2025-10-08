@@ -214,6 +214,7 @@ foreach($cart->items as $item) {
         id="exceeded" 
         :error="true" />
       </div>
+      <div class="py-8 sm:py-28"></div>
     @endif
   @endif
 
