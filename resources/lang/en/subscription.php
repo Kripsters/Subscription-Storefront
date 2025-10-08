@@ -34,5 +34,6 @@ return [
     'current_period' => 'Current Period',
     'add_to_cart' => 'Add to sub. cart',
     'update_subscription' => 'Update Subscription',
+    'invoice_id' => 'Invoice ID',
 ];  
 ?>

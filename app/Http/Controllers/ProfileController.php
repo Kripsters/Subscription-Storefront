@@ -18,8 +18,13 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $address = Address::where('user_id', auth()->id())->first();
+        if (isset($address->billing)) {
         $billing_address = json_decode($address->billing);
+        }
+        
+        if (isset($address->shipping)) {
         $shipping_address = json_decode($address->shipping);
+        }
         
         return view('profile.edit', [
             'user' => $request->user(),

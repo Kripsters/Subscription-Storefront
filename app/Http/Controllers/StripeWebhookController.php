@@ -14,6 +14,7 @@ use Stripe\Stripe;
 use Stripe\Webhook;
 use Stripe\Invoice;
 use Stripe\Subscription as StripeSubscription;
+use Stripe\Product as StripeProduct;
 use Carbon\Carbon;
 use App\Models\PaymentHistory;
 use App\Models\User;
@@ -189,6 +190,8 @@ class StripeWebhookController extends Controller
                                 
                                 // Plan name: prefer Price nickname; fall back to Product name
                                 $planName = 'Subscription';
+                                $product = StripeProduct::retrieve($item?->price->product);
+                                $planName = $product->name;
                                 
                                 // Amount & currency
                                 $amount   = isset($price) ? $price / 100 : null;
@@ -467,7 +470,9 @@ class StripeWebhookController extends Controller
                     $price   = $item?->price;
                     $product = is_object($price?->product) ? $price->product : null;
             
-                    $planName = $price?->nickname ?? ($product->name ?? $planName);
+
+                    $product = StripeProduct::retrieve($price->product);
+                    $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
                     $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : $amount;
                     $currency = isset($price->currency) ? strtoupper($price->currency) : $currency;
                     $interval = $price?->recurring?->interval ?? $interval;
@@ -563,8 +568,8 @@ class StripeWebhookController extends Controller
                     // Map price/product
                     $item    = $stripeSub->items->data[0] ?? null;
                     $price   = $item?->price;
-                    $product = is_object($price?->product) ? $price->product : null;
-                
+                    $productId = $price->product;
+                    $product = StripeProduct::retrieve($productId);
                     $planName = $price?->nickname ?? ($product->name ?? 'Subscription');
                     $amount   = isset($price->unit_amount) ? $price->unit_amount / 100 : null;
                     $currency = isset($price->currency) ? strtoupper($price->currency) : null;
@@ -582,7 +587,47 @@ class StripeWebhookController extends Controller
                     if ($stripeSub->cancel_at_period_end) {
                         // You could invent your own local status, e.g. "cancelling" or "pending_cancellation"
                         $status = 'canceled';
+                    } else {
+                        switch ($stripeSub->status) {
+                            case 'incomplete':
+                            case 'incomplete_expired':
+                                $status = 'canceled';
+                                break;
+
+
+                            case 'trialing':
+                            case 'active':
+                                $status = 'active';
+                                break;
+
+
+                            case 'past_due':
+                            case 'unpaid':
+                                $status = 'past_due';
+                                break;
+
+
+                            case 'canceled':
+                                $status = 'canceled';
+                                break;
+
+
+                            case 'paused':
+                                $status = 'paused';
+                                break;
+
+
+                            case 'ended':
+                                $status = 'canceled';
+                                break;
+
+
+                            default:
+                                $status = $stripeSub->status; // store unknown statuses as-is
+                                break;
+                        }
                     }
+
                 
                     // Upsert your local Subscription (use the Model statically)
                     \App\Models\Subscription::updateOrCreate(
