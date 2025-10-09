@@ -15,7 +15,7 @@
             <ul class="mt-3 space-y-2">
                 <li><a href="{{ route('about') }}" class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white">{{ __('navigation.about') }}</a></li>
                 <li><a href="{{ route('dashboard') }}" class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white">{{ __('navigation.dashboard') }}</a></li>
-                <li><a href="{{ route('dashboard') }}" class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white">{{ __('navigation.products') }}</a></li>
+                <li><a href="{{ route('products.index') }}" class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-white">{{ __('navigation.products') }}</a></li>
             </ul>
         </div>
 
