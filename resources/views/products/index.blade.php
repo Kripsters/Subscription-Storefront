@@ -71,7 +71,7 @@
     @if ($products->count())
 
         <!-- Results Counter -->
-        <div class="px-6 pt-6">
+        <div class="px-6 pt-6 flex items-center justify-center">
             <p class="text-sm text-zinc-600 dark:text-zinc-400 font-medium animate-fade-in">
                 {{ __('product.showing') }} 
                 <span class="text-zinc-900 dark:text-zinc-100 font-semibold">{{ $products->firstItem() }}–{{ $products->lastItem() }}</span> 
@@ -313,7 +313,7 @@
 
         // Quick view function (placeholder - you'll need to implement the modal)
         function showQuickView(productId) {
-            // This would open a modal with product details
+            // This would open a modal with product details 
             // For now, just navigate to the product page
             window.location.href = `/products/show/${productId}`;
             
