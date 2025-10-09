@@ -41,7 +41,7 @@ class Subscription extends Model
 
     static function billingSubscription() {
         $subscription = Subscription::where('user_id', auth()->id())->get();
-        if ($subscription->isEmpty() && $subscription[0]->current_period_end > now()) {        
+        if ($subscription->isEmpty() || $subscription[0]->current_period_end > now()) {        
             $allowed = false;
         } else {
             $allowed = true;

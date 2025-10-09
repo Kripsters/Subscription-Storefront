@@ -18,12 +18,22 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $address = Address::where('user_id', auth()->id())->first();
-        if (isset($address->billing)) {
-        $billing_address = json_decode($address->billing);
-        }
-        
-        if (isset($address->shipping)) {
-        $shipping_address = json_decode($address->shipping);
+        if ($address) {
+            if (isset($address->billing)) {
+            $billing_address = json_decode($address->billing);
+            }
+            
+            if (isset($address->shipping)) {
+            $shipping_address = json_decode($address->shipping);
+            }
+        } else {
+            Address::create([
+                'user_id' => auth()->id(),
+                'billing' => '[]',
+                'shipping' => '[]'
+            ]);
+            $billing_address = null;
+            $shipping_address = null;
         }
         
         return view('profile.edit', [
