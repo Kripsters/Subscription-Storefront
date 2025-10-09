@@ -1,4 +1,5 @@
 <x-app-layout>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <!-- Search & Filters - Sticky on Scroll -->
     <div class="sticky top-0 z-40 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300" id="filter-bar">
         <div class="pt-6 px-6 pb-4">
@@ -119,7 +120,7 @@
                     $isAboveFold = $loop->index < 4;
                 @endphp
 
-<div class="group relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-5 flex flex-col overflow-hidden card-animate" style="animation-delay: {{ $loop->index * 0.05 }}s;">
+<div class="group relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-5 flex flex-col overflow-hidden card-animate" >
     
     <!-- Quick View Button (appears on hover) -->
     <button onclick="showQuickView({{ $item->id }})" 
@@ -323,4 +324,73 @@
             // 3. Allow adding to cart from the modal
         }
     </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Staggered card entrance
+    anime({
+        targets: '.card-animate',
+        opacity: [0, 1],
+        translateY: [60, 0],
+        scale: [0.95, 1],
+        duration: 800,
+        delay: anime.stagger(80),
+        easing: 'easeOutExpo'
+    });
+    
+    // 2. Price pop animation
+    anime({
+        targets: '.card-animate .text-2xl.font-bold',
+        scale: [0, 1],
+        duration: 500,
+        delay: anime.stagger(80, {start: 500}),
+        easing: 'easeOutBack'
+    });
+    
+    // 3. Add to cart button animation
+    document.querySelectorAll('form button[type="submit"]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            const icon = this.querySelector('svg');
+            
+            anime({
+                targets: icon,
+                translateX: [0, 10, 0],
+                scale: [1, 1.3, 1],
+                duration: 300,
+                easing: 'easeInOutQuad'
+            });
+        });
+    });
+    
+    // 4. Enhanced hover effects for cards
+    document.querySelectorAll('.card-animate').forEach(card => {
+        const img = card.querySelector('img');
+        const quickViewBtn = card.querySelector('button[onclick^="showQuickView"]');
+        
+        card.addEventListener('mouseenter', () => {
+            // Quick view button entrance
+            anime({
+                targets: quickViewBtn,
+                opacity: [0, 1],
+                scale: [0.7, 1],
+                rotate: [-45, 0],
+                duration: 400,
+                easing: 'easeOutBack'
+            });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            anime({
+                targets: quickViewBtn,
+                opacity: 0,
+                scale: 0.7,
+                duration: 250,
+                easing: 'easeInQuad'
+            });
+        });
+    });
+});
+</script>
 </x-app-layout>

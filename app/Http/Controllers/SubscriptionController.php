@@ -55,7 +55,9 @@ class SubscriptionController extends Controller
         if (isset($address)) {
             $billing_address = json_decode($address->billing, true);
             $shipping_address = json_decode($address->shipping, true);
-            
+            } else {
+            $billing_address = null;
+            $shipping_address = null;
             }
 
         // Pass the subscription and payments to the view
