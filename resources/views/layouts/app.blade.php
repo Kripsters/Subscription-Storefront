@@ -38,7 +38,7 @@
             .bg-shape {
                 position: absolute;
                 border-radius: 50%;
-                filter: blur(25px);
+                filter: blur(50px);
                 animation: float 10s ease-in-out infinite;
             }
             @keyframes float {
