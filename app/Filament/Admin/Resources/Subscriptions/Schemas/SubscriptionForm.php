@@ -3,6 +3,9 @@
 namespace App\Filament\Admin\Resources\Subscriptions\Schemas;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
+use Filament\Support\Enums\FontWeight;
 use Filament\Schemas\Schema;
 
 class SubscriptionForm
@@ -11,6 +14,12 @@ class SubscriptionForm
     {
         return $schema
             ->components([
+                Section::make()
+                ->schema([
+                    Text::make('Make sure you know what you are doing! Changes here will not be reflected in Stripe automatically and will lead to data anomalies.')
+                        ->weight(FontWeight::Bold)
+                        ->color('danger'),
+                ]),
                 TextInput::make('user_id')
                     ->required()
                     ->numeric(),

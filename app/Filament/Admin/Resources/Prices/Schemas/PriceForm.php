@@ -4,6 +4,9 @@ namespace App\Filament\Admin\Resources\Prices\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
+use Filament\Support\Enums\FontWeight;
 
 class PriceForm
 {
@@ -11,6 +14,12 @@ class PriceForm
     {
         return $schema
             ->components([
+                Section::make()
+                ->schema([
+                    Text::make('These are only for (website) display purposes. Changes here will not be reflected in Stripe automatically and may lead to inaccurate data.')
+                        ->weight(FontWeight::Bold)
+                        ->color('danger'),
+                ]),
                 TextInput::make('plan')
                     ->required(),
                 TextInput::make('price')

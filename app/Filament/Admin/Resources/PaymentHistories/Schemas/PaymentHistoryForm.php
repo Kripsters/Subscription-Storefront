@@ -5,6 +5,9 @@ namespace App\Filament\Admin\Resources\PaymentHistories\Schemas;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Text;
+use Filament\Support\Enums\FontWeight;
 
 class PaymentHistoryForm
 {
@@ -12,6 +15,12 @@ class PaymentHistoryForm
     {
         return $schema
             ->components([
+                Section::make()
+                ->schema([
+                    Text::make('These should generally not be modified manually. Changes here will not be reflected in Stripe automatically and may lead to inaccurate data.')
+                        ->weight(FontWeight::Bold)
+                        ->color('danger'),
+                ]),
                 TextInput::make('user_id')
                     ->required()
                     ->numeric(),
