@@ -38,7 +38,7 @@
             .bg-shape {
                 position: absolute;
                 border-radius: 50%;
-                filter: blur(10px);
+                filter: blur(25px);
                 animation: float 10s ease-in-out infinite;
             }
             @keyframes float {
@@ -85,11 +85,14 @@
             @endif <!-- End of about if -->
 
             <div class="relative z-10">
-                <div id="animated-bg">
-                    @for ($i = 0; $i < 10; $i++)
-                    <div class="bg-shape bg-gray-300 dark:bg-zinc-800"></div>
-                    @endfor
-                </div>
+                            @if (request()->routeIs('about') || request()->routeIs('dashboard'))
+                            @else
+                                <div id="animated-bg">
+                                    @for ($i = 0; $i < 10; $i++)
+                                    <div class="bg-shape bg-purple-300 dark:bg-purple-950"></div>
+                                    @endfor
+                                </div>
+                            @endif
                                 <!-- Page Heading -->
                                 @isset($header)
                                     <header class="bg-zinc-50/70 dark:bg-zinc-900/60 shadow">

@@ -1,7 +1,7 @@
 <x-app-layout>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <!-- Search & Filters - Sticky on Scroll -->
-    <div class="sticky top-0 z-40 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300" id="filter-bar">
+    <div class="top-0 z-40 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300" id="filter-bar">
         <div class="pt-6 px-6 pb-4">
             <form method="GET" action="{{ route('products.search') }}" id="search-form">
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
@@ -122,7 +122,7 @@
                     $isAboveFold = $loop->index < 4;
                 @endphp
 
-<div class="group relative bg-white dark:bg-zinc-900 dark:bg-opacity-90 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-5 flex flex-col overflow-hidden card-animate" >
+<div class="group relative bg-white dark:bg-zinc-900 bg-opacity-40 dark:bg-opacity-60 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-5 flex flex-col overflow-hidden card-animate" >
     <!-- Quick View Button (appears on hover) -->
     <button onclick="showQuickView({{ $item->id }})" 
         class="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg">
