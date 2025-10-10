@@ -21,6 +21,14 @@
                 </a>
             @endif
         </div>
+                            <!-- Dark mode toggle -->
+                            <div class="flex justify-center mt-4">
+                                <button id="theme-toggle" 
+                                class="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition sm:mx-12">
+                                    <span id="theme-toggle-light" class="hidden">🌙</span>
+                                    <span id="theme-toggle-dark" class="hidden">🌞</span>
+                                </button>
+                            </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
             <div class="bg-gray-100 dark:bg-zinc-900 overflow-hidden shadow-sm sm:rounded-lg">
                 <h1 class="p-6 text-3xl font-bold text-zinc-800 dark:text-zinc-100">
