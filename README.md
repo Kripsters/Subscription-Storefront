@@ -27,11 +27,6 @@ After logging in, listen to the webhook route:
 `stripe listen --forward-to http://127.0.0.1:8000/api/stripe/webhook`
 
 
-## Images and Videos
-
-Images and videos stored within storage folder, move images to public/storage/images and videos to public/storage/videos
-
-
 ## Admin panel/account
 
 Initial Admin account is available after seeding using: </br>
