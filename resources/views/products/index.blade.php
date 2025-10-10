@@ -113,6 +113,8 @@
             @endif
         </div>
 
+
+        
         <!-- Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
             @foreach ($products as $item)
@@ -120,8 +122,7 @@
                     $isAboveFold = $loop->index < 4;
                 @endphp
 
-<div class="group relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-5 flex flex-col overflow-hidden card-animate" >
-    
+<div class="group relative bg-white dark:bg-zinc-900 dark:bg-opacity-90 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 p-5 flex flex-col overflow-hidden card-animate" >
     <!-- Quick View Button (appears on hover) -->
     <button onclick="showQuickView({{ $item->id }})" 
         class="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg">
