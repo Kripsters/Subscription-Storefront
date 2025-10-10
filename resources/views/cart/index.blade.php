@@ -205,6 +205,7 @@ foreach($cart->items as $item) {
 
             {{-- Empty state --}}
       <x-empty-cart />
+      <div class="py-8 sm:py-24"></div>
     @else
       <div class="flex items-center justify-center">
         <x-subscription-card 

@@ -34,5 +34,6 @@ return [
     'state' => 'Novads',
     'zip' => 'Pasta indekss',
     'country' => 'Valsts ISO kods (Piem. LV, GBR, USA u.t.t.)',
+    'show_subscription' => 'Rādīt abonementa informāciju',
 ];  
 ?>

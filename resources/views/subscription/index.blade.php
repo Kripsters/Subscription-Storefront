@@ -113,6 +113,7 @@
                     @endif
                 </div>
             </div>
+            <div class="py-8 sm:py-44"></div>
         @else
             {{-- Summary + Addresses --}}
             <div class="grid gap-6 md:grid-cols-3">

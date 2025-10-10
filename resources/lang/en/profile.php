@@ -34,5 +34,6 @@ return [
     'state' => 'State',
     'zip' => 'Postal Code',
     'country' => 'Country ISO code (Ex. LV, GBR, USA e.t.c.)',
+    'show_subscription' => 'Show Subscription information',
 ];  
 ?>

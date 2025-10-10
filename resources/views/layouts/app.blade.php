@@ -89,7 +89,7 @@
                             @else
                                 <div id="animated-bg">
                                     @for ($i = 0; $i < 10; $i++)
-                                    <div class="bg-shape bg-purple-300 dark:bg-purple-950"></div>
+                                    <div class="bg-shape bg-sky-200 dark:bg-sky-950"></div>
                                     @endfor
                                 </div>
                             @endif
