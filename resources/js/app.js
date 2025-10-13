@@ -6,7 +6,7 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
-// Background slideshow with lazy loading and smooth transitions
+if (document.URL == "http://127.0.0.1:8000/dashboard") {
 document.addEventListener("DOMContentLoaded", () => {
     const numImages = 4; // configurable number of images
     const images = []; // set image array
@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setInterval(changeSlide, 5000); // switch every 5s
 });
+}
 
 // Dark mode toggle
 const themeToggle = document.getElementById("theme-toggle");

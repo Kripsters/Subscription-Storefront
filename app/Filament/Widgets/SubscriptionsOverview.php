@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Widgets;
+namespace App\Filament\Widgets;
 
 use App\Models\Subscription;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
