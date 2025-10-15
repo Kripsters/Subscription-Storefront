@@ -47,18 +47,21 @@ class AuthenticatedSessionController extends Controller
     
         // If intended points to the panel but the user can't access it -> drop it.
         if ($intendedPointsToPanel && $userCanAccessPanel==false) {
+            Log::warning('User '.$user->id.' tried to access '.$intended.' but cannot access the admin panel');
             $intended = null;
         }
-        
-        Log::info($user);
     
         if ($user->is_admin == 'true') {
+            // dd('user can access panel');
             // Admins: honor intended (if present), else go to panel home.
+            Log::info('Admin user '.$user->id.' logged in, redirecting to '.($intended ?: $panel->getUrl()));
             return redirect()->to($intended ?: $panel->getUrl());
             // or: return redirect()->intended($panel->getUrl());
         }
     
         // Non-admins: go to app home (and *not* to the panel)
+        // dd('non admin');
+        Log::info('Non-admin user '.$user->id.' logged in, redirecting to dashboard');
         return redirect()->intended(route('dashboard', absolute: false));
     
     }
