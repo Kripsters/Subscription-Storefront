@@ -52,15 +52,20 @@ class AuthenticatedSessionController extends Controller
         }
     
         if ($user->is_admin == 'true') {
-            // dd('user can access panel');
             // Admins: honor intended (if present), else go to panel home.
-            Log::info('Admin user '.$user->id.' logged in, redirecting to '.($intended ?: $panel->getUrl()));
+            Log::info('Admin user '.$user->id.' logged in', [
+                'intended' => $intended,
+                'panel_url' => $panel->getUrl(),
+                'redirect_to' => $intended ?: $panel->getUrl(),
+                'is_admin_value' => $user->is_admin,
+                'is_admin_type' => gettype($user->is_admin),
+                'can_access_panel' => method_exists($user, 'canAccessPanel') ? $user->canAccessPanel($panel) : 'method not found'
+            ]);
             return redirect()->to($intended ?: $panel->getUrl());
             // or: return redirect()->intended($panel->getUrl());
         }
     
         // Non-admins: go to app home (and *not* to the panel)
-        // dd('non admin');
         Log::info('Non-admin user '.$user->id.' logged in, redirecting to dashboard');
         return redirect()->intended(route('dashboard', absolute: false));
     
