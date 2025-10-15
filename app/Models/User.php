@@ -53,12 +53,20 @@ class User extends Authenticatable
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return (bool) $this->is_admin;
+        if ($this->is_admin == 'true') {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
     public function isAdmin(): bool
     {
-        return (bool) $this->is_admin;
+        if ($this->is_admin == 'true') {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
