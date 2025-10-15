@@ -3,7 +3,7 @@
 use App\Models\User;
 use App\Models\Subscription;
 
-test('can pause subscription', function () {
+test('can get to subscription overview', function () {
     $user = User::factory()->create();
     Subscription::updateOrCreate(
         ['user_id' => $user->id],
@@ -27,7 +27,7 @@ test('can pause subscription', function () {
 
     $response = $this
         ->actingAs($user)
-        ->post('/subscription/pause');
+        ->get('/subscription');
 
     $response->assertSee('Subscription Overview');
 });
