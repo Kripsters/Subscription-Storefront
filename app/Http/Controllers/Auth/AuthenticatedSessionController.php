@@ -12,6 +12,7 @@ use App\Providers\RouteServiceProvider;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Facades\Filament;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 
 class AuthenticatedSessionController extends Controller
@@ -46,19 +47,18 @@ class AuthenticatedSessionController extends Controller
     
         // If intended points to the panel but the user can't access it -> drop it.
         if ($intendedPointsToPanel && $userCanAccessPanel==false) {
-            // dd('user cant access panel');
             $intended = null;
         }
+        
+        Log::info($user);
     
         if ($user->is_admin == 'true') {
-            // dd('user can access panel');
             // Admins: honor intended (if present), else go to panel home.
             return redirect()->to($intended ?: $panel->getUrl());
             // or: return redirect()->intended($panel->getUrl());
         }
     
         // Non-admins: go to app home (and *not* to the panel)
-        // dd('non admin');
         return redirect()->intended(route('dashboard', absolute: false));
     
     }
