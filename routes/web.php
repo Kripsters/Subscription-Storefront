@@ -79,18 +79,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/subscriptions/{subscription}/apply-items', [CartController::class, 'applySubscriptionItems'])
         ->name('subscriptions.apply-items');
-
-
-    
-    Route::get('/test-email', function () {
-        Mail::raw('This is a test email from Laravel', function ($message) {
-            $message->to('penguingaming113@gmail.com')
-                    ->subject('Test Email');
-        });
-
-        return 'Email sent!';
-    });
-
 });
 
 require __DIR__.'/auth.php';
