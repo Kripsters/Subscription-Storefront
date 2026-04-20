@@ -47,7 +47,7 @@ class PaymentController extends Controller
             'client_reference_id' => auth()->id(),
             'mode' => 'subscription',
 
-            // ✅ absolute URLs required by Stripe
+            // absolute URLs required by Stripe
             'success_url' => $successUrl,
             'cancel_url'  => $cancelUrl,
 
