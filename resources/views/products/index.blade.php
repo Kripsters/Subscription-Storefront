@@ -225,7 +225,7 @@
         </div>
     @else
         <!-- Enhanced Empty State -->
-        <div class="flex flex-col items-center justify-center py-20 px-6">
+        <div class="flex flex-col items-center justify-center py-24 px-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-zinc-300 dark:text-zinc-700 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

@@ -17,5 +17,7 @@ return [
     'showing' => 'Rāda',
     'of' => 'no',
     'products' => 'produktiem',
+    'try_different_search' => 'Meklēt citu produktu',
+    'view_all_products' => 'Skatīt visus produktus',
 ];  
 ?>

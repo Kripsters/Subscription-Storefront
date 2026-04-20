@@ -17,5 +17,7 @@ return [
     'showing' => 'Showing',
     'of' => 'of',
     'products' => 'products',
+    'try_different_search' => 'Try a different search',
+    'view_all_products' => 'View all products',
 ];  
 ?>
