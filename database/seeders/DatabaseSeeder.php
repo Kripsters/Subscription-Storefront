@@ -18,97 +18,37 @@ class DatabaseSeeder extends Seeder
     {
         //User::factory(10)->create();
 
-        Category::factory(10)->create();
+        // Categories - only create if none exist
+if (Category::count() === 0) {
+    Category::factory(10)->create();
+}
 
-        Product::factory(50)->create();
+// Products - only create if none exist
+if (Product::count() === 0) {
+    Product::factory(50)->create();
+}
 
-        DB::table('users')->insert([
-            'name' => 'Admin User',
-            'email' => 'admin@admin.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('Admin123!'), // password
-            'is_admin' => 'true',
-            'remember_token' => \Illuminate\Support\Str::random(10),
-        ]);
+// Admin user - use updateOrCreate to avoid duplicates
+User::updateOrCreate(
+    ['email' => 'admin@admin.com'],
+    [
+        'name' => 'Admin User',
+        'email_verified_at' => now(),
+        'password' => bcrypt('Admin123!'),
+        'is_admin' => true,
+        'remember_token' => \Illuminate\Support\Str::random(10),
+    ]
+);
 
-        DB::table('prices')->insert([
-            [
-                'plan' => 'Basic',
-                'price' => '40',
-                'currency' => 'euro',
-                'lookup_key' => 'basic-monthly',
-            ],
-            [
-                'plan' => 'Medium',
-                'price' => '80',
-                'currency' => 'euro',
-                'lookup_key' => 'medium-monthly',
-            ],
-            [
-                'plan' => 'Advanced',
-                'price' => '120',
-                'currency' => 'euro',
-                'lookup_key' => 'advanced-monthly',
-            ],
-        ]);
-
-        DB::table('products')->insert([
-            [
-                'title' => 'Debugging Duck',
-                'price' => 9.99,
-                'description' => 'Your faithful rubber duck to talk to when code breaks. Doesn’t answer, but that’s the point.',
-                'category_id' => 1,
-                'image' => '/storage/images/Debugging-Duck.jpg',
-            ],
-            [
-                'title' => 'Dark Mode T-Shirt',
-                'price' => 19.99,
-                'description' => 'Black shirt with white code print – optimized for developers who live in dark mode.',
-                'category_id' => 2,
-                'image' => '/storage/images/Dark-Mode-T-Shirt.jpg',
-            ],
-            [
-                'title' => 'Binary Coffee Mug',
-                'price' => 12.49,
-                'description' => 'Mug with “01001000 01101001” printed on it – which means "Hi" in binary. Geek fuel!',
-                'category_id' => 3,
-                'image' => '/storage/images/Binary-Coffee-Mug.jpg',
-            ],
-            [
-                'title' => 'Git Push Stress Ball',
-                'price' => 6.95,
-                'description' => 'For those times when your push gets rejected. Squeeze your way to inner peace.',
-                'category_id' => 4,
-                'image' => '/storage/images/Git-Push-Stress-Ball.jpg',
-            ],
-            [
-                'title' => 'Syntax Error Hoodie',
-                'price' => 39.99,
-                'description' => 'Stay cozy while fixing bugs. Comes with a kangaroo pocket for USB sticks and snacks.',
-                'category_id' => 5,
-                'image' => '/storage/images/Syntax-Error-Hoodie.jpg',
-            ],
-            [
-                'title' => 'RGB Mechanical Keyboard',
-                'price' => 89.99,
-                'description' => 'Tactile clicks and vibrant lights to make your code look and sound cooler.',
-                'category_id' => 6,
-                'image' => '/storage/images/RGB-Mechanical-Keyboard.jpg',
-            ],
-            [
-                'title' => 'JavaScript Candle',
-                'price' => 14.99,
-                'description' => 'Smells like confusion, hope, and eventual success. Burn it during those async nights.',
-                'category_id' => 7,
-                'image' => '/storage/images/JavaScript-Candle.jpg',
-            ],
-            [
-                'title' => 'Stack Overflow Notebook',
-                'price' => 7.99,
-                'description' => 'For all your brilliant ideas before you copy/paste the solution anyway.',
-                'category_id' => 8,
-                'image' => '/storage/images/Stack-Overflow-Notebook.jpg',
-            ]
-        ]);
+// Prices - upsert based on lookup_key
+DB::table('prices')->upsert(
+    [
+        ['plan' => 'Basic',    'price' => '40',  'currency' => 'euro', 'lookup_key' => 'basic-monthly'],
+        ['plan' => 'Medium',   'price' => '80',  'currency' => 'euro', 'lookup_key' => 'medium-monthly'],
+        ['plan' => 'Advanced', 'price' => '120', 'currency' => 'euro', 'lookup_key' => 'advanced-monthly'],
+    ],
+    ['lookup_key'],         // unique key to match on
+    ['plan', 'price', 'currency']  // columns to update if record exists
+);
     }
 }
