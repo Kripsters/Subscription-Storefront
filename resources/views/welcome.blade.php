@@ -60,10 +60,10 @@
                 {{-- Left copy --}}
                 <div class="flex-1 text-white z-10">
                     <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-none tracking-tight mb-4">
-                        Are you<br>starving?
+                        {{ __('welcome.forgot') }}<br>{{ __('welcome.milk') }}
                     </h1>
                     <p class="text-amber-100 text-lg mb-10 max-w-sm">
-                        Within a few clicks, find meals that are accessible near you.
+                        {{ __('welcome.hero_desc') }}
                     </p>
                 </div>
     
@@ -84,8 +84,8 @@
     
                 <div class="flex items-end justify-between mb-8">
                     <div>
-                        <p class="text-amber-500 font-bold text-sm uppercase tracking-widest mb-1">Explore</p>
-                        <h2 class="text-3xl font-black text-zinc-900 dark:text-white">Popular Products</h2>
+                        <p class="text-amber-500 font-bold text-sm uppercase tracking-widest mb-1">{{ __('welcome.explore') }}</p>
+                        <h2 class="text-3xl font-black text-zinc-900 dark:text-white">{{ __('welcome.popular') }}</h2>
                     </div>
                 </div>
     
@@ -116,19 +116,19 @@
         {{-- ── HOW IT WORKS ── --}}
         <section class="bg-amber-50 dark:bg-zinc-900 py-20 px-6">
             <div class="max-w-7xl mx-auto text-center mb-12">
-                <p class="text-amber-500 font-bold text-sm uppercase tracking-widest mb-2">Simple Steps</p>
-                <h2 class="text-3xl font-black text-zinc-900 dark:text-white">How It Works</h2>
+                <p class="text-amber-500 font-bold text-sm uppercase tracking-widest mb-2">{{ __('welcome.simple_steps') }}</p>
+                <h2 class="text-3xl font-black text-zinc-900 dark:text-white">{{ __('welcome.hiw_title') }}</h2>
             </div>
     
             <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
                 @php
                     $steps = [
                         ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
-                         'title' => 'Choose Your Meal', 'desc' => 'Browse hundreds of restaurants and pick what you\'re craving.'],
+                         'title' => __('welcome.hiw_p1_title'), 'desc' => __('welcome.hiw_p1_desc')],
                         ['icon' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
-                         'title' => 'Make Payment',    'desc' => 'Pay securely with your preferred method — card, cash, or wallet.'],
+                         'title' => __('welcome.hiw_p2_title'),    'desc' => __('welcome.hiw_p2_desc')],
                         ['icon' => 'M1 3h13v13H1V3zM14 8h4l3 3v5h-7V8zM5.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3z',
-                         'title' => 'Fast Delivery',   'desc' => 'Your food arrives hot and fresh right at your doorstep.'],
+                         'title' => __('welcome.hiw_p3_title'),   'desc' => __('welcome.hiw_p3_desc')],
                     ];
                 @endphp
     
@@ -155,11 +155,11 @@
                  style="background-image: radial-gradient(circle at 20% 50%, #f59e0b 0%, transparent 50%), radial-gradient(circle at 80% 50%, #ef4444 0%, transparent 50%);">
             </div>
             <div class="relative z-10 max-w-xl mx-auto">
-                <p class="text-amber-400 font-bold text-sm uppercase tracking-widest mb-3">New Here?</p>
+                <p class="text-amber-400 font-bold text-sm uppercase tracking-widest mb-3">{{ __('welcome.new_here') }}</p>
                 <h2 class="text-4xl sm:text-5xl text-white dark:text-zinc-900 font-black mb-4 leading-tight">
-                    Join <span class="text-amber-400">{{ __('stockedup.name') }}</span> today
+                    {{ __('welcome.join') }} <span class="text-amber-400">{{ __('stockedup.name') }}</span> {{ __('welcome.today') }}
                 </h2>
-                <p class="text-zinc-400 mb-8">Create an account and get your first delivery.</p>
+                <p class="text-zinc-400 mb-8">{{ __('welcome.reg_desc') }}</p>
                 <a href="{{ route('register') }}"
                    class="inline-flex items-center gap-2 px-8 py-4 bg-amber-400 hover:bg-amber-300 active:scale-95 text-zinc-900 text-base font-black rounded-2xl transition shadow-lg shadow-amber-400/30">
                     {{ __('welcome.register') }}
