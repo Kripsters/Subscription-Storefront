@@ -6,7 +6,7 @@
             <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
     
                 {{-- Logo --}}
-                <a href="{{ route('dashboard') }}" class="shrink-0 flex items-center">
+                <a href="{{ route('welcome') }}" class="shrink-0 flex items-center">
                     <x-application-logo class="block h-9 w-auto fill-current text-zinc-800 dark:text-zinc-200 animate-pulse" />
                     <span class="text-xl font-black tracking-tight text-zinc-900 dark:text-white">
                         {{ __('stockedup.p1') }}<span class="text-amber-400">{{ __('stockedup.p2') }}</span>
