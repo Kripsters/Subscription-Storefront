@@ -15,6 +15,7 @@ return [
 'name' => 'Name',
 'confirm_password' => 'Confirm Password',
 'already_registered' => 'Already registered?',
+'existing_account' => 'Already have an account?',
 
 ];
 

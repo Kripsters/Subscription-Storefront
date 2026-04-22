@@ -15,6 +15,7 @@ return [
 'name' => 'Vārds',
 'confirm_password' => 'Apstipriniet paroli',
 'already_registered' => 'Jau esat reģistrējies?',
+'existing_account' => 'Jau ir konts?',
 
 ];
 

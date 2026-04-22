@@ -38,10 +38,14 @@
                     {{ __('welcome.forgot_password') }}
                 </a>
             @endif
-
             <x-primary-button class="ms-3" name="loginButton" id="loginButton">
                 {{ __('welcome.login') }}
             </x-primary-button>
+            
+
         </div>
+        <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }}">
+            {{ __('welcome.existing_account') }}
+        </a>
     </form>
 </x-guest-layout>
