@@ -25,8 +25,9 @@ class ProductForm
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
-                Textarea::make('category')
+                TextInput::make('category_id')
                     ->required()
+                    ->numeric()
                     ->columnSpanFull(),
                 Textarea::make('image')
                     ->required()
