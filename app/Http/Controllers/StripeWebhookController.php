@@ -54,7 +54,7 @@ class StripeWebhookController extends Controller
         // Signature header used to verify payload authenticity
         $sigHeader = $request->header('Stripe-Signature');
         // Secret used to validate signature (configured in Stripe Dashboard)
-        $secret = env('STRIPE_WEBHOOK_SECRET');
+        $secret = config('services.stripe.webhook.secret');
 
         
 
@@ -71,7 +71,7 @@ class StripeWebhookController extends Controller
         
         $type = $event->type;
         $obj  = $event->data->object; // thin object (Invoice, Subscription, etc.)
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
 
 
@@ -168,7 +168,7 @@ class StripeWebhookController extends Controller
 
                     if ($userId && $session->mode === 'subscription' && $session->subscription) {
                         try {
-                            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+                            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
                                 // ✅ Retrieve with correct PHP signature + expansions
                                 $subscription = \Stripe\Subscription::retrieve(

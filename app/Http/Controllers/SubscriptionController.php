@@ -73,7 +73,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
 
         // Update the Stripe subscription to cancel at the end of the billing period
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe = new StripeClient(config('services.stripe.secret'));
         $stripe->subscriptions->update($subscription->stripe_subscription_id, [
             'cancel_at_period_end' => true,
         ]);
@@ -96,7 +96,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
 
         // Update the Stripe subscription to pause collection
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe = new StripeClient(config('services.stripe.secret'));
         $stripe->subscriptions->update($subscription->stripe_subscription_id, [
             'pause_collection' => ['behavior' => 'mark_uncollectible'],
         ]);
@@ -119,7 +119,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
 
         // Update the Stripe subscription to cancel pause collection
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $stripe = new StripeClient(config('services.stripe.secret'));
         $stripe->subscriptions->update($subscription->stripe_subscription_id, [
             'pause_collection' => '',
         ]);
