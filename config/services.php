@@ -45,6 +45,11 @@ return [
         'pricing_table' => [
             'id' => env('STRIPE_PRICING_TABLE_ID'),
         ],
+        'prices' => [
+            'basic'    => env('STRIPE_SUBSCRIPTION_PRICE_BASIC'),
+            'medium'   => env('STRIPE_SUBSCRIPTION_PRICE_MEDIUM'),
+            'advanced' => env('STRIPE_SUBSCRIPTION_PRICE_ADVANCED'),
+        ],
     ],
 
     'mailgun' => [

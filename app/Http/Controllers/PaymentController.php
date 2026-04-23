@@ -24,19 +24,11 @@ class PaymentController extends Controller
 
     Stripe::setApiKey(config('services.stripe.secret'));
 
-    switch ($plan) {
-        case 'basic':
-            $priceId = env('STRIPE_SUBSCRIPTION_PRICE_BASIC');
-            break;
-        case 'medium':
-            $priceId = env('STRIPE_SUBSCRIPTION_PRICE_MEDIUM');
-            break;
-        case 'advanced':
-            $priceId = env('STRIPE_SUBSCRIPTION_PRICE_ADVANCED');
-            break;
-        default:
-            return response()->json(['error' => 'Invalid plan selected'], 400);
+    $prices = config('services.stripe.prices');
+    if (!array_key_exists($plan, $prices)) {
+        return response()->json(['error' => 'Invalid plan selected'], 400);
     }
+    $priceId = $prices[$plan];
 
     try {
         // Build absolute URLs (route() returns absolute by default if APP_URL is set)
