@@ -19,9 +19,6 @@ class UserForm
                     ->label('Email address')
                     ->email()
                     ->required(),
-                TextInput::make('password')
-                    ->password()
-                    ->required(),
                 Select::make('is_admin')
                     ->options(['false' => 'False', 'true' => 'True'])
                     ->default('false')
