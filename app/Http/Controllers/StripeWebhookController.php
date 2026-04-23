@@ -319,15 +319,7 @@ class StripeWebhookController extends Controller
                                 'raw_data'                => json_encode($session), // keep the raw session for audit
                             ]);
 
-                            // Notify the user
                             $user = User::find($userId);
-                            $user?->notify(new PaymentSuccessNotification(
-                                $amount,
-                                data_get($session, 'customer_details.name'),
-                                json_encode(data_get($session, 'customer_details.address', [])),
-                                json_encode(data_get($session, 'shipping.address', []))
-                            ));
-
                             $user->stripe_customer_id = $invoice->customer;
                             $user->save();
 
@@ -335,13 +327,25 @@ class StripeWebhookController extends Controller
                             $cart = Cart::firstOrCreate(
                                 ['user_id' => $userId, 'status' => 'active']
                             );
-                            
+
                             CartItem::where('cart_id', $cartId)->delete();
                             $cart->delete();
 
                         } catch (\Throwable $e) {
                             Log::error('Webhook processing error: ' . $e->getMessage());
-                            // Optional: capture to an error reporting service
+                        }
+
+                        // Notify outside the main try-catch so mail errors are logged separately
+                        try {
+                            $user = $user ?? User::find($userId);
+                            $user?->notify(new PaymentSuccessNotification(
+                                $amount,
+                                data_get($session, 'customer_details.name'),
+                                json_encode(data_get($session, 'customer_details.address', [])),
+                                json_encode(data_get($session, 'shipping.address', []))
+                            ));
+                        } catch (\Throwable $e) {
+                            Log::error('Payment notification email failed: ' . $e->getMessage());
                         }
                     }
         break; // end of success case

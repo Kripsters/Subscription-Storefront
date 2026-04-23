@@ -24,7 +24,7 @@ class PaymentSuccessNotification extends Notification
      * @param string $billing_address
      * @param string $shipping_address
      */
-    public function __construct(float $amount, string $billing_name, string $billing_address, string $shipping_address)
+    public function __construct(float $amount, ?string $billing_name, ?string $billing_address, ?string $shipping_address)
     {
         $this->amount = $amount;
         $this->billing_name = $billing_name;
@@ -48,26 +48,36 @@ class PaymentSuccessNotification extends Notification
 
      public function toMail($notifiable)
      {
-        if (!$this->shipping_address) {
-            $shipping_address = 'Same as billing address';
-        } else {
-            $shipping_address = $this->shipping_address;
-        }
-        $billing_address = json_decode($this->billing_address, true);
-                           
+        $billing_address = json_decode($this->billing_address ?? '{}', true) ?? [];
+        $billing_parts = array_filter([
+            $billing_address['line1'] ?? null,
+            $billing_address['line2'] ?? null,
+            $billing_address['city'] ?? null,
+            $billing_address['state'] ?? null,
+            $billing_address['postal_code'] ?? null,
+            $billing_address['country'] ?? null,
+        ]);
+        $billing_formatted = $billing_parts ? implode(', ', $billing_parts) : 'N/A';
+
+        $shipping_raw = json_decode($this->shipping_address ?? '{}', true) ?? [];
+        $shipping_parts = array_filter([
+            $shipping_raw['line1'] ?? null,
+            $shipping_raw['line2'] ?? null,
+            $shipping_raw['city'] ?? null,
+            $shipping_raw['state'] ?? null,
+            $shipping_raw['postal_code'] ?? null,
+            $shipping_raw['country'] ?? null,
+        ]);
+        $shipping_formatted = $shipping_parts ? implode(', ', $shipping_parts) : 'Same as billing address';
+
          return (new MailMessage)
              ->subject('Payment Successful')
-             ->greeting('Hello ' . $notifiable->name)
+             ->greeting('Hello ' . ($notifiable->name ?? 'there'))
              ->line('Your payment was successful.')
              ->line('Amount: $' . number_format($this->amount, 2))
-             ->line('Billing name: ' . $this->billing_name)
-             ->line('Billing address: ' . $billing_address['line1'] . ', ' . 
-                    ($billing_address['line2'] ? $billing_address['line2'] . ', ' : '') .
-                    $billing_address['city'] . ', ' . 
-                    ($billing_address['state'] ? $billing_address['state'] . ', ' : '') .
-                    $billing_address['postal_code'] . ', ' . 
-                    $billing_address['country'])
-             ->line('Shipping address: ' . $shipping_address)
+             ->line('Billing name: ' . ($this->billing_name ?? 'N/A'))
+             ->line('Billing address: ' . $billing_formatted)
+             ->line('Shipping address: ' . $shipping_formatted)
              ->line('Thank you for your purchase!');
      }
      
