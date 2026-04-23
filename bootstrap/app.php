@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*'); // trust all proxies (safe if behind a single LB)
         $middleware->web(SetLocale::class)->append(LogFilamentAccess::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
