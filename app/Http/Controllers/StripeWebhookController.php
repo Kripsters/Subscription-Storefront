@@ -505,13 +505,20 @@ class StripeWebhookController extends Controller
                 $periodEnd   = $periodEndTs   ? \Carbon\Carbon::createFromTimestamp($periodEndTs)   : null;
             
                 // 5) Upsert your local subscription (by user_id)
+                // Respect cancel_at_period_end: a paid invoice on a sub scheduled for cancellation
+                // should not flip the local status back to 'active'.
+                $invoicePaidStatus = 'active';
+                if (isset($sub) && $sub->cancel_at_period_end) {
+                    $invoicePaidStatus = 'canceled';
+                }
+
                 \App\Models\Subscription::updateOrCreate(
                     ['user_id' => $userId],
                     [
                         'stripe_customer_id'     => $stripeCustomerId,
-                        'stripe_subscription_id' => $subId,               // may be null; OK to store or leave previous
+                        'stripe_subscription_id' => $subId,
                         'stripe_price_id'        => $priceIdFromLine ?? ($priceObj->id ?? null) ?? null,
-                        'status'                 => 'active',              // because invoice is paid
+                        'status'                 => $invoicePaidStatus,
                         'plan_name'              => $planName,
                         'amount'                 => $amount,
                         'currency'               => $currency,

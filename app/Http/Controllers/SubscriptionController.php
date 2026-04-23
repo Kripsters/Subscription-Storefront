@@ -92,20 +92,27 @@ class SubscriptionController extends Controller
      // Pause a user's subscription
     public function pause(Request $request)
     {
-        // Fetch the user's subscription
         $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
 
-        // Update the Stripe subscription to pause collection
         $stripe = new StripeClient(config('services.stripe.secret'));
+
+        // Verify the real Stripe status before updating — local DB can lag behind
+        $stripeSub = $stripe->subscriptions->retrieve($subscription->stripe_subscription_id);
+
+        if ($stripeSub->status === 'canceled') {
+            // Sync local DB to reflect the true state
+            $subscription->status = 'canceled';
+            $subscription->save();
+            return back()->withErrors(['status' => 'Your subscription has already been canceled and cannot be paused.']);
+        }
+
         $stripe->subscriptions->update($subscription->stripe_subscription_id, [
             'pause_collection' => ['behavior' => 'mark_uncollectible'],
         ]);
 
-        // Update the subscription status in the database
         $subscription->status = 'paused';
         $subscription->save();
 
-        // Redirect back with a success message
         return back()->with('status', 'Subscription has been paused.');
     }
 
@@ -115,20 +122,25 @@ class SubscriptionController extends Controller
 
     public function resume(Request $request)
     {
-        // Fetch the user's subscription
         $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
 
-        // Update the Stripe subscription to cancel pause collection
         $stripe = new StripeClient(config('services.stripe.secret'));
+
+        $stripeSub = $stripe->subscriptions->retrieve($subscription->stripe_subscription_id);
+
+        if ($stripeSub->status === 'canceled') {
+            $subscription->status = 'canceled';
+            $subscription->save();
+            return back()->withErrors(['status' => 'Your subscription has been canceled and cannot be resumed.']);
+        }
+
         $stripe->subscriptions->update($subscription->stripe_subscription_id, [
             'pause_collection' => '',
         ]);
 
-        // Update the subscription status in the database
         $subscription->status = 'active';
         $subscription->save();
 
-        // Redirect back with a success message
         return back()->with('status', 'Subscription has been resumed.');
     }
 
