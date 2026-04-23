@@ -15,7 +15,7 @@ return [
 'name' => 'Name',
 'confirm_password' => 'Confirm Password',
 'already_registered' => 'Already registered?',
-'existing_account' => 'Already have an account?',
+'need_account' => 'Need an account?',
 'forgot' => 'Forgot',
 'milk' => 'the milk?',
 'hero_desc' => 'Within a few clicks, have your groceries delivered to your doorstep.',

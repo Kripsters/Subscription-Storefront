@@ -15,7 +15,7 @@ return [
 'name' => 'Vārds',
 'confirm_password' => 'Apstipriniet paroli',
 'already_registered' => 'Jau esat reģistrējies?',
-'existing_account' => 'Jau ir konts?',
+'need_account' => 'Nepiecišams konts?',
 'forgot' => 'Aizmirsi',
 'milk' => 'pienu?',
 'hero_desc' => 'Dažos klikšķos dabū savus pārtikas produktus uz tavām namdurvīm.',
