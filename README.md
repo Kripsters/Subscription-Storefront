@@ -27,6 +27,10 @@ After logging in, listen to the webhook route:
 `stripe listen --forward-to http://127.0.0.1:8000/api/stripe/webhook`
 
 
+For deployment you will need to set up a webhook on the stripe dashboard
+Read more [here](https://docs.stripe.com/webhooks)
+
+
 ## Admin panel/account
 
 Initial Admin account is available after seeding using: </br>
