@@ -172,10 +172,13 @@ class SubscriptionController extends Controller
         $existingItemsPre = SubscriptionOrder::where('subscription_id', $subId->id)->get();
         $subscriptionPrice = Subscription::where('user_id', auth()->id())->first()->amount;
         $existingItems = [];
+        $existingSubtotal = 0;
 
         foreach ($existingItemsPre as $item) {
             $itemReal = Product::find($item->product_id);
+            $itemReal->quantity = $item->quantity;
             array_push($existingItems, $itemReal);
+            $existingSubtotal += $itemReal->price * $item->quantity;
         }
 
 
@@ -193,7 +196,7 @@ class SubscriptionController extends Controller
 
         $subcartIds = SubcartItem::where('subcart_id', $subcartId)->pluck('product_id');
 
-        return view('subscription.cart', compact('existingItems', 'subcart', 'subscriptionPrice', 'subcartIds', 'subcartSubtotal'));
+        return view('subscription.cart', compact('existingItems', 'existingSubtotal', 'subcart', 'subscriptionPrice', 'subcartIds', 'subcartSubtotal'));
     }
 
     public function store(Request $request) {

@@ -1,16 +1,6 @@
 <x-app-layout>
     @php
-        // Currency symbol (adjust as needed)
         $currency = '€';
-
-        // Derive subtotal from the products your controller passes in
-        $subtotal = collect($existingItems)->sum(function ($p) {
-            return $p->price ?? 0;
-        });
-
-        $subtotal2 = collect($subcart)->sum(function ($p) {
-            return $p->price ?? 0;
-        })
     @endphp
 
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -28,12 +18,14 @@
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
                                         {{ __('cart.item') }}
                                     </th>
-                                    {{-- If you track quantities in subscription orders, add a quantity column and bind it here --}}
-                                    {{-- <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
                                         {{ __('cart.quantity') }}
-                                    </th> --}}
+                                    </th>
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
                                         {{ __('cart.unit_price') }}
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
+                                        {{ __('cart.subtotal') }}
                                     </th>
                                 </tr>
                             </thead>
@@ -42,17 +34,23 @@
                                 @foreach($existingItems as $item)
                                     <tr class="hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40 transition-colors">
                                         <td class="px-6 py-4">
-                                            <div class="flex items-center gap-4">
-                                                <div>
-                                                    <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                                        {{ $item->title ?? __('cart.item') }}
-                                                    </div>
-                                                </div>
+                                            <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                                {{ $item->title ?? __('cart.item') }}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-zinc-600 dark:text-zinc-400">
+                                                {{ $item->quantity ?? 1 }}
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                                 {{ $currency }}{{ number_format($item->price ?? 0, 2) }}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                                {{ $currency }}{{ number_format(($item->price ?? 0) * ($item->quantity ?? 1), 2) }}
                                             </div>
                                         </td>
                                     </tr>
@@ -75,7 +73,7 @@
                             <div class="flex items-center justify-between">
                                 <dt class="text-zinc-600 dark:text-zinc-400">{{ __('cart.total') }}</dt>
                                 <dd class="font-medium text-zinc-900 dark:text-zinc-100">
-                                    {{ $currency }}{{ number_format($subtotal, 2) }}
+                                    {{ $currency }}{{ number_format($existingSubtotal, 2) }}
                                 </dd>
                             </div>
                             {{-- Add additional rows (discounts, shipping, etc.) if needed --}}
@@ -184,10 +182,27 @@
             
           </div>
         
-          <div class="mt-20"> </div>
+          <div class="mt-8">
+            <div class="flex justify-end">
+                <div class="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 w-full max-w-sm">
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{{ __('cart.summary') ?? 'Summary' }}</h3>
+                    <dl class="mt-4 space-y-3 text-sm">
+                        <div class="flex items-center justify-between">
+                            <dt class="text-zinc-600 dark:text-zinc-400">{{ __('cart.total') }}</dt>
+                            <dd class="font-medium text-zinc-900 dark:text-zinc-100">{{ $currency }}{{ number_format($subcartSubtotal, 2) }}</dd>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-700 pt-3">
+                            <dt class="text-zinc-600 dark:text-zinc-400">{{ __('cart.subscription_limit') ?? 'Subscription limit' }}</dt>
+                            <dd class="font-medium text-zinc-900 dark:text-zinc-100">{{ $currency }}{{ number_format($subscriptionPrice, 2) }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+          </div>
 
+          <div class="mt-8"> </div>
 
-            @if ($subcartSubtotal > $subscriptionPrice-10)
+            @if ($subcartSubtotal > $subscriptionPrice)
                 <div class="flex items-center justify-center">
                     <x-subscription-card 
                         :title="__('cart.total_exceeded')" 
