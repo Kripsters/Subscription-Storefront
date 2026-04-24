@@ -27,6 +27,9 @@
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
                                         {{ __('cart.subtotal') }}
                                     </th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-300">
+                                        {{ __('subscription.replacements') }}
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -52,6 +55,17 @@
                                             <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                                 {{ $currency }}{{ number_format(($item->price ?? 0) * ($item->quantity ?? 1), 2) }}
                                             </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <a href="{{ route('subscription.replacements', $item->order_id) }}"
+                                               class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-md bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors">
+                                                {{ __('subscription.manage_replacements') }}
+                                                @if(($item->replacement_count ?? 0) > 0)
+                                                    <span class="ml-1 inline-flex items-center justify-center rounded-full bg-indigo-600 text-white text-xs font-bold w-4 h-4">
+                                                        {{ $item->replacement_count }}
+                                                    </span>
+                                                @endif
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

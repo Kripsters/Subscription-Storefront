@@ -35,5 +35,23 @@ return [
     'add_to_cart' => 'Add to sub. cart',
     'update_subscription' => 'Update Subscription',
     'invoice_id' => 'Invoice ID',
-];  
+
+    // Replacements
+    'replacements'               => 'Replacements',
+    'manage_replacements'        => 'Manage Replacements',
+    'replacements_title'         => 'Manage Replacements',
+    'replacements_subtitle'      => 'Select products that can replace this item. Each replacement must cost no more than the original product.',
+    'original_product'           => 'Original Product',
+    'replacements_price_rule'    => 'Only products priced at or below this amount are eligible as replacements.',
+    'current_replacements'       => 'Current Replacements',
+    'no_replacements'            => 'No replacements selected yet.',
+    'add_replacement'            => 'Add a Replacement',
+    'no_eligible_replacements'   => 'No eligible products available. All products within the price limit have already been added.',
+    'select_replacement'         => 'Select',
+    'replacement_added'          => 'Replacement added.',
+    'replacement_removed'        => 'Replacement removed.',
+    'replacement_too_expensive'  => 'The selected product costs more than the original — choose a cheaper option.',
+    'replacement_same_product'   => 'The replacement cannot be the same as the original product.',
+    'back_to_cart'               => 'Back to subscription cart',
+];
 ?>

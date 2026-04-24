@@ -10,6 +10,7 @@ use App\Models\SubscriptionOrder;
 use App\Models\Subcart;
 use App\Models\SubcartItem;
 use App\Models\Product;
+use App\Models\SubscriptionOrderReplacement;
 use Stripe\StripeClient;
 use Tiptap\Marks\Subscript;
 
@@ -177,6 +178,8 @@ class SubscriptionController extends Controller
         foreach ($existingItemsPre as $item) {
             $itemReal = Product::find($item->product_id);
             $itemReal->quantity = $item->quantity;
+            $itemReal->order_id = $item->id;
+            $itemReal->replacement_count = $item->replacements()->count();
             array_push($existingItems, $itemReal);
             $existingSubtotal += $itemReal->price * $item->quantity;
         }
@@ -291,6 +294,73 @@ class SubscriptionController extends Controller
         SubcartItem::where('subcart_id', $subcartId)->delete();
 
         return back()->with('success','Subscription updated');
+    }
+
+    // Show the replacements management page for one subscription order item
+    public function showReplacements(SubscriptionOrder $order)
+    {
+        $this->authorizeOrder($order);
+
+        $originalProduct = Product::findOrFail($order->product_id);
+
+        $replacements = SubscriptionOrderReplacement::with('product')
+            ->where('subscription_order_id', $order->id)
+            ->get();
+
+        $replacedProductIds = $replacements->pluck('product_id')->push($order->product_id);
+
+        $eligible = Product::where('price', '<=', $originalProduct->price)
+            ->whereNotIn('id', $replacedProductIds)
+            ->orderBy('title')
+            ->get();
+
+        return view('subscription.replacements', compact('order', 'originalProduct', 'replacements', 'eligible'));
+    }
+
+    // Add a replacement for a subscription order item
+    public function storeReplacement(Request $request, SubscriptionOrder $order)
+    {
+        $this->authorizeOrder($order);
+
+        $data = $request->validate([
+            'product_id' => ['required', 'exists:products,id'],
+        ]);
+
+        $originalProduct = Product::findOrFail($order->product_id);
+        $replacement = Product::findOrFail($data['product_id']);
+
+        if ($replacement->price > $originalProduct->price) {
+            return back()->withErrors(['product_id' => __('subscription.replacement_too_expensive')]);
+        }
+
+        if ($data['product_id'] == $order->product_id) {
+            return back()->withErrors(['product_id' => __('subscription.replacement_same_product')]);
+        }
+
+        SubscriptionOrderReplacement::firstOrCreate([
+            'subscription_order_id' => $order->id,
+            'product_id'            => $data['product_id'],
+        ]);
+
+        return back()->with('success', __('subscription.replacement_added'));
+    }
+
+    // Remove a replacement from a subscription order item
+    public function destroyReplacement(SubscriptionOrder $order, SubscriptionOrderReplacement $replacement)
+    {
+        $this->authorizeOrder($order);
+        abort_if($replacement->subscription_order_id !== $order->id, 403);
+
+        $replacement->delete();
+
+        return back()->with('success', __('subscription.replacement_removed'));
+    }
+
+    // Ensure the order belongs to the authenticated user's subscription
+    private function authorizeOrder(SubscriptionOrder $order)
+    {
+        $subscription = Subscription::where('user_id', auth()->id())->firstOrFail();
+        abort_if($order->subscription_id !== $subscription->id, 403);
     }
 }
 

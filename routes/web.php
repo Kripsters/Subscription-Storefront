@@ -66,6 +66,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/subcart/items/{id}',   [SubscriptionController::class,'update'])->name('subcart.update');
     Route::delete('/subcart/items/{id}',  [SubscriptionController::class,'destroy'])->name('subcart.remove');
     Route::post('/subcart/save', [SubscriptionController::class,'modify'])->name('subcart.modify');
+
+    Route::get('/subscription/orders/{order}/replacements', [SubscriptionController::class, 'showReplacements'])->name('subscription.replacements');
+    Route::post('/subscription/orders/{order}/replacements', [SubscriptionController::class, 'storeReplacement'])->name('subscription.replacements.store');
+    Route::delete('/subscription/orders/{order}/replacements/{replacement}', [SubscriptionController::class, 'destroyReplacement'])->name('subscription.replacements.destroy');
     
 
     Route::get('/subscribe', [PaymentController::class, 'subscribe'])->name('subscribe');

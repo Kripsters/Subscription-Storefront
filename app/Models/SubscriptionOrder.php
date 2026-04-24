@@ -17,4 +17,14 @@ class SubscriptionOrder extends Model
     {
         return $this->belongsTo(Subscription::class);
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function replacements()
+    {
+        return $this->hasMany(SubscriptionOrderReplacement::class);
+    }
 }

@@ -35,5 +35,23 @@ return [
     'add_to_cart' => 'Pievienot abon. grozam',
     'update_subscription' => 'Atjaunot abonementu',
     'invoice_id' => 'Rēķina ID',
-];  
+
+    // Replacements
+    'replacements'               => 'Aizstājēji',
+    'manage_replacements'        => 'Pārvaldīt aizstājējus',
+    'replacements_title'         => 'Pārvaldīt aizstājējus',
+    'replacements_subtitle'      => 'Izvēlieties produktus, kas var aizstāt šo preci. Katram aizstājējam jāmaksā ne vairāk kā oriģinālajam produktam.',
+    'original_product'           => 'Oriģinālais produkts',
+    'replacements_price_rule'    => 'Kā aizstājēji ir piemēroti tikai produkti, kuru cena nepārsniedz šo summu.',
+    'current_replacements'       => 'Pašreizējie aizstājēji',
+    'no_replacements'            => 'Pagaidām nav izvēlēts neviens aizstājējs.',
+    'add_replacement'            => 'Pievienot aizstājēju',
+    'no_eligible_replacements'   => 'Nav pieejamu piemērotu produktu. Visi produkti cenas limitā jau ir pievienoti.',
+    'select_replacement'         => 'Izvēlēties',
+    'replacement_added'          => 'Aizstājējs pievienots.',
+    'replacement_removed'        => 'Aizstājējs noņemts.',
+    'replacement_too_expensive'  => 'Izvēlētais produkts ir dārgāks par oriģinālo — izvēlieties lētāku variantu.',
+    'replacement_same_product'   => 'Aizstājējs nevar būt tas pats produkts kā oriģinālais.',
+    'back_to_cart'               => 'Atpakaļ uz abonementa grozu',
+];
 ?>
