@@ -193,7 +193,7 @@
                         </div>
                         <div class="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-700 pt-3">
                             <dt class="text-zinc-600 dark:text-zinc-400">{{ __('cart.subscription_limit') ?? 'Subscription limit' }}</dt>
-                            <dd class="font-medium text-zinc-900 dark:text-zinc-100">{{ $currency }}{{ number_format($subscriptionPrice, 2) }}</dd>
+                            <dd class="font-medium text-zinc-900 dark:text-zinc-100">{{ $currency }}{{ number_format(($subscriptionPrice - 10), 2) }}</dd>
                         </div>
                     </dl>
                 </div>
