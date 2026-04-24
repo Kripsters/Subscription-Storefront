@@ -202,7 +202,7 @@
 
           <div class="mt-8"> </div>
 
-            @if ($subcartSubtotal > $subscriptionPrice)
+            @if ($subcartSubtotal > ($subscriptionPrice - 10))
                 <div class="flex items-center justify-center">
                     <x-subscription-card 
                         :title="__('cart.total_exceeded')" 
