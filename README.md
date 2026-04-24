@@ -5,7 +5,6 @@
 
 Admin panel made with: [filamentPHP](https://filamentphp.com/)
 
-
 ## Locally running the project:
 
 1. `composer install`
@@ -14,7 +13,6 @@ Admin panel made with: [filamentPHP](https://filamentphp.com/)
 4. `php artisan migrate:fresh -seed`
 5. `npm install`
 6. `composer run dev`
-
 
 ## Stripe
 
@@ -26,10 +24,8 @@ Once installed, login to stripe through the CLI:
 After logging in, listen to the webhook route:
 `stripe listen --forward-to http://127.0.0.1:8000/api/stripe/webhook`
 
-
-For deployment you will need to set up a webhook on the stripe dashboard
+For deployment you will need to set up a webhook on the stripe dashboard </br>
 Read more [here](https://docs.stripe.com/webhooks)
-
 
 ## Admin panel/account
 
