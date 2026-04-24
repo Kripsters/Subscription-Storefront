@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('subscription_order_replacements');
+
         Schema::create('subscription_order_replacements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subscription_order_id')->constrained('subscription_orders')->cascadeOnDelete();
