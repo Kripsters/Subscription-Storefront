@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('subscription_order_id')->constrained('subscription_orders')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-            $table->unique(['subscription_order_id', 'product_id']);
+            $table->unique(['subscription_order_id', 'product_id'], 'sor_order_product_unique');
             $table->timestamps();
         });
     }
