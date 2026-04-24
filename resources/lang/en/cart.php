@@ -27,6 +27,7 @@ return [
     'summary' => 'Summary',
     'subcart' => 'Current Subscription cart',
     'subcart-new' => 'Modify subscription cart',
+    'subscription_limit' => 'Subscription limit',
 ]
 ;
 ?>

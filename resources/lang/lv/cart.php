@@ -27,6 +27,7 @@ return [
     'summary' => 'Kopsavilkums',
     'subcart' => 'Pašreizējais Aboenementa grozs',
     'subcart-new' => 'Rediģēt abonementa grozs',
+    'subscription_limit' => 'Abonementa limits',
 ];
 
 ?>
