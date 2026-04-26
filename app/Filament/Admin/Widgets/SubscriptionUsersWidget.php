@@ -40,6 +40,18 @@ class SubscriptionUsersWidget extends Widget
                     ->unique()
                     ->values();
 
+                $replacementPairs = $orders
+                    ->filter(fn ($o) => $o->replacements->isNotEmpty())
+                    ->map(fn ($o) => [
+                        'from' => $o->product?->title ?? $o->product_name,
+                        'to'   => $o->replacements
+                            ->map(fn ($r) => $r->product?->title)
+                            ->filter()
+                            ->values(),
+                    ])
+                    ->filter(fn ($p) => $p['from'] && $p['to']->isNotEmpty())
+                    ->values();
+
                 $shipping = null;
                 $shippingIsBilling = false;
 
@@ -65,12 +77,13 @@ class SubscriptionUsersWidget extends Widget
                 }
 
                 return [
-                    'name'               => $user->name,
-                    'email'              => $user->email,
-                    'products'           => $products,
-                    'shipping'           => $shipping,
+                    'name'                => $user->name,
+                    'email'               => $user->email,
+                    'products'            => $products,
+                    'shipping'            => $shipping,
                     'shipping_is_billing' => $shippingIsBilling,
-                    'replacements'       => $replacements,
+                    'replacements'        => $replacements,
+                    'replacement_pairs'   => $replacementPairs,
                 ];
             });
 

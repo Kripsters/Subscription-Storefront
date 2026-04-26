@@ -143,6 +143,49 @@
         border-radius: 5px;
     }
 
+    /* ── Replacement pairs ── */
+    .suw-replacement-pairs {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .suw-pair {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .suw-pair-from {
+        font-size: 12px;
+        font-weight: 500;
+        color: #6b7280;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        padding: 4px 10px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+    .suw-pair-arrow {
+        font-size: 13px;
+        color: #9ca3af;
+        line-height: 26px;
+        flex-shrink: 0;
+    }
+    .suw-pair-to-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .dark .suw-pair-from {
+        color: #737373;
+        background: #1f1f1f;
+        border-color: #2a2a2a;
+    }
+    .dark .suw-pair-arrow {
+        color: #525252;
+    }
+
     /* ── Empty / muted ── */
     .suw-muted {
         font-size: 13px;
@@ -284,10 +327,18 @@
                                 <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                 Replacements
                             </div>
-                            @if($user['replacements']->isNotEmpty())
-                                <div class="suw-badges">
-                                    @foreach($user['replacements'] as $replacement)
-                                        <span class="suw-badge-replacement">{{ $replacement }}</span>
+                            @if($user['replacement_pairs']->isNotEmpty())
+                                <div class="suw-replacement-pairs">
+                                    @foreach($user['replacement_pairs'] as $pair)
+                                        <div class="suw-pair">
+                                            <span class="suw-pair-from">{{ $pair['from'] }}</span>
+                                            <span class="suw-pair-arrow">→</span>
+                                            <div class="suw-pair-to-list">
+                                                @foreach($pair['to'] as $to)
+                                                    <span class="suw-badge-replacement">{{ $to }}</span>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </div>
                             @else
