@@ -25,9 +25,12 @@ class SubscriptionUsersWidget extends Widget
                 $orders = $user->subscriptions->flatMap(fn ($s) => $s->orders);
 
                 $products = $orders
-                    ->map(fn ($o) => $o->product?->title ?? $o->product_name)
-                    ->filter()
-                    ->unique()
+                    ->map(fn ($o) => [
+                        'name' => $o->product?->title ?? $o->product_name,
+                        'qty'  => $o->quantity ?? 1,
+                    ])
+                    ->filter(fn ($p) => $p['name'])
+                    ->unique('name')
                     ->values();
 
                 $replacements = $orders

@@ -110,6 +110,11 @@
         color: #92400e;
         border: 1px solid #fde68a;
     }
+    .suw-badge-qty {
+        opacity: 0.6;
+        font-weight: 400;
+        margin-left: 3px;
+    }
     .suw-badge-replacement {
         font-size: 12px;
         font-weight: 500;
@@ -243,7 +248,10 @@
                             @if($user['products']->isNotEmpty())
                                 <div class="suw-badges">
                                     @foreach($user['products'] as $product)
-                                        <span class="suw-badge-product">{{ $product }}</span>
+                                        <span class="suw-badge-product">
+                                            {{ $product['name'] }}
+                                            <span class="suw-badge-qty">× {{ $product['qty'] }}</span>
+                                        </span>
                                     @endforeach
                                 </div>
                             @else
