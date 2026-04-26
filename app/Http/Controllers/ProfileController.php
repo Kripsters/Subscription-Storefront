@@ -19,18 +19,13 @@ class ProfileController extends Controller
     {
         $address = Address::where('user_id', auth()->id())->first();
         if ($address) {
-            if (isset($address->billing)) {
-            $billing_address = json_decode($address->billing);
-            }
-            
-            if (isset($address->shipping)) {
-            $shipping_address = json_decode($address->shipping);
-            }
+            $billing_address = $address->billing;
+            $shipping_address = $address->shipping;
         } else {
             Address::create([
                 'user_id' => auth()->id(),
-                'billing' => '[]',
-                'shipping' => '[]'
+                'billing' => [],
+                'shipping' => [],
             ]);
             $billing_address = null;
             $shipping_address = null;
@@ -61,36 +56,36 @@ class ProfileController extends Controller
 
     public function billingUpdate(Request $request): RedirectResponse
     {
-        $addressJson = json_encode(array_diff_key($request->all(), array_flip(['_token', '_method'])));
+        $addressData = array_diff_key($request->all(), array_flip(['_token', '_method']));
         $address = Address::where('user_id', auth()->id())->first();
         if ($address) {
-            $address->billing = $addressJson;
+            $address->billing = $addressData;
             $address->save();
         } else {
-            $newAddress = new Address();
-            $newAddress->user_id = auth()->id();
-            $newAddress->billing = $addressJson;
-            $newAddress->shipping = '{}'; // Initialize shipping as empty JSON
-            $newAddress->save();
+            Address::create([
+                'user_id' => auth()->id(),
+                'billing' => $addressData,
+                'shipping' => [],
+            ]);
         }
         return Redirect::route('profile.edit')->with('status', 'billing-updated');
     }
 
     public function shippingUpdate(Request $request)
     {
-        $addressJson = json_encode(array_diff_key($request->all(), array_flip(['_token', '_method'])));
+        $addressData = array_diff_key($request->all(), array_flip(['_token', '_method']));
         $address = Address::where('user_id', auth()->id())->first();
         if ($address) {
-            $address->shipping = $addressJson;
+            $address->shipping = $addressData;
             $address->save();
         } else {
-            $newAddress = new Address();
-            $newAddress->user_id = auth()->id();
-            $newAddress->shipping = $addressJson;
-            $newAddress->billing = '{}'; // Initialize billing as empty JSON
-            $newAddress->save();
+            Address::create([
+                'user_id' => auth()->id(),
+                'shipping' => $addressData,
+                'billing' => [],
+            ]);
         }
-        return Redirect::route('profile.edit')->with('status', 'shipping-updated'); 
+        return Redirect::route('profile.edit')->with('status', 'shipping-updated');
     }
 
 

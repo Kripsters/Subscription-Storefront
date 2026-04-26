@@ -16,15 +16,7 @@ class PaymentSuccessNotification extends Notification
     protected $billing_address;
     protected $shipping_address;
     
-    /**
-     * Create a new notification instance.
-     *
-     * @param float $amount
-     * @param string $billing_name
-     * @param string $billing_address
-     * @param string $shipping_address
-     */
-    public function __construct(float $amount, ?string $billing_name, ?string $billing_address, ?string $shipping_address)
+    public function __construct(float $amount, ?string $billing_name, ?array $billing_address, ?array $shipping_address)
     {
         $this->amount = $amount;
         $this->billing_name = $billing_name;
@@ -48,7 +40,7 @@ class PaymentSuccessNotification extends Notification
 
      public function toMail($notifiable)
      {
-        $billing_address = json_decode($this->billing_address ?? '{}', true) ?? [];
+        $billing_address = $this->billing_address ?? [];
         $billing_parts = array_filter([
             $billing_address['line1'] ?? null,
             $billing_address['line2'] ?? null,
@@ -59,7 +51,7 @@ class PaymentSuccessNotification extends Notification
         ]);
         $billing_formatted = $billing_parts ? implode(', ', $billing_parts) : 'N/A';
 
-        $shipping_raw = json_decode($this->shipping_address ?? '{}', true) ?? [];
+        $shipping_raw = $this->shipping_address ?? [];
         $shipping_parts = array_filter([
             $shipping_raw['line1'] ?? null,
             $shipping_raw['line2'] ?? null,

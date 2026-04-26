@@ -85,4 +85,3 @@ class PaymentController extends Controller
         return view('cancel');
     }
 }
-

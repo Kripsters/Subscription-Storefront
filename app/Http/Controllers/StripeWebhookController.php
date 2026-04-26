@@ -298,12 +298,11 @@ class StripeWebhookController extends Controller
                                 Log::warning("Skipping SubscriptionOrder creation: Subscription not found for user_id {$userId}");
                             }
 
-                            // Save addresses (as JSON strings)
                             Address::updateOrCreate(
                                 ['user_id' => $userId],
                                 [
-                                    'billing'  => json_encode(data_get($session, 'customer_details.address', [])),
-                                    'shipping' => json_encode(data_get($session, 'shipping.address', [])),
+                                    'billing'  => json_decode(json_encode(data_get($session, 'customer_details.address') ?? []), true) ?? [],
+                                    'shipping' => json_decode(json_encode(data_get($session, 'shipping.address') ?? []), true) ?? [],
                                 ]
                             );
 
@@ -341,8 +340,8 @@ class StripeWebhookController extends Controller
                             $user?->notify(new PaymentSuccessNotification(
                                 $amount,
                                 data_get($session, 'customer_details.name'),
-                                json_encode(data_get($session, 'customer_details.address', [])),
-                                json_encode(data_get($session, 'shipping.address', []))
+                                json_decode(json_encode(data_get($session, 'customer_details.address') ?? []), true) ?? [],
+                                json_decode(json_encode(data_get($session, 'shipping.address') ?? []), true) ?? []
                             ));
                         } catch (\Throwable $e) {
                             Log::error('Payment notification email failed: ' . $e->getMessage());

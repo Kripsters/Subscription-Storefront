@@ -54,8 +54,8 @@ class SubscriptionController extends Controller
         }
 
         if (isset($address)) {
-            $billing_address = json_decode($address->billing, true);
-            $shipping_address = json_decode($address->shipping, true);
+            $billing_address = $address->billing;
+            $shipping_address = $address->shipping;
             } else {
             $billing_address = null;
             $shipping_address = null;
