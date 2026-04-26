@@ -9,6 +9,11 @@ class Address extends Model
     protected $fillable = [
         'user_id',
         'shipping',
-        'billing'
+        'billing',
+    ];
+
+    protected $casts = [
+        'shipping' => 'array',
+        'billing'  => 'array',
     ];
 }

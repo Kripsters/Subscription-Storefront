@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use App\Models\Subscription;
+use App\Models\Address;
 
 
 class User extends Authenticatable implements FilamentUser
@@ -50,6 +52,16 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
 
     public function canAccessPanel(Panel $panel): bool
     {
