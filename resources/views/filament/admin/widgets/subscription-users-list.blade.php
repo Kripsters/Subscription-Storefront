@@ -158,46 +158,46 @@
 
     /* ── Dark mode ── */
     .dark .suw-card {
-        background: #1f2937;
-        border-color: #374151;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        background: #141414;
+        border-color: #2a2a2a;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
     .dark .suw-card:hover {
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.6);
     }
     .dark .suw-header {
-        background: linear-gradient(to right, #111827, #1f2937);
-        border-bottom-color: #374151;
+        background: linear-gradient(to right, #0d0d0d, #141414);
+        border-bottom-color: #2a2a2a;
     }
-    .dark .suw-name  { color: #f9fafb; }
-    .dark .suw-email { color: #9ca3af; }
+    .dark .suw-name  { color: #f5f5f5; }
+    .dark .suw-email { color: #737373; }
     .dark .suw-replacement-pill {
-        background: rgba(245,158,11,0.15);
+        background: rgba(245,158,11,0.12);
         color: #fbbf24;
     }
     .dark .suw-col {
-        border-right-color: #374151;
+        border-right-color: #2a2a2a;
     }
-    .dark .suw-col-label { color: #6b7280; }
+    .dark .suw-col-label { color: #525252; }
     .dark .suw-badge-product {
-        background: rgba(245,158,11,0.1);
+        background: rgba(245,158,11,0.08);
         color: #fbbf24;
-        border-color: rgba(245,158,11,0.25);
+        border-color: rgba(245,158,11,0.2);
     }
     .dark .suw-badge-replacement {
-        background: rgba(59,130,246,0.1);
-        color: #60a5fa;
-        border-color: rgba(59,130,246,0.25);
+        background: rgba(255,255,255,0.06);
+        color: #a3a3a3;
+        border-color: rgba(255,255,255,0.12);
     }
-    .dark .suw-address  { color: #d1d5db; }
+    .dark .suw-address  { color: #a3a3a3; }
     .dark .suw-billing-note {
-        background: #374151;
-        color: #9ca3af;
+        background: #1f1f1f;
+        color: #737373;
     }
-    .dark .suw-muted { color: #4b5563; }
+    .dark .suw-muted { color: #3d3d3d; }
     .dark .suw-empty {
-        border-color: #374151;
-        color: #6b7280;
+        border-color: #2a2a2a;
+        color: #525252;
     }
 </style>
 
