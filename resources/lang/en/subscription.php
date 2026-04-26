@@ -40,7 +40,7 @@ return [
     'replacements'               => 'Replacements',
     'manage_replacements'        => 'Manage Replacements',
     'replacements_title'         => 'Manage Replacements',
-    'replacements_subtitle'      => 'Select products that can replace this item. Each replacement must cost no more than the original product.',
+    'replacements_subtitle'      => 'Select products that can replace this item. Replacements must be from the same category and cost no more than the original product.',
     'original_product'           => 'Original Product',
     'replacements_price_rule'    => 'Only products priced at or below this amount are eligible as replacements.',
     'current_replacements'       => 'Current Replacements',

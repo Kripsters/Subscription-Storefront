@@ -40,7 +40,7 @@ return [
     'replacements'               => 'Aizstājēji',
     'manage_replacements'        => 'Pārvaldīt aizstājējus',
     'replacements_title'         => 'Pārvaldīt aizstājējus',
-    'replacements_subtitle'      => 'Izvēlieties produktus, kas var aizstāt šo preci. Katram aizstājējam jāmaksā ne vairāk kā oriģinālajam produktam.',
+    'replacements_subtitle'      => 'Izvēlieties produktus, kas var aizstāt šo preci. Aizstājējiem jābūt no tās pašas kategorijas un to cena nedrīkst pārsniegt oriģinālā produkta cenu.',
     'original_product'           => 'Oriģinālais produkts',
     'replacements_price_rule'    => 'Kā aizstājēji ir piemēroti tikai produkti, kuru cena nepārsniedz šo summu.',
     'current_replacements'       => 'Pašreizējie aizstājēji',
