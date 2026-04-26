@@ -297,7 +297,7 @@ class SubscriptionController extends Controller
     }
 
     // Show the replacements management page for one subscription order item
-    public function showReplacements(SubscriptionOrder $order)
+    public function showReplacements(Request $request, SubscriptionOrder $order)
     {
         $this->authorizeOrder($order);
 
@@ -309,13 +309,17 @@ class SubscriptionController extends Controller
 
         $replacedProductIds = $replacements->pluck('product_id')->push($order->product_id);
 
+        $search = trim($request->input('search', ''));
+
         $eligible = Product::where('price', '<=', $originalProduct->price)
             ->where('category_id', $originalProduct->category_id)
             ->whereNotIn('id', $replacedProductIds)
+            ->when($search !== '', fn ($q) => $q->where('title', 'LIKE', "%{$search}%"))
             ->orderBy('title')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('subscription.replacements', compact('order', 'originalProduct', 'replacements', 'eligible'));
+        return view('subscription.replacements', compact('order', 'originalProduct', 'replacements', 'eligible', 'search'));
     }
 
     // Add a replacement for a subscription order item

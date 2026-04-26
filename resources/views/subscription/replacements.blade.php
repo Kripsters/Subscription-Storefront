@@ -101,9 +101,28 @@
             {{ __('subscription.add_replacement') }}
         </h2>
 
+        {{-- Search --}}
+        <form method="GET" action="{{ route('subscription.replacements', $order) }}" class="mb-4 flex gap-2">
+            <input type="text"
+                   name="search"
+                   value="{{ $search }}"
+                   placeholder="{{ __('subscription.search_placeholder') }}"
+                   class="flex-1 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-zinc-400 dark:placeholder-zinc-500">
+            <button type="submit"
+                    class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                {{ __('subscription.search_button') }}
+            </button>
+            @if($search)
+                <a href="{{ route('subscription.replacements', $order) }}"
+                   class="px-4 py-2 text-sm font-semibold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-700 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600">
+                    {{ __('subscription.search_clear') }}
+                </a>
+            @endif
+        </form>
+
         @if($eligible->isEmpty())
             <p class="text-sm text-zinc-400 dark:text-zinc-500 italic">
-                {{ __('subscription.no_eligible_replacements') }}
+                {{ $search ? __('subscription.no_search_results') : __('subscription.no_eligible_replacements') }}
             </p>
         @else
             <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
@@ -144,6 +163,12 @@
                     </tbody>
                 </table>
             </div>
+
+            @if($eligible->hasPages())
+                <div class="mt-4">
+                    {{ $eligible->links() }}
+                </div>
+            @endif
         @endif
 
     </div>
