@@ -38,25 +38,36 @@ class SubscriptionUsersWidget extends Widget
                     ->values();
 
                 $shipping = null;
-                if ($user->address && ! empty($user->address->shipping)) {
-                    $s = $user->address->shipping;
+                $shippingIsBilling = false;
+
+                $formatAddress = function (array $a): ?string {
                     $parts = array_filter([
-                        $s['line1'] ?? null,
-                        $s['line2'] ?? null,
-                        $s['city'] ?? null,
-                        $s['state'] ?? null,
-                        $s['postal_code'] ?? null,
-                        $s['country'] ?? null,
+                        $a['line1'] ?? null,
+                        $a['line2'] ?? null,
+                        $a['city'] ?? null,
+                        $a['state'] ?? null,
+                        $a['postal_code'] ?? null,
+                        $a['country'] ?? null,
                     ]);
-                    $shipping = implode(', ', $parts);
+                    return $parts ? implode(', ', $parts) : null;
+                };
+
+                if ($user->address) {
+                    if (! empty($user->address->shipping)) {
+                        $shipping = $formatAddress($user->address->shipping);
+                    } elseif (! empty($user->address->billing)) {
+                        $shipping = $formatAddress($user->address->billing);
+                        $shippingIsBilling = true;
+                    }
                 }
 
                 return [
-                    'name'         => $user->name,
-                    'email'        => $user->email,
-                    'products'     => $products,
-                    'shipping'     => $shipping,
-                    'replacements' => $replacements,
+                    'name'               => $user->name,
+                    'email'              => $user->email,
+                    'products'           => $products,
+                    'shipping'           => $shipping,
+                    'shipping_is_billing' => $shippingIsBilling,
+                    'replacements'       => $replacements,
                 ];
             });
 
