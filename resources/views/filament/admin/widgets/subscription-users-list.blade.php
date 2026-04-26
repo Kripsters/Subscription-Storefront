@@ -1,3 +1,4 @@
+<x-filament-widgets::widget>
 <style>
     .suw-list {
         display: flex;
@@ -200,7 +201,6 @@
     }
 </style>
 
-<x-filament-widgets::widget>
     <x-filament::section>
         <x-slot name="heading">Subscription Users</x-slot>
 
