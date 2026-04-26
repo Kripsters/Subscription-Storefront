@@ -7,7 +7,7 @@ use Filament\Widgets\Widget;
 
 class SubscriptionUsersWidget extends Widget
 {
-    protected static string $view = 'filament.admin.widgets.subscription-users-list';
+    protected string $view = 'filament.admin.widgets.subscription-users-list';
 
     protected int|string|array $columnSpan = 'full';
 
