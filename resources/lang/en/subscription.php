@@ -51,6 +51,7 @@ return [
     'replacement_added'          => 'Replacement added.',
     'replacement_removed'        => 'Replacement removed.',
     'replacement_too_expensive'  => 'The selected product costs more than the original — choose a cheaper option.',
+    'replacement_wrong_category'  => 'The selected product is from a different category than the original.',
     'replacement_same_product'   => 'The replacement cannot be the same as the original product.',
     'back_to_cart'               => 'Back to subscription cart',
 ];

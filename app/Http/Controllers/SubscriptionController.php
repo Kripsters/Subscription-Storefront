@@ -310,6 +310,7 @@ class SubscriptionController extends Controller
         $replacedProductIds = $replacements->pluck('product_id')->push($order->product_id);
 
         $eligible = Product::where('price', '<=', $originalProduct->price)
+            ->where('category_id', $originalProduct->category_id)
             ->whereNotIn('id', $replacedProductIds)
             ->orderBy('title')
             ->get();
@@ -328,6 +329,10 @@ class SubscriptionController extends Controller
 
         $originalProduct = Product::findOrFail($order->product_id);
         $replacement = Product::findOrFail($data['product_id']);
+
+        if ($replacement->category_id !== $originalProduct->category_id) {
+            return back()->withErrors(['product_id' => __('subscription.replacement_wrong_category')]);
+        }
 
         if ($replacement->price > $originalProduct->price) {
             return back()->withErrors(['product_id' => __('subscription.replacement_too_expensive')]);

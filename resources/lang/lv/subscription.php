@@ -51,6 +51,7 @@ return [
     'replacement_added'          => 'Aizstājējs pievienots.',
     'replacement_removed'        => 'Aizstājējs noņemts.',
     'replacement_too_expensive'  => 'Izvēlētais produkts ir dārgāks par oriģinālo — izvēlieties lētāku variantu.',
+    'replacement_wrong_category'  => 'Izvēlētais produkts ir no citas kategorijas nekā oriģinālais.',
     'replacement_same_product'   => 'Aizstājējs nevar būt tas pats produkts kā oriģinālais.',
     'back_to_cart'               => 'Atpakaļ uz abonementa grozu',
 ];
