@@ -54,7 +54,7 @@
         </style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-zinc-100 dark:bg-zinc-900">
+        <div class="min-h-screen bg-zinc-100 dark:bg-zinc-900 flex flex-col">
             @include('layouts.navigation')
 
 
@@ -84,7 +84,7 @@
             </div>
             @endif <!-- End of about if -->
 
-            <div class="relative z-10">
+            <div class="relative z-10 flex flex-col flex-1">
                             @if (request()->routeIs('about') || request()->routeIs('dashboard'))
                             @else
                                 <div id="animated-bg">
@@ -103,7 +103,7 @@
                                     </header>
                                 @endisset   
                 <!-- Page Content -->
-                <main>
+                <main class="flex-1">
                     {{ $slot }}
                 </main>
                 <x-footer />
