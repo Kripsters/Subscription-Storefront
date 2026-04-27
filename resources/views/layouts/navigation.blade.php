@@ -95,6 +95,10 @@
                             {{ __('navigation.profile') }}
                         </x-dropdown-link>
 
+                        <x-dropdown-link class="block px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white hover:bg-zinc-950/5 dark:hover:bg-white/5" :href="route('reports.index')">
+                            Reports
+                        </x-dropdown-link>
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -200,6 +204,13 @@
                           text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white
                           hover:bg-zinc-950/5 dark:hover:bg-white/5">
                     {{ __('navigation.profile') }}
+                </a>
+
+                <a href="{{ route('reports.index') }}"
+                   class="block rounded-lg px-3 py-2 text-sm font-medium
+                          text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white
+                          hover:bg-zinc-950/5 dark:hover:bg-white/5">
+                    Reports
                 </a>
 
                 <a href="
