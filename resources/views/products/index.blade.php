@@ -32,6 +32,17 @@
                         <option value="price_desc" {{ request('order') === 'price_desc' ? 'selected' : '' }}>{{ __('product.price_desc') }}</option>
                     </select>
 
+                    <!-- Category -->
+                    <select name="category_id"
+                        class="rounded-lg border dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="">{{ __('product.all_categories') }}</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ (int)request('category_id') === $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
                     <!-- Per page -->
                     <select name="per_page"
                         class="rounded-lg border dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm focus:border-indigo-400 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -51,12 +62,22 @@
             </form>
 
             <!-- Active Filters Chips -->
-            @if(request()->input('search') || request()->input('order'))
+            @if(request()->input('search') || request()->input('order') || request()->input('category_id'))
             <div class="mt-3 flex flex-wrap gap-2">
                 @if(request()->input('search'))
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
                     Search: "{{ request()->input('search') }}"
                     <button type="button" onclick="clearSearch()" class="ml-2 hover:text-indigo-600 dark:hover:text-indigo-300">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </span>
+                @endif
+                @if(request()->input('category_id'))
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                    {{ __('product.category') }}: "{{ $categories->firstWhere('id', (int)request('category_id'))?->name }}"
+                    <button type="button" onclick="clearCategory()" class="ml-2 hover:text-indigo-600 dark:hover:text-indigo-300">
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
@@ -283,9 +304,13 @@
     </style>
 
     <script>
-        // Clear search function
         function clearSearch() {
             document.getElementById('search-input').value = '';
+            document.getElementById('search-form').submit();
+        }
+
+        function clearCategory() {
+            document.querySelector('select[name="category_id"]').value = '';
             document.getElementById('search-form').submit();
         }
 

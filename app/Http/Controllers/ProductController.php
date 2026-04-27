@@ -28,10 +28,11 @@ class ProductController extends Controller
          }
 
          $isActive = Subscription::isActiveSubscription();
- 
-         return view('products.index', compact('products', 'isActive'));
+         $categories = Category::orderBy('name')->get();
+
+         return view('products.index', compact('products', 'isActive', 'categories'));
      }
- 
+
 
 
      // Process search request
@@ -39,19 +40,21 @@ class ProductController extends Controller
      {
          // Validate the request
          $validated = $request->validate([
-             'search'   => 'nullable|string|max:100',
-             'order'    => 'nullable|in:asc,desc,price_asc,price_desc',
-             'per_page' => 'nullable|integer|min:1|max:100',
+             'search'      => 'nullable|string|max:100',
+             'order'       => 'nullable|in:asc,desc,price_asc,price_desc',
+             'per_page'    => 'nullable|integer|min:1|max:100',
+             'category_id' => 'nullable|integer|exists:categories,id',
          ]);
- 
-         // Get the search term, order, and per_page
-         $term    = $validated['search'] ?? null;
-         $order   = $validated['order'] ?? null;
-         $perPage = $validated['per_page'] ?? 12;
- 
+
+         // Get the search term, order, per_page, and category
+         $term       = $validated['search'] ?? null;
+         $order      = $validated['order'] ?? null;
+         $perPage    = $validated['per_page'] ?? 12;
+         $categoryId = $validated['category_id'] ?? null;
+
          // Build the query
          $builder = Product::query();
- 
+
          // Apply the search term
          if ($term) {
              $builder->where(function ($q) use ($term) {
@@ -59,11 +62,14 @@ class ProductController extends Controller
                    ->orWhere('description', 'LIKE', "%{$term}%");
              });
          }
- 
+
+         // Apply the category filter
+         if ($categoryId) {
+             $builder->where('category_id', $categoryId);
+         }
+
          // Apply the order
          if ($order) {
-
-            // Switch the order based on the value
              switch ($order) {
                  case 'price_asc':
                      $builder->orderBy('price', 'asc');
@@ -75,24 +81,23 @@ class ProductController extends Controller
                      $builder->orderBy('title', $order);
              }
          }
- 
-            // Get the products, now with order applied
-            $products = $builder
-                ->paginate($perPage)
-                ->withQueryString();      // keep ?per_page etc. in pagination links
 
-                $isActive = Subscription::isActiveSubscription();
+         $products = $builder
+             ->paginate($perPage)
+             ->withQueryString();
 
-            foreach ($products as $product) {
-                if (Category::find($product->category_id) == null) {
-                    $product->category = 'Uncategorized';
-                } else {
-                    $product->category = Category::find($product->category_id)->name;
-                }
-            }
- 
-         // Return the view
-         return view('products.index', compact('products', 'isActive'));
+         $isActive   = Subscription::isActiveSubscription();
+         $categories = Category::orderBy('name')->get();
+
+         foreach ($products as $product) {
+             if (Category::find($product->category_id) == null) {
+                 $product->category = 'Uncategorized';
+             } else {
+                 $product->category = Category::find($product->category_id)->name;
+             }
+         }
+
+         return view('products.index', compact('products', 'isActive', 'categories'));
      }
 
     // Route to show a specific product

@@ -6,6 +6,8 @@ return [
     'price_desc' => 'Cena (no augstākās uz zemāko)',
     'per_page' => 'produkti lapā',
     'sort' => 'Kārtot pēc',
+    'all_categories' => 'Visas kategorijas',
+    'category' => 'Kategorija',
     'search' => 'Meklēt',
     'img_alt' => 'Attēls kurā redzams ',
     'add_to_cart' => 'Pievienot grozam',

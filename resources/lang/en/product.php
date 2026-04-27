@@ -6,6 +6,8 @@ return [
     'price_desc' => 'Price (High to Low)',
     'per_page' => 'items per page',
     'sort' => 'Sort by',
+    'all_categories' => 'All Categories',
+    'category' => 'Category',
     'search' => 'Search',
     'img_alt' => 'An image of ',
     'add_to_cart' => 'Add to cart',
