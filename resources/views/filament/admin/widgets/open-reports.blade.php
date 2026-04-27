@@ -15,6 +15,13 @@
         border-radius: 8px;
         border: 1px solid #e5e7eb;
         background: #ffffff;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .or-row:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
     }
 
     .or-title {
@@ -51,6 +58,10 @@
         background: #141414;
         border-color: #2a2a2a;
     }
+    .dark .or-row:hover {
+        background: #1a1a1a;
+        border-color: #3a3a3a;
+    }
     .dark .or-title { color: #f5f5f5; }
     .dark .or-badge-pending  { background: rgba(245,158,11,0.12); color: #fbbf24; }
     .dark .or-badge-reviewing { background: rgba(59,130,246,0.12); color: #60a5fa; }
@@ -63,12 +74,12 @@
 
         <div class="or-list">
             @forelse($reports as $report)
-                <div class="or-row">
+                <a href="{{ \App\Filament\Admin\Resources\Reports\ReportResource::getUrl('view', ['record' => $report]) }}" class="or-row">
                     <span class="or-title">{{ $report->title }}</span>
                     <span class="or-badge or-badge-{{ $report->status }}">
                         {{ ucfirst($report->status) }}
                     </span>
-                </div>
+                </a>
             @empty
                 <div class="or-empty">No open reports</div>
             @endforelse
