@@ -26,9 +26,16 @@
                         {{ $report->status }}
                     </span>
                 </div>
-                <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                    Submitted {{ $report->created_at->format('M j, Y \a\t g:i A') }}
-                </p>
+                <div class="mt-1 flex flex-wrap gap-x-4 gap-y-0.5">
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                        Submitted {{ $report->created_at->format('M j, Y \a\t g:i A') }}
+                    </p>
+                    @if($report->updated_at->ne($report->created_at))
+                        <p class="text-xs text-zinc-400 dark:text-zinc-500">
+                            Last updated {{ $report->updated_at->format('M j, Y \a\t g:i A') }}
+                        </p>
+                    @endif
+                </div>
             </div>
 
             <div class="p-6">

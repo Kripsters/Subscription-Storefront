@@ -39,8 +39,13 @@
                                     {{ $report->title }}
                                 </a>
                                 <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                                    {{ $report->created_at->format('M j, Y') }}
+                                    Submitted {{ $report->created_at->format('M j, Y') }}
                                 </p>
+                                @if($report->updated_at->ne($report->created_at))
+                                    <p class="text-xs text-zinc-400 dark:text-zinc-500">
+                                        Last updated {{ $report->updated_at->format('M j, Y \a\t g:i A') }}
+                                    </p>
+                                @endif
                             </div>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide {{ $badge }} shrink-0">
                                 {{ $report->status }}
