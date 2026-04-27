@@ -24,6 +24,9 @@
             
                         <!-- About Us -->
                         <x-dash-button :href="route('about')" :title="__('dashboard.about')" :subtext="__('dashboard.about_subtext')" />
+
+                        <!-- Reports -->
+                        <x-dash-button :href="route('reports.index')" title="Reports" subtext="Submit or track your support reports." />
             
                     </div>
                 </div>

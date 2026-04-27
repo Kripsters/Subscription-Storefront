@@ -10,6 +10,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use App\Models\Subscription;
 use App\Models\Address;
+use App\Models\Report;
 
 
 class User extends Authenticatable implements FilamentUser
@@ -61,6 +62,11 @@ class User extends Authenticatable implements FilamentUser
     public function address()
     {
         return $this->hasOne(Address::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
     }
 
     public function canAccessPanel(Panel $panel): bool
