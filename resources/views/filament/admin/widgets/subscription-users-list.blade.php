@@ -186,6 +186,35 @@
         color: #525252;
     }
 
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+        .suw-header {
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 14px;
+        }
+        .suw-replacement-pill {
+            margin-left: auto;
+        }
+        .suw-body {
+            grid-template-columns: 1fr;
+        }
+        .suw-col {
+            border-right: none;
+            border-top: 1px solid #f3f4f6;
+            padding: 12px 14px;
+        }
+        .suw-col:first-child {
+            border-top: none;
+        }
+        .dark .suw-col {
+            border-top-color: #2a2a2a;
+        }
+        .dark .suw-col:first-child {
+            border-top: none;
+        }
+    }
+
     /* ── Empty / muted ── */
     .suw-muted {
         font-size: 13px;
