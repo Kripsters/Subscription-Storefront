@@ -3,12 +3,12 @@
     use Carbon\Carbon;
 
     // Helpers
-    $fmtDate = function ($v, $format = 'M j, Y') {
+    $fmtDate = function ($v, $format = 'M j, Y') use ($userTimezone) {
         if (empty($v)) return null;
         try {
-            if ($v instanceof \DateTimeInterface) return Carbon::instance($v)->format($format);
-            if (is_numeric($v)) return Carbon::createFromTimestamp((int)$v)->format($format);
-            return Carbon::parse($v)->format($format);
+            if ($v instanceof \DateTimeInterface) return Carbon::instance($v)->setTimezone($userTimezone)->format($format);
+            if (is_numeric($v)) return Carbon::createFromTimestamp((int)$v)->setTimezone($userTimezone)->format($format);
+            return Carbon::parse($v)->setTimezone($userTimezone)->format($format);
         } catch (\Throwable $e) { return (string) $v; }
     };
 

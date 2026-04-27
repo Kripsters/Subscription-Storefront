@@ -47,6 +47,32 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="timezone" value="Timezone" />
+            @php
+                $grouped = [];
+                foreach (DateTimeZone::listIdentifiers() as $tz) {
+                    $parts = explode('/', $tz);
+                    $region = count($parts) > 1 ? $parts[0] : 'Other';
+                    $grouped[$region][] = $tz;
+                }
+                $currentTz = old('timezone', $user->timezone ?? 'UTC');
+            @endphp
+            <select id="timezone" name="timezone"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                @foreach($grouped as $region => $tzList)
+                    <optgroup label="{{ $region }}">
+                        @foreach($tzList as $tz)
+                            <option value="{{ $tz }}" @selected($currentTz === $tz)>
+                                {{ str_replace(['_', '/'], [' ', ' / '], $tz) }}
+                            </option>
+                        @endforeach
+                    </optgroup>
+                @endforeach
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('timezone')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('profile.save') }}</x-primary-button>
 
