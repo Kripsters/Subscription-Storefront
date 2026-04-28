@@ -77,41 +77,7 @@
                 </div>
             </div>
         </section>
-    
-        {{-- ── FOOD CATEGORY CARDS ── --}}
-        <section class="bg-white dark:bg-zinc-950 py-16 px-6">
-            <div class="max-w-7xl mx-auto">
-    
-                <div class="flex items-end justify-between mb-8">
-                    <div>
-                        <p class="text-amber-500 font-bold text-sm uppercase tracking-widest mb-1">{{ __('welcome.explore') }}</p>
-                        <h2 class="text-3xl font-black text-zinc-900 dark:text-white">{{ __('welcome.popular') }}</h2>
-                    </div>
-                </div>
-    
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    @php
-                        $categories = [
-                            ['label' => 'Salads',  'img' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80', 'color' => 'from-green-400/20'],
-                            ['label' => 'Pasta',   'img' => 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80', 'color' => 'from-yellow-400/20'],
-                            ['label' => 'Bowls',   'img' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80', 'color' => 'from-orange-400/20'],
-                            ['label' => 'Soups',   'img' => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80', 'color' => 'from-red-400/20'],
-                        ];
-                    @endphp
-    
-                    @foreach ($categories as $cat)
-                        <div class="group relative overflow-hidden rounded-2xl aspect-square cursor-pointer shadow-md hover:shadow-xl transition-shadow">
-                            <img src="{{ $cat['img'] }}" alt="{{ $cat['label'] }}"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
-                            <div class="absolute inset-0 bg-gradient-to-t {{ $cat['color'] }} to-black/50"></div>
-                            <span class="absolute bottom-4 left-4 text-white font-black text-lg drop-shadow">
-                                {{ $cat['label'] }}
-                            </span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
+
     
         {{-- ── HOW IT WORKS ── --}}
         <section class="bg-amber-50 dark:bg-zinc-900 py-20 px-6">
